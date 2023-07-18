@@ -1,0 +1,40 @@
+[tool.poetry]
+name = "jsonschema-markdown"
+version = "0.1.0"
+description = "Export a JSON Schema document to Markdown documentation."
+authors = ["Elisiário Couto <elisiario@couto.io>"]
+readme = "README.md"
+packages = [{ include = "jsonschema_markdown" }]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+click = "^8.1.5"
+loguru = "^0.7.0"
+jsonref = "^1.1.0"
+
+[tool.poetry.group.dev.dependencies]
+black = "^23.7.0"
+ruff = "^0.0.278"
+pytest = "^7.4.0"
+
+[tool.poetry.scripts]
+jsonschema-markdown = "jsonschema_markdown.main:cli"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.black]
+line-lenght = 88
+
+[tool.ruff]
+ignore = ["E501", "B008", "B006"]
+extend-select = [
+  "B",
+  "C4",
+  "PIE",
+  "T20",
+  "SIM",
+  "TCH",
+  #"PTH"
+]
