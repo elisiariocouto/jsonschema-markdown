@@ -1,0 +1,61 @@
+[changelog]
+header = ""
+
+# template for the changelog body
+# https://tera.netlify.app/docs/#introduction
+body = """
+{% if version %}\
+    ## {{ version | trim_start_matches(pat="v") }} ({{ timestamp | date(format="%Y/%m/%d") }})
+{% else %}\
+    ## Unreleased
+{% endif %}\
+{% for group, commits in commits | group_by(attribute="group") %}
+    ### {{ group | upper_first }}
+    {% for commit in commits
+    | filter(attribute="scope")
+    | sort(attribute="scope") %}
+        - **{{commit.scope}}:** {{ commit.message | upper_first }} ([{{ commit.id | truncate(length=8, end="") }}](https://github.com/elisiariocouto/jsonschema-markdown/commit/{{ commit.id }}))
+        {%- if commit.breaking %}
+        {% raw %}  {% endraw %}- **BREAKING**: {{commit.breaking_description}}
+        {%- endif -%}
+    {%- endfor %}
+    {% for commit in commits %}
+        {%- if commit.scope -%}
+        {% else -%}
+            -  {{ commit.message | upper_first }} ([{{ commit.id | truncate(length=8, end="") }}](https://github.com/elisiariocouto/jsonschema-markdown/commit/{{ commit.id }}))
+            {% if commit.breaking -%}
+            {% raw %}  {% endraw %}- **BREAKING**: {{commit.breaking_description}}
+            {% endif -%}
+        {% endif -%}
+    {% endfor -%}
+    {% raw %}\n{% endraw %}\
+{% endfor %}\n
+"""
+trim = true
+footer = ""
+
+[git]
+conventional_commits = true
+filter_unconventional = true
+split_commits = false
+commit_preprocessors = []
+commit_parsers = [
+    { message = "^[Ff]eat(ure)?", group = "Features" },
+    { message = "^[Ff]ix", group = "Bug Fixes" },
+    { message = "^[Dd]oc(s)?(umentation)?", group = "Documentation" },
+    { message = "^[Pp]erf(ormance)?", group = "Performance" },
+    { message = "^[Rr]efactor", group = "Refactor" },
+    { message = "^[Ss]tyle", group = "Styling" },
+    { message = "^[Tt]est(s)?", group = "Testing" },
+    { message = "^[Cc]hore\\(ci\\): Bump version to", skip = true },
+    { message = "^[Cc]hore", group = "Miscellaneous Tasks" },
+    { body = ".*security", group = "Security" },
+]
+protect_breaking_commits = false
+filter_commits = false
+tag_pattern = ""
+skip_tags = ""
+ignore_tags = ""
+topo_order = false
+sort_commits = "oldest"
+# limit_commits = 42
