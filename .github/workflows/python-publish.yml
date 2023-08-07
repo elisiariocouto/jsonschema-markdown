@@ -28,4 +28,6 @@ jobs:
           poetry build -f wheel
 
       - name: Publish package
-        run: poetry publish --username=elisiariocouto
+        env:
+          POETRY_PYPI_TOKEN_PYPI: ${{ secrets.PYPI_TOKEN }}
+        run: poetry publish
