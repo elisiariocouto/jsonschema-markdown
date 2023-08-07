@@ -28,4 +28,4 @@ jobs:
           poetry build -f wheel
 
       - name: Publish package
-        run: poetry publish --repository=elisiariocouto/jsonschema-markdown --username=elisiariocouto
+        run: poetry publish --username=elisiariocouto
