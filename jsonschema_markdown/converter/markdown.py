@@ -15,7 +15,7 @@ def generate(schema: dict) -> str:
     )
     markdown += _create_table_of_properties(schema)
 
-    markdown += "\n\n# Definitions\n\n"
+    markdown += "\n\n---\n\n# Definitions\n\n"
 
     for definition in schema.get("definitions", {}).values():
         markdown += f"\n\n## {definition.get('title', 'No Title')}\n\n"
@@ -70,42 +70,64 @@ def _create_table_of_properties(schema: dict) -> str:
 
     markdown = ""
 
+    # Add a warning before the table to indicate if additional properties are allowed
+    if not schema.get("additionalProperties", True):
+        markdown += "> ⚠️ Additional properties are not allowed.\n\n"
+
     markdown += "| Property | Type | Required | Possible Values | Deprecated | Default | Description |\n"
     markdown += "| -------- | ---- | -------- | --------------- | ---------- | ------- | ----------- |\n"
 
     for property_name, property_details in schema["properties"].items():
-        property_type = property_details.get("type", "unknown")
+        property_type = property_details.get("type", "?")
 
         if "enum" in property_details:
             possible_values = ", ".join(
-                [str(value) for value in property_details["enum"]]
+                [f"`{str(value)}`" for value in property_details["enum"]]
             )
         elif "oneOf" in property_details:
             possible_values = ", ".join(
-                [str(value) for value in property_details["oneOf"]]
+                [f"`{str(value)}`" for value in property_details["oneOf"]]
             )
-            property_type = "array oneOf"
+            property_type = "array (`oneOf`)"
         elif "anyOf" in property_details:
-            possible_values = ", ".join(
-                [str(value) for value in property_details["anyOf"]]
+            possible_values = " or ".join(
+                [f"`{str(value)}`" for value in property_details["anyOf"]]
             )
-            property_type = "array anyOf"
+            property_type = "array (`anyOf`)"
         elif "allOf" in property_details:
-            possible_values = ", ".join(
+            possible_values = " and ".join(
                 [
                     f"[{value.get('title')}]({value.get('title')})"
                     for value in property_details["allOf"]
                 ]
             )
-            property_type = "array allOf"
+            property_type = "array (`allOf`)"
         elif "items" in property_details:
-            title = property_details["items"].get("title", "unknown")
-            possible_values = f"[{title}](#{title})"
+            title = property_details["items"].get("title")
+            _type = property_details["items"].get("type")
+            if title:
+                possible_values = f"[{title}](#{title})"
+            elif _type:
+                possible_values = f"`{_type}`"
+            else:
+                possible_values = "??"
+        elif "pattern" in property_details:
+            pattern = property_details.get("pattern")
+            possible_values = pattern
+        elif "additionalProperties" in property_details:
+            title = property_details["additionalProperties"].get("title")
+            _type = property_details["additionalProperties"].get("type")
+            if title:
+                possible_values = f"[{title}](#{title})"
+            elif _type:
+                possible_values = f"`{_type}`"
+            else:
+                possible_values = "???"
         else:
-            possible_values = ""
+            possible_values = f"`{property_type}`"
 
         markdown += (
-            f"| {property_name} | {property_type} | "
+            f"| {property_name} | {property_type.capitalize()} | "
             f"{'✅' if property_name in schema.get('required', []) else ''} | "
             f"{possible_values}| "
             f"{'⛔️' if '[deprecated]' in str(property_details.get('description','')).lower() or property_details.get('deprecated') else ''} | "
