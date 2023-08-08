@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "jsonschema-markdown"
-version = "0.1.0"
+version = "0.1.1"
 description = "Export a JSON Schema document to Markdown documentation."
 authors = ["Elisiário Couto <elisiario@couto.io>"]
 readme = "README.md"
