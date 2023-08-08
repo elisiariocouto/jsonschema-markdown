@@ -1,3 +1,10 @@
+## 0.1.3 (2023/08/08)
+
+### Features
+
+-  Add support for more array and object types, add support for integers. ([0fa66300](https://github.com/elisiariocouto/jsonschema-markdown/commit/0fa663004904122af4c83213a7c62a49cafe8539))
+
+
 ## 0.1.2 (2023/08/08)
 
 ### Bug Fixes
