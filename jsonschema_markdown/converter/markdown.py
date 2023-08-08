@@ -230,7 +230,7 @@ def _get_property_details(property_type: str, property_details: dict) -> tuple:
         title = property_details.get("title")
         res_type = res_type if res_type else property_details.get("type", "?")
         if title and res_type != "string" and res_type != "boolean" and not is_const:
-            res_details = f"[{title}](#{title.replace(' ', '-')})"
+            res_details = f"[{title}](#{title.replace(' ', '-').lower()})"
         elif res_type:
             res_details = f"{res_type}"
         else:
