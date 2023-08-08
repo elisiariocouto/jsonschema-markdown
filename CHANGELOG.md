@@ -1,3 +1,16 @@
+## 0.1.5 (2023/08/08)
+
+### Bug Fixes
+
+-  Fix anchor links, GitHub and GitLab render them in lowercase. ([0b134283](https://github.com/elisiariocouto/jsonschema-markdown/commit/0b13428312cc4a806d7d5982d8699ae3f518be2f))
+
+
+### Miscellaneous Tasks
+
+-  Remove unused files. ([02f2af57](https://github.com/elisiariocouto/jsonschema-markdown/commit/02f2af573c5a2a2ab1021908d0a140decde2f948))
+-  Add instructions and contributing guide. ([004eb80a](https://github.com/elisiariocouto/jsonschema-markdown/commit/004eb80af41a21974c45131f94d7b243bfd14615))
+
+
 ## 0.1.4 (2023/08/08)
 
 ### Miscellaneous Tasks
