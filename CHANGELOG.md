@@ -1,3 +1,10 @@
+## 0.1.4 (2023/08/08)
+
+### Miscellaneous Tasks
+
+-  Add license, repo, classifiers and keywords to pyproject.toml. ([c9c03905](https://github.com/elisiariocouto/jsonschema-markdown/commit/c9c0390599b4a09e1c0e1e30536f0f4d555e5a16))
+
+
 ## 0.1.3 (2023/08/08)
 
 ### Features
