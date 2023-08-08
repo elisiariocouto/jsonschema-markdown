@@ -1,7 +1,6 @@
 import json
 
 import click
-import jsonref
 
 import jsonschema_markdown
 
@@ -15,8 +14,6 @@ def cli(filename):
     """
     with open(filename, "r") as f:
         file_contents = json.load(f)
-
-    file_contents: dict = jsonref.replace_refs(file_contents)  # type: ignore
 
     # Convert the file contents to markdown
     markdown = jsonschema_markdown.generate(file_contents)

@@ -1,28 +1,32 @@
 import json
+import urllib.parse
 
+import jsonref
 from loguru import logger
 
 
 def generate(schema: dict) -> str:
+    _schema: dict = jsonref.replace_refs(schema)  # type: ignore
     markdown = ""
 
     # Add the title and description of the schema
+    markdown += f"# {_schema.get('title', 'jsonschema-markdown')}\n\n"
+    description = _schema.get("description", "").strip(" \n")
     markdown += (
-        f"# {schema['title']}\n\n" if "title" in schema else "jsonschema-markdown\n\n"
-    )
-    markdown += (
-        f"{schema['description']}\n\n"
-        if "description" in schema
+        f"{description}\n\n"
+        if description
         else "JSON Schema missing a description, provide it using the `description` key in the root of the JSON document.\n\n"
     )
-    markdown += _create_table_of_properties(schema)
+    markdown += _create_definition_table(_schema)
 
     markdown += "\n\n---\n\n# Definitions\n\n"
 
-    for definition in schema.get("definitions", schema.get("$defs", {})).values():
+    for definition in _schema.get("definitions", _schema.get("$defs", {})).values():
+        description = definition.get("description", "").strip(" \n")
         markdown += f"\n\n## {definition.get('title', 'No Title')}\n\n"
-        markdown += f"{definition.get('description', '').strip()}\n\n"
-        markdown += _create_table_of_properties(definition)
+        markdown += f"{description}\n\n"
+        markdown += f"**Type:** `{definition.get('type', '?').strip()}`\n\n"
+        markdown += _create_definition_table(definition)
 
     return markdown
 
@@ -54,7 +58,26 @@ def _sort_properties(schema: dict) -> dict:
     return properties
 
 
-def _remove_nulls(property_type: str, property_details: dict) -> tuple:
+def _create_enum_markdown(schema: dict) -> str:
+    """
+    Create a markdown table of the enum values.
+    """
+
+    markdown = "**Possible Values:** "
+    markdown += " or ".join([f"`{value}`" for value in schema["enum"]]) + "\n\n"
+
+    return markdown
+
+
+def _create_const_markdown(schema: dict) -> str:
+    """
+    Create a markdown table of the enum values.
+    """
+
+    return f"**Possible Values:** {schema.get('const', '?')}\n\n"
+
+
+def _get_property_details(property_type: str, property_details: dict) -> tuple:
     """
     Get the possible values for a property.
     """
@@ -66,7 +89,10 @@ def _remove_nulls(property_type: str, property_details: dict) -> tuple:
             logger.warning("No null type in oneOf")
 
         if len(property_details["oneOf"]) == 1:
-            return _remove_nulls("object", property_details["oneOf"][0])
+            return _get_property_details(
+                property_details["oneOf"][0].get("type", "?"),
+                property_details["oneOf"][0],
+            )
 
     if "anyOf" in property_details:
         try:
@@ -75,7 +101,10 @@ def _remove_nulls(property_type: str, property_details: dict) -> tuple:
             logger.warning("No null type in anyOf")
 
         if len(property_details["anyOf"]) == 1:
-            return _remove_nulls("object", property_details["anyOf"][0])
+            return _get_property_details(
+                property_details["anyOf"][0].get("type", "?"),
+                property_details["anyOf"][0],
+            )
 
     if "allOf" in property_details:
         try:
@@ -84,7 +113,10 @@ def _remove_nulls(property_type: str, property_details: dict) -> tuple:
             logger.warning("No null type in allOf")
 
         if len(property_details["allOf"]) == 1:
-            return _remove_nulls("object", property_details["allOf"][0])
+            return _get_property_details(
+                property_details["allOf"][0].get("type", "?"),
+                property_details["allOf"][0],
+            )
 
     is_const = "const" in property_details
     res_type = "const" if is_const else property_type
@@ -124,40 +156,90 @@ def _remove_nulls(property_type: str, property_details: dict) -> tuple:
     elif "items" in property_details:
         title = property_details["items"].get("title")
         _type = property_details["items"].get("type")
-        if title:
+        if "anyOf" in property_details["items"]:
+            res_details = ", ".join(
+                [
+                    _get_property_details(value.get("type", "?"), value)[1]
+                    for value in property_details["items"]["anyOf"]
+                ]
+            )
+        elif "oneOf" in property_details["items"]:
+            res_details = ", ".join(
+                [
+                    _get_property_details(value.get("type", "?"), value)[1]
+                    for value in property_details["items"]["oneOf"]
+                ]
+            )
+        elif "allOf" in property_details["items"]:
+            res_details = ", ".join(
+                [
+                    _get_property_details(value.get("type", "?"), value)[1]
+                    for value in property_details["items"]["allOf"]
+                ]
+            )
+        elif title:
             res_details = f"[{title}](#{title})"
         elif _type:
-            res_details = f"`{_type}`"
+            res_details = _type
         else:
-            res_details = "yo124"
+            res_details = "?"
     elif "pattern" in property_details:
-        pattern = property_details.get("pattern")
-        res_details = pattern
+        pattern = property_details.get("pattern", "?")
+        res_details = f"[`{pattern}`](https://regex101.com/?regex={urllib.parse.quote_plus(pattern)})"
     elif "additionalProperties" in property_details:
         title = property_details["additionalProperties"].get("title")
         _type = property_details["additionalProperties"].get("type")
         if title:
             res_details = f"[{title}](#{title})"
         elif _type:
-            res_details = f"`{_type}`"
+            res_details = f"{_type}"
         else:
             res_details = "?"
     elif is_const:
-        res_details = property_details.get("const")
+        res_details = f"`{property_details.get('const')}`"
+    elif property_type == "integer":
+        # write the range of the integer in the format a <= x <= b
+        minimum = property_details.get("minimum")
+        maximum = property_details.get("maximum")
+        exclusive_minimum = property_details.get("exclusiveMinimum")
+        exclusive_maximum = property_details.get("exclusiveMaximum")
+        if minimum is not None and maximum is not None:
+            if exclusive_minimum is not None and exclusive_maximum is not None:
+                res_details = f"`{minimum} < x < {maximum}`"
+            elif exclusive_minimum is not None:
+                res_details = f"`{minimum} < x <= {maximum}`"
+            elif exclusive_maximum is not None:
+                res_details = f"`{minimum} <= x < {maximum}`"
+            else:
+                res_details = f"`{minimum} <= x <= {maximum}`"
+        elif minimum is not None:
+            if exclusive_minimum is not None:
+                res_details = f"`{minimum} < x`"
+            else:
+                res_details = f"`{minimum} <= x`"
+        elif maximum is not None:
+            if exclusive_maximum is not None:
+                res_details = f"`x < {maximum}`"
+            else:
+                res_details = f"`x <= {maximum}`"
+        else:
+            # fallback to integer when no range is specified
+            res_details = property_type
+
     else:
         title = property_details.get("title")
-        res_type = res_type if res_type else property_details.get("type", "??")
+        res_type = res_type if res_type else property_details.get("type", "?")
         if title and res_type != "string" and res_type != "boolean" and not is_const:
             res_details = f"[{title}](#{title.replace(' ', '-')})"
         elif res_type:
-            res_details = f"`{res_type}`"
+            res_details = f"{res_type}"
         else:
-            res_details = "???"
+            res_details = "?"
 
     return res_type, res_details
 
 
-def _create_table_of_properties(schema: dict) -> str:
+def _create_definition_table(schema: dict) -> str:
     """
     Create a table of the properties in the schema.
     Outputs a markdown table with the following columns:
@@ -171,8 +253,13 @@ def _create_table_of_properties(schema: dict) -> str:
 
     Search for deprecated string in the description or a deprecated key set to true in the property
     """
-    if "properties" not in schema:
-        return ""
+
+    if schema.get("enum"):
+        return _create_enum_markdown(schema)
+
+    if schema.get("const"):
+        return _create_const_markdown(schema)
+
     schema["properties"] = _sort_properties(schema)
 
     markdown = ""
@@ -187,17 +274,20 @@ def _create_table_of_properties(schema: dict) -> str:
     for property_name, property_details in schema["properties"].items():
         property_type = property_details.get("type", property_details.get("const"))
 
-        property_type, possible_values = _remove_nulls(property_type, property_details)
+        property_type, possible_values = _get_property_details(
+            property_type, property_details
+        )
 
         default = property_details.get("default")
+        description = property_details.get("description", "").strip(" \n")
 
         markdown += (
-            f"| {property_name} | {property_type.capitalize()} | "
+            f"| {property_name} | `{property_type}` | "
             f"{'✅' if property_name in schema.get('required', []) else ''} | "
             f"{possible_values}| "
             f"{'⛔️' if '[deprecated]' in str(property_details.get('description','')).lower() or property_details.get('deprecated') else ''} | "
             f"{'`'+json.dumps(default)+'`' if default else ''} | "
-            f"{property_details.get('description','')} |\n"
+            f"{description} |\n"
         )
 
     return markdown
