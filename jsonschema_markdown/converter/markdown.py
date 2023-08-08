@@ -171,6 +171,8 @@ def _create_table_of_properties(schema: dict) -> str:
 
     Search for deprecated string in the description or a deprecated key set to true in the property
     """
+    if "properties" not in schema:
+        return ""
     schema["properties"] = _sort_properties(schema)
 
     markdown = ""
