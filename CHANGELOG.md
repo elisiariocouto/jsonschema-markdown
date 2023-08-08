@@ -1,3 +1,10 @@
+## 0.1.2 (2023/08/08)
+
+### Bug Fixes
+
+-  Handle instances with no properties. ([41b60285](https://github.com/elisiariocouto/jsonschema-markdown/commit/41b602857c66d954eb79750b5f1b70baccfa1639))
+
+
 ## 0.1.1 (2023/08/08)
 
 ### Features
