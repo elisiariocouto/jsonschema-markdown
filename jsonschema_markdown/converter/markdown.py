@@ -1,5 +1,7 @@
 import json
 
+from loguru import logger
+
 
 def generate(schema: dict) -> str:
     markdown = ""
@@ -17,9 +19,9 @@ def generate(schema: dict) -> str:
 
     markdown += "\n\n---\n\n# Definitions\n\n"
 
-    for definition in schema.get("definitions", {}).values():
+    for definition in schema.get("definitions", schema.get("$defs", {})).values():
         markdown += f"\n\n## {definition.get('title', 'No Title')}\n\n"
-        markdown += f"{definition.get('description', '')}\n\n"
+        markdown += f"{definition.get('description', '').strip()}\n\n"
         markdown += _create_table_of_properties(definition)
 
     return markdown
@@ -52,6 +54,109 @@ def _sort_properties(schema: dict) -> dict:
     return properties
 
 
+def _remove_nulls(property_type: str, property_details: dict) -> tuple:
+    """
+    Get the possible values for a property.
+    """
+
+    if "oneOf" in property_details:
+        try:
+            property_details["oneOf"].remove({"type": "null"})
+        except Exception:
+            logger.warning("No null type in oneOf")
+
+        if len(property_details["oneOf"]) == 1:
+            return _remove_nulls("object", property_details["oneOf"][0])
+
+    if "anyOf" in property_details:
+        try:
+            property_details["anyOf"].remove({"type": "null"})
+        except Exception:
+            logger.warning("No null type in anyOf")
+
+        if len(property_details["anyOf"]) == 1:
+            return _remove_nulls("object", property_details["anyOf"][0])
+
+    if "allOf" in property_details:
+        try:
+            property_details["allOf"].remove({"type": "null"})
+        except Exception:
+            logger.warning("No null type in allOf")
+
+        if len(property_details["allOf"]) == 1:
+            return _remove_nulls("object", property_details["allOf"][0])
+
+    is_const = "const" in property_details
+    res_type = "const" if is_const else property_type
+
+    if "enum" in property_details:
+        res_details = ", ".join(
+            [f"`{str(value)}`" for value in property_details["enum"]]
+        )
+    elif "oneOf" in property_details:
+        res_details = ", ".join(
+            [
+                f"`{value.get('const') if 'const' in value else str(value)}`"
+                for value in property_details["oneOf"]
+            ]
+        )
+        if any("const" in value for value in property_details["oneOf"]):
+            res_type = "const"
+
+    elif "anyOf" in property_details:
+        res_details = " or ".join(
+            [
+                f"`{value.get('const') if 'const' in value else str(value)}`"
+                for value in property_details["anyOf"]
+            ]
+        )
+        if any("const" in value for value in property_details["anyOf"]):
+            res_type = "const"
+    elif "allOf" in property_details:
+        res_details = " and ".join(
+            [
+                f"`{value.get('const') if 'const' in value else str(value)}`"
+                for value in property_details["allOf"]
+            ]
+        )
+        if any("const" in value for value in property_details["allOf"]):
+            res_type = "const"
+    elif "items" in property_details:
+        title = property_details["items"].get("title")
+        _type = property_details["items"].get("type")
+        if title:
+            res_details = f"[{title}](#{title})"
+        elif _type:
+            res_details = f"`{_type}`"
+        else:
+            res_details = "yo124"
+    elif "pattern" in property_details:
+        pattern = property_details.get("pattern")
+        res_details = pattern
+    elif "additionalProperties" in property_details:
+        title = property_details["additionalProperties"].get("title")
+        _type = property_details["additionalProperties"].get("type")
+        if title:
+            res_details = f"[{title}](#{title})"
+        elif _type:
+            res_details = f"`{_type}`"
+        else:
+            res_details = "?"
+    elif is_const:
+        res_details = property_details.get("const")
+    else:
+        title = property_details.get("title")
+        res_type = res_type if res_type else property_details.get("type", "??")
+        if title and res_type != "string" and res_type != "boolean" and not is_const:
+            res_details = f"[{title}](#{title.replace(' ', '-')})"
+        elif res_type:
+            res_details = f"`{res_type}`"
+        else:
+            res_details = "???"
+
+    return res_type, res_details
+
+
 def _create_table_of_properties(schema: dict) -> str:
     """
     Create a table of the properties in the schema.
@@ -78,60 +183,18 @@ def _create_table_of_properties(schema: dict) -> str:
     markdown += "| -------- | ---- | -------- | --------------- | ---------- | ------- | ----------- |\n"
 
     for property_name, property_details in schema["properties"].items():
-        property_type = property_details.get("type", "?")
+        property_type = property_details.get("type", property_details.get("const"))
 
-        if "enum" in property_details:
-            possible_values = ", ".join(
-                [f"`{str(value)}`" for value in property_details["enum"]]
-            )
-        elif "oneOf" in property_details:
-            possible_values = ", ".join(
-                [f"`{str(value)}`" for value in property_details["oneOf"]]
-            )
-            property_type = "array (`oneOf`)"
-        elif "anyOf" in property_details:
-            possible_values = " or ".join(
-                [f"`{str(value)}`" for value in property_details["anyOf"]]
-            )
-            property_type = "array (`anyOf`)"
-        elif "allOf" in property_details:
-            possible_values = " and ".join(
-                [
-                    f"[{value.get('title')}]({value.get('title')})"
-                    for value in property_details["allOf"]
-                ]
-            )
-            property_type = "array (`allOf`)"
-        elif "items" in property_details:
-            title = property_details["items"].get("title")
-            _type = property_details["items"].get("type")
-            if title:
-                possible_values = f"[{title}](#{title})"
-            elif _type:
-                possible_values = f"`{_type}`"
-            else:
-                possible_values = "??"
-        elif "pattern" in property_details:
-            pattern = property_details.get("pattern")
-            possible_values = pattern
-        elif "additionalProperties" in property_details:
-            title = property_details["additionalProperties"].get("title")
-            _type = property_details["additionalProperties"].get("type")
-            if title:
-                possible_values = f"[{title}](#{title})"
-            elif _type:
-                possible_values = f"`{_type}`"
-            else:
-                possible_values = "???"
-        else:
-            possible_values = f"`{property_type}`"
+        property_type, possible_values = _remove_nulls(property_type, property_details)
+
+        default = property_details.get("default")
 
         markdown += (
             f"| {property_name} | {property_type.capitalize()} | "
             f"{'✅' if property_name in schema.get('required', []) else ''} | "
             f"{possible_values}| "
             f"{'⛔️' if '[deprecated]' in str(property_details.get('description','')).lower() or property_details.get('deprecated') else ''} | "
-            f"{json.dumps(property_details.get('default')) if 'default' in property_details else ''} | "
+            f"{'`'+json.dumps(default)+'`' if default else ''} | "
             f"{property_details.get('description','')} |\n"
         )
 
