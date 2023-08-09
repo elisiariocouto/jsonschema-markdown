@@ -28,7 +28,10 @@ def generate(schema: dict) -> str:
         markdown += f"**Type:** `{definition.get('type', '?').strip()}`\n\n"
         markdown += _create_definition_table(definition)
 
-    return markdown
+    res = markdown.strip(" \n")
+    res += "\n"
+
+    return res
 
 
 def _sort_properties(schema: dict) -> dict:
