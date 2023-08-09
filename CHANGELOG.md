@@ -1,3 +1,10 @@
+## 0.1.6 (2023/08/09)
+
+### Bug Fixes
+
+-  Strip beginning and end of markdown of spaces and newlines, leave only one newline at the end. ([d1b55aa3](https://github.com/elisiariocouto/jsonschema-markdown/commit/d1b55aa3b7887e8ba96133eaa2b50fa9812af82e))
+
+
 ## 0.1.5 (2023/08/08)
 
 ### Bug Fixes
