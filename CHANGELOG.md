@@ -1,3 +1,15 @@
+## 0.1.7 (2023/08/11)
+
+### Bug Fixes
+
+-  Only add Definitions section if JSON schema contains definitions. ([732818dc](https://github.com/elisiariocouto/jsonschema-markdown/commit/732818dc01aaf1c34a4e1b9ed6eaa06b77db3f81))
+
+
+### Features
+
+-  Add footer with timestamp and jsonschema-markdown version to generated markdown. Add CLI flag to opt-out. ([5af92798](https://github.com/elisiariocouto/jsonschema-markdown/commit/5af927986006f89e2409c65512c4cdd1282e155e))
+
+
 ## 0.1.6 (2023/08/09)
 
 ### Bug Fixes
