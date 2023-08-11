@@ -23,8 +23,10 @@ Usage: jsonschema-markdown [OPTIONS] FILENAME
   Load a file and output the markdown.
 
 Options:
-  --version  Show the version and exit.
-  --help     Show this message and exit.
+  --footer / --no-footer  Add a footer with the time the markdown was
+                          generated and a link to the project.
+  --version               Show the version and exit.
+  --help                  Show this message and exit.
 
 # Example
 $ jsonschema-markdown schema.json > schema.md
