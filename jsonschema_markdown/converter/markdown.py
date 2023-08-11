@@ -19,14 +19,17 @@ def generate(schema: dict) -> str:
     )
     markdown += _create_definition_table(_schema)
 
-    markdown += "\n\n---\n\n# Definitions\n\n"
+    defs = _schema.get("definitions", _schema.get("$defs", {}))
 
-    for definition in _schema.get("definitions", _schema.get("$defs", {})).values():
-        description = definition.get("description", "").strip(" \n")
-        markdown += f"\n\n## {definition.get('title', 'No Title')}\n\n"
-        markdown += f"{description}\n\n"
-        markdown += f"**Type:** `{definition.get('type', '?').strip()}`\n\n"
-        markdown += _create_definition_table(definition)
+    if defs:
+        markdown += "\n\n---\n\n# Definitions\n\n"
+
+        for definition in defs.values():
+            description = definition.get("description", "").strip(" \n")
+            markdown += f"\n\n## {definition.get('title', 'No Title')}\n\n"
+            markdown += f"{description}\n\n"
+            markdown += f"**Type:** `{definition.get('type', '?').strip()}`\n\n"
+            markdown += _create_definition_table(definition)
 
     res = markdown.strip(" \n")
     res += "\n"
