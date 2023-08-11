@@ -1,11 +1,13 @@
+import importlib.metadata
 import json
 import urllib.parse
+from datetime import datetime
 
 import jsonref
 from loguru import logger
 
 
-def generate(schema: dict) -> str:
+def generate(schema: dict, footer: bool = True) -> str:
     _schema: dict = jsonref.replace_refs(schema)  # type: ignore
     markdown = ""
 
@@ -33,6 +35,10 @@ def generate(schema: dict) -> str:
 
     res = markdown.strip(" \n")
     res += "\n"
+
+    if footer:
+        # Add timestamp and a link to the project
+        res += f"\n\n---\n\nMarkdown generated with [jsonschema-markdown](https://github.com/elisiariocouto/jsonschema-markdown) {importlib.metadata.version('jsonschema-markdown')} on {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}."
 
     return res
 
@@ -66,7 +72,7 @@ def _sort_properties(schema: dict) -> dict:
 
 def _create_enum_markdown(schema: dict) -> str:
     """
-    Create a markdown table of the enum values.
+    Create markdown for enum values.
     """
 
     markdown = "**Possible Values:** "
@@ -77,7 +83,7 @@ def _create_enum_markdown(schema: dict) -> str:
 
 def _create_const_markdown(schema: dict) -> str:
     """
-    Create a markdown table of the enum values.
+    Create markdown for const values.
     """
 
     return f"**Possible Values:** {schema.get('const', '?')}\n\n"
