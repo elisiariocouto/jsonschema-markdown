@@ -1,3 +1,10 @@
+## 0.1.8 (2023/08/31)
+
+### Bug Fixes
+
+-  Add newline if footer is used. ([98b9f393](https://github.com/elisiariocouto/jsonschema-markdown/commit/98b9f3936a2ac03397fd50002e4e4057769c5c23))
+
+
 ## 0.1.7 (2023/08/11)
 
 ### Bug Fixes
