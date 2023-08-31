@@ -33,12 +33,12 @@ def generate(schema: dict, footer: bool = True) -> str:
             markdown += f"**Type:** `{definition.get('type', '?').strip()}`\n\n"
             markdown += _create_definition_table(definition)
 
-    res = markdown.strip(" \n")
-    res += "\n"
-
     if footer:
         # Add timestamp and a link to the project
-        res += f"\n\n---\n\nMarkdown generated with [jsonschema-markdown](https://github.com/elisiariocouto/jsonschema-markdown) {importlib.metadata.version('jsonschema-markdown')} on {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}."
+        markdown += f"\n\n---\n\nMarkdown generated with [jsonschema-markdown](https://github.com/elisiariocouto/jsonschema-markdown) {importlib.metadata.version('jsonschema-markdown')} on {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}."
+
+    res = markdown.strip(" \n")
+    res += "\n"
 
     return res
 
