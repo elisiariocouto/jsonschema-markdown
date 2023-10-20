@@ -198,7 +198,7 @@ def _get_property_details(property_type: str, property_details: dict) -> tuple:
     elif "pattern" in property_details:
         pattern = property_details.get("pattern", "?")
         res_details = f"[`{pattern}`](https://regex101.com/?regex={urllib.parse.quote_plus(pattern)})"
-    elif "additionalProperties" in property_details:
+    elif "additionalProperties" in property_details and property_details["additionalProperties"]:
         title = property_details["additionalProperties"].get("title")
         _type = property_details["additionalProperties"].get("type")
         if title:

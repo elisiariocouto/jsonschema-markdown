@@ -16,6 +16,19 @@
       "description": "Age in years which must be equal to or greater than zero.",
       "type": "integer",
       "minimum": 0
+    },
+    "job": {
+      "description": "The person's job.",
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string"
+        },
+        "salary": {
+          "type": "number"
+        }
+      },
+      "additionalProperties": false
     }
   }
 }
