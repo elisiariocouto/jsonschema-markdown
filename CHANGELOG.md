@@ -1,3 +1,25 @@
+## 0.2.0 (2023/10/21)
+
+### Bug Fixes
+
+-  Add newline if footer is used. ([a84bf23d](https://github.com/elisiariocouto/jsonschema-markdown/commit/a84bf23df326773a335922be41c886ff7f3b4fd0))
+
+
+### Features
+
+-  Add flags for experimental ref resolver and debug messages. ([3d070935](https://github.com/elisiariocouto/jsonschema-markdown/commit/3d07093561bef99aa53431d1c43f51406a73d515))
+
+
+### Miscellaneous Tasks
+
+-  Update dependencies. ([afceabeb](https://github.com/elisiariocouto/jsonschema-markdown/commit/afceabeb5cce2f870759a4cc2b350a149f632a6b))
+
+
+### Refactor
+
+-  Recursive schema parser should be easier to read, do not expand $ref, use ref key instead of title for definition links. ([48fc0d03](https://github.com/elisiariocouto/jsonschema-markdown/commit/48fc0d03471064e20a4bbb998546cd12d942e7be))
+
+
 ## 0.1.8 (2023/08/31)
 
 ### Bug Fixes
