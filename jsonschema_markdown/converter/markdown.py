@@ -1,6 +1,7 @@
 import contextlib
 import importlib.metadata
 import json
+import sys
 import urllib.parse
 from datetime import datetime
 
@@ -13,7 +14,29 @@ from jsonschema_markdown.utils import (
 )
 
 
-def generate(schema: dict, footer: bool = True, replace_refs: bool = False) -> str:
+def generate(
+    schema: dict, footer: bool = True, replace_refs: bool = False, debug: bool = False
+) -> str:
+    """
+    Generate a markdown string from a given JSON schema.
+
+    Args:
+        schema (dict): The JSON schema to generate markdown from.
+        footer (bool, optional): Whether to include a footer section in the markdown with the current date and time. Defaults to True.
+        replace_refs (bool, optional): This feature is experimental. Whether to replace JSON references with their resolved values. Defaults to False.
+        debug (bool, optional): Whether to print debug messages. Defaults to False.
+
+    Returns:
+        str: The generated markdown string.
+    """
+    # Set the log level
+    if debug:
+        logger.remove()
+        logger.add(sys.stderr, level="DEBUG")
+    else:
+        logger.remove()
+        logger.add(sys.stderr, level="INFO")
+
     if replace_refs:
         import jsonref
 
@@ -139,7 +162,7 @@ def get_property_if_ref(property_details: dict, defs) -> tuple:
     # Check if the property is a reference in additionalProperties
     ref_from_additional_properties = (
         property_details["additionalProperties"].get("$ref")
-        if type(property_details.get("additionalProperties")) == dict
+        if isinstance(property_details.get("additionalProperties"), dict)
         else None
     )
     if ref_from_additional_properties:
@@ -259,9 +282,8 @@ def _get_property_details(property_type: str, property_details: dict, defs: dict
         pattern = property_details["pattern"]
         res_details = f"[`{pattern}`](https://regex101.com/?regex={urllib.parse.quote_plus(pattern)})"
         return property_type, res_details
-    elif (
-        "additionalProperties" in property_details
-        and type(property_details["additionalProperties"]) != bool
+    elif "additionalProperties" in property_details and not isinstance(
+        property_details["additionalProperties"], bool
     ):
         new_type = property_details["additionalProperties"].get("type")
         return new_type, new_type
