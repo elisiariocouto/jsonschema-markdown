@@ -1,3 +1,26 @@
+## 0.2.1 (2023/10/23)
+
+### Bug Fixes
+
+- **Dockerfile:** Use multi-stage builds to decrease image size. ([b8cf5ea9](https://github.com/elisiariocouto/jsonschema-markdown/commit/b8cf5ea910ea0f4fe8ecb47ca06e0d47f626d466))
+
+
+### Features
+
+-  Add Dockerfile to run CLI. (#4) ([c7d53140](https://github.com/elisiariocouto/jsonschema-markdown/commit/c7d5314020ab377054a91475fbf9063d84653e87))
+-  Add support for supplying '-' as a shortcut to read schema from STDIN. ([41805154](https://github.com/elisiariocouto/jsonschema-markdown/commit/4180515496ebb929f5e0d7a90dc5b6dcc4de5f5b))
+
+
+### Miscellaneous Tasks
+
+-  Update dependencies. ([ef818ff9](https://github.com/elisiariocouto/jsonschema-markdown/commit/ef818ff979b0bc805559a0e8c002b658a773ac91))
+
+
+### Ci
+
+-  Add docker build and push job. ([7fdb2114](https://github.com/elisiariocouto/jsonschema-markdown/commit/7fdb2114ef2821c81b534695058d45bd69baceb8))
+
+
 ## 0.2.0 (2023/10/21)
 
 ### Bug Fixes
