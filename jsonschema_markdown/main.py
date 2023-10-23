@@ -6,7 +6,7 @@ import jsonschema_markdown
 
 
 @click.command()
-@click.argument("filename", type=click.Path(exists=True))
+@click.argument("filename", type=click.File("r"))
 @click.option(
     "--footer/--no-footer",
     is_flag=True,
@@ -31,11 +31,12 @@ import jsonschema_markdown
 @click.version_option(package_name="jsonschema_markdown")
 def cli(filename, footer, resolve, debug):
     """
-    Load a file and output the markdown.
+    Load FILENAME and output a markdown version.
+
+    Use '-' as FILENAME to read from stdin.
     """
 
-    with open(filename, "r") as f:
-        file_contents = json.load(f)
+    file_contents = json.loads(filename.read())
 
     # Convert the file contents to markdown
     markdown = jsonschema_markdown.generate(
