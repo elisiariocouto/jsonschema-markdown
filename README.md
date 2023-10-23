@@ -20,7 +20,9 @@ the output to a file.
 $ jsonschema-markdown --help
 Usage: jsonschema-markdown [OPTIONS] FILENAME
 
-  Load a file and output the markdown.
+  Load FILENAME and output a markdown version.
+
+  Use '-' as FILENAME to read from stdin.
 
 Options:
   --footer / --no-footer    Add a footer with the time the markdown was
@@ -34,6 +36,13 @@ Options:
 
 # Example
 $ jsonschema-markdown schema.json > schema.md
+```
+
+## Usage with Docker
+The `jsonschema-markdown` command is also available as a Docker image. To use it, you can mount the schema file as a volume.
+
+```bash
+docker run --rm -v $PWD/my-schema.json:/app/schema.json elisiariocouto/jsonschema-markdown /app/schema.json > schema.md
 ```
 
 ## Usage as a library
