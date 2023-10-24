@@ -45,6 +45,10 @@ The `jsonschema-markdown` command is also available as a Docker image. To use it
 docker run --rm -v $PWD/my-schema.json:/app/schema.json elisiariocouto/jsonschema-markdown /app/schema.json > schema.md
 ```
 
+The Docker image is available at:
+ - [elisiariocouto/jsonschema-markdown](https://hub.docker.com/r/elisiariocouto/jsonschema-markdown).
+ - [ghcr.io/elisiariocouto/jsonschema-markdown](https://registry.worten.net/vlad2/jsonschema-markdown)
+
 ## Usage as a library
 
 To use it as a library, load your JSON schema file as Python `dict` and pass it to generate.
