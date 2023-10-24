@@ -46,8 +46,8 @@ docker run --rm -v $PWD/my-schema.json:/app/schema.json elisiariocouto/jsonschem
 ```
 
 The Docker image is available at:
- - [elisiariocouto/jsonschema-markdown](https://hub.docker.com/r/elisiariocouto/jsonschema-markdown).
- - [ghcr.io/elisiariocouto/jsonschema-markdown](https://registry.worten.net/vlad2/jsonschema-markdown)
+ - [elisiariocouto/jsonschema-markdown](https://hub.docker.com/r/elisiariocouto/jsonschema-markdown)
+ - [ghcr.io/elisiariocouto/jsonschema-markdown](https://ghcr.io/elisiariocouto/jsonschema-markdown)
 
 ## Usage as a library
 
