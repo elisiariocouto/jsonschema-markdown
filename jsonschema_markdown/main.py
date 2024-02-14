@@ -12,7 +12,7 @@ import jsonschema_markdown
     is_flag=True,
     default=True,
     show_default=True,
-    help="Add a footer with the time the markdown was generated and a link to the project.",
+    help="Add a footer with a link to the project.",
 )
 @click.option(
     "--resolve/--no-resolve",

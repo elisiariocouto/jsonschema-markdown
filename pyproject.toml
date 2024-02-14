@@ -39,9 +39,6 @@ jsonschema-markdown = "jsonschema_markdown.main:cli"
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
-[tool.black]
-line-lenght = 88
-
 [tool.ruff]
 ignore = ["E501", "B008", "B006"]
 extend-select = ["B", "C4", "PIE", "T20", "SIM", "TCH"]

@@ -1,9 +1,7 @@
 import contextlib
-import importlib.metadata
 import json
 import sys
 import urllib.parse
-from datetime import datetime
 
 from loguru import logger
 
@@ -68,7 +66,7 @@ def generate(
 
     if footer:
         # Add timestamp and a link to the project
-        markdown += f"\n\n---\n\nMarkdown generated with [jsonschema-markdown](https://github.com/elisiariocouto/jsonschema-markdown) {importlib.metadata.version('jsonschema-markdown')} on {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}."
+        markdown += "\n\n---\n\nMarkdown generated with [jsonschema-markdown](https://github.com/elisiariocouto/jsonschema-markdown)."
 
     res = markdown.strip(" \n")
     res += "\n"
@@ -190,11 +188,11 @@ def _get_property_details(property_type: str, property_details: dict, defs: dict
     array_like = (
         "oneOf"
         if "oneOf" in property_details
-        else "anyOf"
-        if "anyOf" in property_details
-        else "allOf"
-        if "allOf" in property_details
-        else None
+        else (
+            "anyOf"
+            if "anyOf" in property_details
+            else "allOf" if "allOf" in property_details else None
+        )
     )
 
     array_separator = {"oneOf": ", ", "anyOf": " or ", "allOf": " and "}
@@ -237,11 +235,11 @@ def _get_property_details(property_type: str, property_details: dict, defs: dict
         array_like = (
             "oneOf"
             if "oneOf" in property_details["items"]
-            else "anyOf"
-            if "anyOf" in property_details["items"]
-            else "allOf"
-            if "allOf" in property_details["items"]
-            else None
+            else (
+                "anyOf"
+                if "anyOf" in property_details["items"]
+                else "allOf" if "allOf" in property_details["items"] else None
+            )
         )
 
         if array_like:
