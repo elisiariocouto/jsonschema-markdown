@@ -66,7 +66,7 @@ def generate(
 
     if footer:
         # Add timestamp and a link to the project
-        markdown += "\n\n---\n\nMarkdown generated with [jsonschema-markdown](https://github.com/elisiariocouto/jsonschema-markdown)."
+        markdown += "\n\n---\n\nMarkdown generated with [jsonschema-markdown](https://github.com/elisiariocouto/jsonschema-markdown).\n"
 
     res = markdown.strip(" \n")
     res += "\n"
@@ -195,7 +195,7 @@ def _get_property_details(property_type: str, property_details: dict, defs: dict
         )
     )
 
-    array_separator = {"oneOf": ", ", "anyOf": " or ", "allOf": " and "}
+    array_separator = {"oneOf": " or ", "anyOf": " and/or ", "allOf": " and "}
 
     # TODO: Check why are we removing null from array_like
     if array_like:
