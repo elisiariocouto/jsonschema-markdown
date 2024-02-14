@@ -42,8 +42,9 @@ $ jsonschema-markdown schema.json > schema.md
 The `jsonschema-markdown` command is also available as a Docker image. To use it, you can mount the schema file as a volume.
 
 ```bash
-docker run --rm -v $PWD/my-schema.json:/app/schema.json elisiariocouto/jsonschema-markdown /app/schema.json > schema.md
+cat my-schema.json | docker run --rm -i elisiariocouto/jsonschema-markdown - > schema.md
 ```
+⚠️ **Warning**: Do not pass the `-t` flag.
 
 The Docker image is available at:
  - [elisiariocouto/jsonschema-markdown](https://hub.docker.com/r/elisiariocouto/jsonschema-markdown)
