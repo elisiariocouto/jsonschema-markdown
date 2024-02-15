@@ -1,3 +1,37 @@
+## 0.3.0 (2024/02/15)
+
+### Bug Fixes
+
+- **ci:** Docker Hub username is not a secret. ([03b353e5](https://github.com/elisiariocouto/jsonschema-markdown/commit/03b353e5a384cd1e02dd1d40379e756bf9f6e921))
+-  Remove version and timestamp from footer. ([ec648170](https://github.com/elisiariocouto/jsonschema-markdown/commit/ec6481709bac3a9f451cea86929ec4b88c92f694))
+-  Fix oneOf, anyOf and allOf labels in table. ([aad51fdf](https://github.com/elisiariocouto/jsonschema-markdown/commit/aad51fdf39ff8e0fa948ee1628e1914141ee2924))
+-  Fix number/integer limits calculation. ([fd3bfd03](https://github.com/elisiariocouto/jsonschema-markdown/commit/fd3bfd03b9cfba12dfa93d17197260282eb126fa))
+
+
+### Documentation
+
+-  Add docker instructions. ([81db236b](https://github.com/elisiariocouto/jsonschema-markdown/commit/81db236b6692036ad1a7154c0002e65f921896f2))
+-  Add links to Docker Hub and GitHub Container Registry. ([7e17ba8d](https://github.com/elisiariocouto/jsonschema-markdown/commit/7e17ba8d97dc53604a2a6a3bc675fb9eb2a36435))
+-  Typo in Docker Hub link. ([158b366b](https://github.com/elisiariocouto/jsonschema-markdown/commit/158b366bf4006b6bd29bcc75e15fc2535fe1b800))
+
+
+### Features
+
+-  Add string length and format. ([a01d4920](https://github.com/elisiariocouto/jsonschema-markdown/commit/a01d4920318c3909245b326117d416daaa52df2e))
+-  Add support for examples. ([8b332edc](https://github.com/elisiariocouto/jsonschema-markdown/commit/8b332edcff1973f2cf78dcb3f30b66ccce564730))
+
+
+### Miscellaneous Tasks
+
+-  Bump versions, bump Python to 3.9. ([3c2c2271](https://github.com/elisiariocouto/jsonschema-markdown/commit/3c2c2271d707293272199173522c87ee1ad46a2c))
+-  Update docs on README.md. ([2df2f9df](https://github.com/elisiariocouto/jsonschema-markdown/commit/2df2f9df9b02ac7abec7125078ae0028a7388b3c))
+
+
+### Testing
+
+-  Add basic test script. ([5b534c5c](https://github.com/elisiariocouto/jsonschema-markdown/commit/5b534c5c863f6b1e264edfe9c613bc2a2e55c6e1))
+
+
 ## 0.2.1 (2023/10/23)
 
 ### Bug Fixes
