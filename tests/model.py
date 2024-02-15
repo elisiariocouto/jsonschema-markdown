@@ -132,13 +132,7 @@ class Car(BaseModel):
         description="The model of the car.",
         max_length=100,
         min_length=1,
-        examples=[
-            """
-            ### Mardown works here as well
-            - yes
-            - no
-            """
-        ],
+        examples=["Focus", "Corolla"],
     )
     year: int = Field(
         ...,
@@ -149,6 +143,23 @@ class Car(BaseModel):
     car_class: CarClass = Field(
         ...,
         description="The class of the car.",
+        examples=[
+            {
+                "type": "sedan",
+                "doors": 5,
+                "passengers": 5,
+            },
+            {
+                "type": "hatchback",
+                "doors": 3,
+                "passengers": 2,
+            },
+            {
+                "type": "suv",
+                "doors": 5,
+                "passengers": 5,
+            },
+        ],
     )
     engine: Engine = Field(
         ...,
@@ -163,6 +174,33 @@ class Car(BaseModel):
     )
     manufacterer_config: list[Airbag | NavigationSystem | Upholstery] = Field(
         default=[], description="The manufacturer's extras."
+    )
+
+    model_config = ConfigDict(
+        json_schema_extra={
+            "examples": [
+                {
+                    "brand": "Ford",
+                    "brand_country": "US",
+                    "model": "Focus",
+                    "year": 2021,
+                    "car_class": {
+                        "type": "sedan",
+                        "doors": 5,
+                        "passengers": 5,
+                    },
+                    "engine": {
+                        "model": "1.6 TDI",
+                        "power": 105,
+                        "fuel_type": "diesel",
+                        "turbo": True,
+                        "liters": 1.6,
+                    },
+                    "kms": 0,
+                    "color": "black",
+                }
+            ]
+        }
     )
 
 

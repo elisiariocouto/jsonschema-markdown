@@ -51,6 +51,14 @@ def generate(
         if description
         else "JSON Schema missing a description, provide it using the `description` key in the root of the JSON document.\n\n"
     )
+
+    # Add examples if present
+    examples = _schema.get("examples", [])
+    if examples:
+        markdown += "## Schema Examples\n\n"
+        for example in examples:
+            markdown += f"```\n{example}\n```\n\n"
+
     defs = _schema.get("definitions", _schema.get("$defs", {}))
     markdown += _create_definition_table(_schema, defs)
 
@@ -58,10 +66,17 @@ def generate(
         markdown += "\n\n---\n\n# Definitions\n\n"
 
         for key, definition in defs.items():
-            description = definition.get("description", "").strip(" \n")
+            examples = definition.get("examples", [])
+            description = definition.get(
+                "description", "No description provided for this model."
+            ).strip(" \n")
             markdown += f"\n\n## {definition.get('title', key)}\n\n"
             markdown += f"{description}\n\n"
-            markdown += f"**Type:** `{definition.get('type', 'object(?)').strip()}`\n\n"
+            if examples:
+                markdown += "### Examples\n\n"
+                for example in examples:
+                    markdown += f"```\n{example}\n```\n\n"
+            markdown += f"### Type: `{definition.get('type', 'object(?)').strip()}`\n\n"
             markdown += _create_definition_table(definition, defs)
 
     if footer:
@@ -103,8 +118,8 @@ def _create_definition_table(schema: dict, defs: dict) -> str:
     if not schema.get("additionalProperties", True):
         markdown += "> ⚠️ Additional properties are not allowed.\n\n"
 
-    markdown += "| Property | Type | Required | Possible Values | Deprecated | Default | Description |\n"
-    markdown += "| -------- | ---- | -------- | --------------- | ---------- | ------- | ----------- |\n"
+    markdown += "| Property | Type | Required | Possible Values | Deprecated | Default | Description | Examples\n"
+    markdown += "| -------- | ---- | -------- | --------------- | ---------- | ------- | ----------- | --------\n"
 
     for property_name, property_details in schema["properties"].items():
         property_type = property_details.get("type")
@@ -123,6 +138,14 @@ def _create_definition_table(schema: dict, defs: dict) -> str:
         default = property_details.get("default")
         description = property_details.get("description", "").strip(" \n")
 
+        # Add backticks for each example, and join them with a comma and a space into a single string
+        examples = ", ".join(
+            [
+                f"```{str(example)}```"
+                for example in property_details.get("examples", [])
+            ]
+        )
+
         markdown += (
             f"| {property_name} | "
             f"`{property_type}` | "
@@ -130,7 +153,8 @@ def _create_definition_table(schema: dict, defs: dict) -> str:
             f"{possible_values}| "
             f"{'⛔️' if '[deprecated]' in str(property_details.get('description','')).lower() or property_details.get('deprecated') else ''} | "
             f"{'`'+json.dumps(default)+'`' if default else ''} | "
-            f"{description} |\n"
+            f"{description} |"
+            f"{examples} |\n"
         )
 
     return markdown
