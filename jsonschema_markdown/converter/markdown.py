@@ -66,7 +66,7 @@ def generate(
 
     if footer:
         # Add timestamp and a link to the project
-        markdown += "\n\n---\n\nMarkdown generated with [jsonschema-markdown](https://github.com/elisiariocouto/jsonschema-markdown).\n"
+        markdown += "\n\n---\n\nMarkdown generated with [jsonschema-markdown](https://github.com/elisiariocouto/jsonschema-markdown)."
 
     res = markdown.strip(" \n")
     res += "\n"
@@ -316,5 +316,25 @@ def _get_property_details(property_type: str, property_details: dict, defs: dict
             res_details = f"`{min_details} x {max_details}`"
 
         return property_type, res_details
+    elif property_details.get("type") == "string":
+        _format = property_details.get("format")
+        _max_length = property_details.get("maxLength")
+        _min_length = property_details.get("minLength")
+        if _format:
+            return property_type, f"Format: `{_format}`"
+        elif _max_length or _min_length:
+            if _max_length and _min_length:
+                return (
+                    property_type,
+                    f"Length: `{_min_length} <= string <= {_max_length}`",
+                )
+            elif _max_length:
+                return property_type, f"Length: `string <= {_max_length}`"
+            elif _min_length:
+                return property_type, f"Length: `string >= {_min_length}`"
+            else:
+                return property_type, f"{property_type}"
+        else:
+            return property_type, f"{property_type}"
     else:
         return property_type, f"{property_type}"
