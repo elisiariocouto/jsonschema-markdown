@@ -294,30 +294,27 @@ def _get_property_details(property_type: str, property_details: dict, defs: dict
         maximum = property_details.get("maximum")
         exclusive_minimum = property_details.get("exclusiveMinimum")
         exclusive_maximum = property_details.get("exclusiveMaximum")
-        if minimum is not None and maximum is not None:
-            if exclusive_minimum is not None and exclusive_maximum is not None:
-                res_details = f"`{minimum} < x < {maximum}`"
-            elif exclusive_minimum is not None:
-                res_details = f"`{minimum} < x <= {maximum}`"
-            elif exclusive_maximum is not None:
-                res_details = f"`{minimum} <= x < {maximum}`"
-            else:
-                res_details = f"`{minimum} <= x <= {maximum}`"
-        elif minimum is not None:
-            if exclusive_minimum is not None:
-                res_details = f"`{minimum} < x`"
-            else:
-                res_details = f"`{minimum} <= x`"
-        elif maximum is not None:
-            if exclusive_maximum is not None:
-                res_details = f"`x < {maximum}`"
-            else:
-                res_details = f"`x <= {maximum}`"
-        else:
+
+        min_details = ""
+        max_details = ""
+        res_details = ""
+
+        if minimum is not None:
+            min_details += f"{minimum} <="
+        elif exclusive_minimum is not None:
+            min_details += f"{exclusive_minimum} <"
+
+        if maximum is not None:
+            max_details += f"<= {maximum}"
+        elif exclusive_maximum is not None:
+            max_details += f"< {exclusive_maximum}"
+
+        if min_details == "" and max_details == "":
             # fallback to integer when no range is specified
             res_details = property_type
+        else:
+            res_details = f"`{min_details} x {max_details}`"
 
         return property_type, res_details
-
     else:
         return property_type, f"{property_type}"
