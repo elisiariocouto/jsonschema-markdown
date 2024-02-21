@@ -110,7 +110,8 @@ def _create_definition_table(schema: dict, defs: dict) -> str:
     if schema.get("const"):
         return create_const_markdown(schema)
 
-    schema["properties"] = sort_properties(schema)
+    if schema.get("properties"):
+        schema["properties"] = sort_properties(schema)
 
     markdown = ""
 
