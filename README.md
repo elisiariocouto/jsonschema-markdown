@@ -8,7 +8,7 @@ Can be used as a command line tool or as a library.
 ## Installation
 
 ```bash
-pip3 install jsonschema-markdown
+pipx install jsonschema-markdown
 ```
 
 ## Usage
@@ -25,9 +25,10 @@ Usage: jsonschema-markdown [OPTIONS] FILENAME
   Use '-' as FILENAME to read from stdin.
 
 Options:
-  --footer / --no-footer    Add a footer with the time the markdown was
-                            generated and a link to the project.  [default:
-                            footer]
+  -t, --title TEXT          Do not use the title from the schema, use this
+                            title instead.
+  --footer / --no-footer    Add a footer with a link to the project.
+                            [default: footer]
   --resolve / --no-resolve  [Experimental] Resolve $ref pointers.  [default:
                             no-resolve]
   --debug / --no-debug      Enable debug output.  [default: no-debug]
