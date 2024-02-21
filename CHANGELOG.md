@@ -1,3 +1,26 @@
+## 0.3.1 (2024/02/21)
+
+### Bug Fixes
+
+-  Not all definitions must have a properties element (#7) ([c60d170a](https://github.com/elisiariocouto/jsonschema-markdown/commit/c60d170aeb5e43e3dc9f0b26ad04512bcc938955))
+
+
+### Documentation
+
+-  Update README.md with new usage message. ([39dc652c](https://github.com/elisiariocouto/jsonschema-markdown/commit/39dc652ca7fcb4f1812a5d735ed979d75a4c68f3))
+
+
+### Features
+
+- **cli:** Add support for title override with -t/--title option. ([0418a470](https://github.com/elisiariocouto/jsonschema-markdown/commit/0418a4709197c0c407e440f8037667cb48598dc4))
+
+
+### Miscellaneous Tasks
+
+-  Add black and ruff on GitHub Actions. ([45cbcd23](https://github.com/elisiariocouto/jsonschema-markdown/commit/45cbcd2353036d3d8f34691b4799ea0b2c02d81b))
+-  Fix ruff check command. ([90560832](https://github.com/elisiariocouto/jsonschema-markdown/commit/905608329f795b75e7f23ed54fc6e0df01e86b7c))
+
+
 ## 0.3.0 (2024/02/15)
 
 ### Bug Fixes
