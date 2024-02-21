@@ -13,13 +13,18 @@ from jsonschema_markdown.utils import (
 
 
 def generate(
-    schema: dict, footer: bool = True, replace_refs: bool = False, debug: bool = False
+    schema: dict,
+    title: str = "jsonschema-markdown",
+    footer: bool = True,
+    replace_refs: bool = False,
+    debug: bool = False,
 ) -> str:
     """
     Generate a markdown string from a given JSON schema.
 
-    Args:
+    Parameters:
         schema (dict): The JSON schema to generate markdown from.
+        title (str, optional): The title of the markdown document. Defaults to "jsonschema-markdown".
         footer (bool, optional): Whether to include a footer section in the markdown with the current date and time. Defaults to True.
         replace_refs (bool, optional): This feature is experimental. Whether to replace JSON references with their resolved values. Defaults to False.
         debug (bool, optional): Whether to print debug messages. Defaults to False.
@@ -44,7 +49,7 @@ def generate(
     markdown = ""
 
     # Add the title and description of the schema
-    markdown += f"# {_schema.get('title', 'jsonschema-markdown')}\n\n"
+    markdown += f"# {_schema.get('title', title)}\n\n"
     description = _schema.get("description", "").strip(" \n")
     markdown += (
         f"{description}\n\n"
@@ -110,7 +115,8 @@ def _create_definition_table(schema: dict, defs: dict) -> str:
     if schema.get("const"):
         return create_const_markdown(schema)
 
-    schema["properties"] = sort_properties(schema)
+    if schema.get("properties"):
+        schema["properties"] = sort_properties(schema)
 
     markdown = ""
 
