@@ -8,6 +8,12 @@ import jsonschema_markdown
 @click.command()
 @click.argument("filename", type=click.File("r"))
 @click.option(
+    "-t",
+    "--title",
+    type=str,
+    help="Do not use the title from the schema, use this title instead.",
+)
+@click.option(
     "--footer/--no-footer",
     is_flag=True,
     default=True,
@@ -29,7 +35,13 @@ import jsonschema_markdown
     help="Enable debug output.",
 )
 @click.version_option(package_name="jsonschema_markdown")
-def cli(filename, footer, resolve, debug):
+def cli(
+    filename,
+    title,
+    footer,
+    resolve,
+    debug,
+):
     """
     Load FILENAME and output a markdown version.
 
@@ -38,10 +50,17 @@ def cli(filename, footer, resolve, debug):
 
     file_contents = json.loads(filename.read())
 
+    kwargs = {
+        "footer": footer,
+        "resolve": resolve,
+        "debug": debug,
+    }
+
+    if title:
+        kwargs["title"] = title
+
     # Convert the file contents to markdown
-    markdown = jsonschema_markdown.generate(
-        file_contents, footer=footer, replace_refs=resolve, debug=debug
-    )
+    markdown = jsonschema_markdown.generate(file_contents, **kwargs)
 
     # Output the markdown
     click.echo(markdown)
