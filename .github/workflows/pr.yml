@@ -21,4 +21,4 @@ jobs:
       - name: Black formatting
         run: poetry run black --diff .
       - name: Ruff check
-        run: poetry run ruff --check --output-format=github .
+        run: poetry run ruff check --output-format=github .
