@@ -13,7 +13,8 @@ from jsonschema_markdown.utils import (
 
 
 def generate(
-    schema: dict, footer: bool = True, replace_refs: bool = False, debug: bool = False
+    schema: dict, footer: bool = True, replace_refs: bool = False, debug: bool = False,
+    title: str = "jsonschema-markdown"
 ) -> str:
     """
     Generate a markdown string from a given JSON schema.
@@ -44,7 +45,7 @@ def generate(
     markdown = ""
 
     # Add the title and description of the schema
-    markdown += f"# {_schema.get('title', 'jsonschema-markdown')}\n\n"
+    markdown += f"# {_schema.get('title', title)}\n\n"
     description = _schema.get("description", "").strip(" \n")
     markdown += (
         f"{description}\n\n"
