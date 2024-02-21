@@ -13,14 +13,18 @@ from jsonschema_markdown.utils import (
 
 
 def generate(
-    schema: dict, footer: bool = True, replace_refs: bool = False, debug: bool = False,
-    title: str = "jsonschema-markdown"
+    schema: dict,
+    title: str = "jsonschema-markdown",
+    footer: bool = True,
+    replace_refs: bool = False,
+    debug: bool = False,
 ) -> str:
     """
     Generate a markdown string from a given JSON schema.
 
-    Args:
+    Parameters:
         schema (dict): The JSON schema to generate markdown from.
+        title (str, optional): The title of the markdown document. Defaults to "jsonschema-markdown".
         footer (bool, optional): Whether to include a footer section in the markdown with the current date and time. Defaults to True.
         replace_refs (bool, optional): This feature is experimental. Whether to replace JSON references with their resolved values. Defaults to False.
         debug (bool, optional): Whether to print debug messages. Defaults to False.
