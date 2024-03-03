@@ -1,3 +1,15 @@
+## 0.3.2 (2024/03/03)
+
+### Bug Fixes
+
+-  Wrong keyword argument for resolve refs experimental feature. ([08413d07](https://github.com/elisiariocouto/jsonschema-markdown/commit/08413d072919a7d832ecaecd03192772b3afbf1c))
+
+
+### Miscellaneous Tasks
+
+-  Update dependencies. ([1797b415](https://github.com/elisiariocouto/jsonschema-markdown/commit/1797b415df0d77a18a667d48cabceceeac942ddc))
+
+
 ## 0.3.1 (2024/02/21)
 
 ### Bug Fixes
