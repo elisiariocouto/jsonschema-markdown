@@ -52,7 +52,7 @@ def cli(
 
     kwargs = {
         "footer": footer,
-        "resolve": resolve,
+        "replace_refs": resolve,
         "debug": debug,
     }
 
