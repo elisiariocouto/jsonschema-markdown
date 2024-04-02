@@ -1,4 +1,3 @@
-import json
 from typing import Literal
 
 from pydantic import BaseModel, ConfigDict, Field
@@ -79,7 +78,7 @@ class Engine(BaseModel):
 
 class Airbag(BaseModel):
     """
-    This is the description of the AirbagExtra.
+    This is the description of the Airbag.
     """
 
     type: Literal["front", "side", "curtain"] = Field(
@@ -105,6 +104,7 @@ class Upholstery(BaseModel):
     type: Literal["leather", "fabric"] = Field(
         ..., description="The type of upholstery."
     )
+    stitching: dict[str, str] = Field({}, description="Metadata about the stitching.")
 
 
 class Car(BaseModel):
@@ -172,7 +172,7 @@ class Car(BaseModel):
         max_length=100,
         min_length=1,
     )
-    manufacterer_config: list[Airbag | NavigationSystem | Upholstery] = Field(
+    manufacturer_config: list[Airbag | NavigationSystem | Upholstery] = Field(
         default=[], description="The manufacturer's extras."
     )
 
@@ -204,4 +204,7 @@ class Car(BaseModel):
     )
 
 
-print(json.dumps(Car.model_json_schema()))
+if __name__ == "__main__":
+    import json
+
+    print(json.dumps(Car.model_json_schema()))
