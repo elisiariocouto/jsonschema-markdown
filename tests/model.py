@@ -1,4 +1,4 @@
-from typing import Literal
+from typing import Literal, Union
 
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -172,7 +172,7 @@ class Car(BaseModel):
         max_length=100,
         min_length=1,
     )
-    manufacturer_config: list[Airbag | NavigationSystem | Upholstery] = Field(
+    manufacturer_config: list[Union[Airbag, NavigationSystem, Upholstery]] = Field(
         default=[], description="The manufacturer's extras."
     )
 
