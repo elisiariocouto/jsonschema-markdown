@@ -26,7 +26,12 @@ jobs:
       - name: Ruff check
         run: poetry run ruff check --output-format=github .
       - name: Test with pytest
-        run: pytest --doctest-modules --junitxml=junit/test-results-${{ matrix.python-version }}.xml --cov=jsonschema_markdown --cov-report=xml:coverage-${{ matrix.python-version }}.xml
+        run: |
+          pytest --doctest-modules
+            --junitxml=junit/test-results-${{ matrix.python-version }}.xml
+            --cov=jsonschema_markdown
+            --cov-report=xml:coverage-${{ matrix.python-version }}.xml
+            --cov-report=html:coverage-${{ matrix.python-version }}.html
       - name: Upload pytest test results
         uses: actions/upload-artifact@v4
         with:
@@ -37,5 +42,5 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: coverage-results-${{ matrix.python-version }}
-          path: coverage/coverage-${{ matrix.python-version }}.xml
+          path: coverage/
         if: ${{ always() }}
