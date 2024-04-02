@@ -63,4 +63,4 @@ def cli(
     markdown = jsonschema_markdown.generate(file_contents, **kwargs)
 
     # Output the markdown
-    click.echo(markdown)
+    click.echo(markdown, nl=False)
