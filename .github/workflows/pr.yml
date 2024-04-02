@@ -1,9 +1,9 @@
-name: Linting
+name: Tests
 
 on: [push, pull_request]
 
 jobs:
-  test:
+  tests:
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -27,20 +27,22 @@ jobs:
         run: poetry run ruff check --output-format=github .
       - name: Test with pytest
         run: |
-          pytest --doctest-modules
-            --junitxml=junit/test-results-${{ matrix.python-version }}.xml
-            --cov=jsonschema_markdown
-            --cov-report=xml:coverage-${{ matrix.python-version }}.xml
-            --cov-report=html:coverage-${{ matrix.python-version }}.html
-      - name: Upload pytest test results
+          pytest --doctest-modules \
+            --junitxml=junit/test-results-${{ matrix.python-version }}.xml \
+            --cov=jsonschema_markdown \
+            --cov-report=term \
+            --cov-report=xml:coverage/coverage-${{ matrix.python-version }}.xml \
+            --cov-report=html:coverage/coverage-${{ matrix.python-version }}.html
+      - name: Upload pytest results
         uses: actions/upload-artifact@v4
         with:
-          name: pytest-results-${{ matrix.python-version }}
-          path: junit/test-results-${{ matrix.python-version }}.xml
+          name: test-results-${{ matrix.python-version }}
+          path: |
+            junit/test-results-${{ matrix.python-version }}.xml
+            coverage/
         if: ${{ always() }}
-      - name: Upload coverage report
-        uses: actions/upload-artifact@v4
+      - name: Test Summary
+        uses: test-summary/action@v2
         with:
-          name: coverage-results-${{ matrix.python-version }}
-          path: coverage/
-        if: ${{ always() }}
+          paths: "junit/test-results-*.xml"
+        if: always()
