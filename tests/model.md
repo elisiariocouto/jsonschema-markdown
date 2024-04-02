@@ -21,7 +21,7 @@ UTF-8 characters work: áéíóú
 | engine | `object` | ✅ | [Engine](#engine)|  |  | The engine of the car. | |
 | color | `string` | ✅ | Length: `1 <= string <= 100`|  |  | The color of the car. | |
 | kms | `integer` |  | integer|  |  | The number of kilometers the car has. | |
-| manufacterer_config | `object` |  | [Airbag](#airbag) and/or [NavigationSystem](#navigationsystem) and/or [Upholstery](#upholstery)|  |  | The manufacturer's extras. | |
+| manufacturer_config | `array` |  | [Airbag](#airbag) and/or [NavigationSystem](#navigationsystem) and/or [Upholstery](#upholstery)|  |  | The manufacturer's extras. | |
 | brand_country | `string` | ✅ | [`^[A-Z]{2}$`](https://regex101.com/?regex=%5E%5BA-Z%5D%7B2%7D%24)| ⛔️ |  | [Deprecated] The country where the brand is from. | |
 
 
@@ -33,7 +33,7 @@ UTF-8 characters work: áéíóú
 
 ## Airbag
 
-This is the description of the AirbagExtra.
+This is the description of the Airbag.
 
 ### Type: `object`
 
@@ -108,6 +108,7 @@ This is the description of the Upholstery.
 | Property | Type | Required | Possible Values | Deprecated | Default | Description | Examples
 | -------- | ---- | -------- | --------------- | ---------- | ------- | ----------- | --------
 | type | `string` | ✅ | `leather` `fabric`|  |  | The type of upholstery. | |
+| stitching | `object` |  | object|  |  | Metadata about the stitching. | |
 
 
 ---
