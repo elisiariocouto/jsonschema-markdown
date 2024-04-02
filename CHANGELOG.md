@@ -1,3 +1,28 @@
+## 0.3.3 (2024/04/02)
+
+### Bug Fixes
+
+- **cli:** Disable newline on click.echo, markdown content already has a new line at the end. ([6e2406af](https://github.com/elisiariocouto/jsonschema-markdown/commit/6e2406af7a16502d355668b77aa527eda9e26adc))
+-  Refactor array-like logic to fix wrong types being set on some use-cases. ([ce6cfd59](https://github.com/elisiariocouto/jsonschema-markdown/commit/ce6cfd59fbedb1f2023dc50be348a015bf0c1950))
+
+
+### Miscellaneous Tasks
+
+- **deps-dev:** Bump black from 24.2.0 to 24.3.0 (#10) ([6e93501f](https://github.com/elisiariocouto/jsonschema-markdown/commit/6e93501fcbc1d88ca5e2d68a5daacdd844f770af))
+-  Update dependencies. ([5fea1087](https://github.com/elisiariocouto/jsonschema-markdown/commit/5fea1087cdb1e528e9c305383fc4f67c008f96e5))
+
+
+### Testing
+
+-  Use typing.Union to support 3.9. ([e1d8f25f](https://github.com/elisiariocouto/jsonschema-markdown/commit/e1d8f25faffb9e864084137af430e49802484524))
+
+
+### Ci
+
+-  Add initial tests. ([10c59a3b](https://github.com/elisiariocouto/jsonschema-markdown/commit/10c59a3bad324d5eb51ea06074d7087e6a489509))
+-  Fix Github Actions multi-line syntax. ([91251dc4](https://github.com/elisiariocouto/jsonschema-markdown/commit/91251dc47ea13d29861302d529334351b2c42dea))
+
+
 ## 0.3.2 (2024/03/03)
 
 ### Bug Fixes
