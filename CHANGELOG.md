@@ -1,3 +1,20 @@
+## 0.3.4 (2024/04/04)
+
+### Features
+
+-  Add support for `multipleOf` on `number` properties. ([181eba87](https://github.com/elisiariocouto/jsonschema-markdown/commit/181eba874e7634c77288c95fe4355cb1bd920ed7))
+
+
+### Testing
+
+-  Add more tests. ([76d0d99c](https://github.com/elisiariocouto/jsonschema-markdown/commit/76d0d99c9a0bd6a9b8a7e43e04fe7f0184ed9126))
+
+
+### Ci
+
+-  Publish built and source distributions. ([65943d48](https://github.com/elisiariocouto/jsonschema-markdown/commit/65943d480b416a64e98da058dd7efe327f3b4a09))
+
+
 ## 0.3.3 (2024/04/02)
 
 ### Bug Fixes
