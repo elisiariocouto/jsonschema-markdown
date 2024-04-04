@@ -27,7 +27,7 @@ jobs:
         run: poetry run ruff check --output-format=github .
       - name: Test with pytest
         run: |
-          pytest --doctest-modules \
+          pytest -v --doctest-modules \
             --junitxml=junit/test-results-${{ matrix.python-version }}.xml \
             --cov=jsonschema_markdown \
             --cov-report=term \
