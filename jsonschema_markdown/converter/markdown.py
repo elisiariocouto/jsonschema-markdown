@@ -352,10 +352,15 @@ def _get_property_details(property_type: str, property_details: dict, defs: dict
             max_details += f"< {exclusive_maximum}"
 
         if min_details == "" and max_details == "":
-            # fallback to integer when no range is specified
+            # fallback to original property_type when no range is specified
             res_details = property_type
         else:
             res_details = f"`{min_details} x {max_details}`"
+
+        # check if multipleOf is present
+        multiple_of = property_details.get("multipleOf")
+        if multiple_of:
+            res_details += f" and multiple of `{multiple_of}`"
 
         return property_type, res_details
     elif property_details.get("type") == "string":
