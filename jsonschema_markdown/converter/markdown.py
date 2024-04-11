@@ -119,14 +119,16 @@ def _create_definition_table(schema: dict, defs: dict) -> str:
         logger.debug("Creating const markdown")
         return create_const_markdown(schema)
 
-    if schema.get("properties"):
-        schema["properties"] = sort_properties(schema)
-
     markdown = ""
 
     # Add a warning before the table to indicate if additional properties are allowed
     if not schema.get("additionalProperties", True):
         markdown += "> ⚠️ Additional properties are not allowed.\n\n"
+
+    if not schema.get("properties"):
+        return markdown
+
+    schema["properties"] = sort_properties(schema)
 
     markdown += "| Property | Type | Required | Possible Values | Deprecated | Default | Description | Examples\n"
     markdown += "| -------- | ---- | -------- | --------------- | ---------- | ------- | ----------- | --------\n"
