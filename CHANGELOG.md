@@ -1,3 +1,10 @@
+## 0.3.5 (2024/04/11)
+
+### Bug Fixes
+
+-  Skip properties table if they don't exist (#16) ([e67fc4fc](https://github.com/elisiariocouto/jsonschema-markdown/commit/e67fc4fc45a05bdd716d4813da093be74ac5f7b0))
+
+
 ## 0.3.4 (2024/04/04)
 
 ### Features
