@@ -1,3 +1,20 @@
+## 0.3.6 (2024/04/16)
+
+### Features
+
+-  Add new option to hide empty columns. ([134125e9](https://github.com/elisiariocouto/jsonschema-markdown/commit/134125e91111132d07e8a2656781606eadc19728))
+
+
+### Miscellaneous Tasks
+
+-  Update dependencies. ([94dc4174](https://github.com/elisiariocouto/jsonschema-markdown/commit/94dc4174aeaa97cf2a7ffe13ce06dd553615fab4))
+
+
+### Testing
+
+-  Add multiple test scenarios, add automatic test generation with pre-commit hook. ([c164bfaa](https://github.com/elisiariocouto/jsonschema-markdown/commit/c164bfaaf5a1a859e77b1c38674f71350b2f5e54))
+
+
 ## 0.3.5 (2024/04/11)
 
 ### Bug Fixes
