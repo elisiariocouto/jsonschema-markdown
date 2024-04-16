@@ -12,22 +12,60 @@ from jsonschema_markdown.utils import (
 )
 
 
+def _should_include_column(column_values):
+    """
+    Check if any item has a non-falsy (non-empty) value for this column.
+    """
+    return any(value for value in column_values)
+
+
+def _get_schema_header(
+    schema: dict, title_fallback: str, description_fallback: str, nested: bool = False
+) -> str:
+    """
+    Get the title and description of the schema.
+
+    If nested, all headings are increased by one level.
+    """
+
+    prefix = "" if not nested else "#"
+
+    md = ""
+    # Add the title and description of the schema
+    md += f"{prefix}# {schema.get('title', title_fallback)}\n\n"
+    description = schema.get("description", description_fallback).strip(" \n")
+    md += description if description else description_fallback
+    md += "\n\n"
+
+    # Add examples if present
+    examples = schema.get("examples", [])
+    if examples:
+        md += f"{prefix}### Examples\n\n"
+        for example in examples:
+            md += f"```\n{example}\n```\n\n"
+
+    md += f"{prefix}### Type: `{schema.get('type', 'object(?)').strip()}`\n\n"
+
+    return md
+
+
 def generate(
     schema: dict,
     title: str = "jsonschema-markdown",
     footer: bool = True,
     replace_refs: bool = False,
     debug: bool = False,
+    hide_empty_columns: bool = False,
 ) -> str:
     """
     Generate a markdown string from a given JSON schema.
 
-    Parameters:
-        schema (dict): The JSON schema to generate markdown from.
-        title (str, optional): The title of the markdown document. Defaults to "jsonschema-markdown".
-        footer (bool, optional): Whether to include a footer section in the markdown with the current date and time. Defaults to True.
-        replace_refs (bool, optional): This feature is experimental. Whether to replace JSON references with their resolved values. Defaults to False.
-        debug (bool, optional): Whether to print debug messages. Defaults to False.
+    Args:
+        schema: The JSON schema to generate markdown from.
+        title: The title of the markdown document.
+        footer: Whether to include a footer section in the markdown with the current date and time.
+        replace_refs: This feature is experimental. Whether to replace JSON references with their resolved values.
+        debug: Whether to print debug messages.
 
     Returns:
         str: The generated markdown string.
@@ -49,40 +87,26 @@ def generate(
     markdown = ""
 
     # Add the title and description of the schema
-    markdown += f"# {_schema.get('title', title)}\n\n"
-    description = _schema.get("description", "").strip(" \n")
-    markdown += (
-        f"{description}\n\n"
-        if description
-        else "JSON Schema missing a description, provide it using the `description` key in the root of the JSON document.\n\n"
+    markdown += _get_schema_header(
+        _schema,
+        title,
+        "JSON Schema missing a description, provide it using the `description` key in the root of the JSON document.",
     )
 
-    # Add examples if present
-    examples = _schema.get("examples", [])
-    if examples:
-        markdown += "## Schema Examples\n\n"
-        for example in examples:
-            markdown += f"```\n{example}\n```\n\n"
-
     defs = _schema.get("definitions", _schema.get("$defs", {}))
-    markdown += _create_definition_table(_schema, defs)
+    markdown += _create_definition_table(
+        _schema, defs, hide_empty_columns=hide_empty_columns
+    )
 
     if defs:
         markdown += "\n\n---\n\n# Definitions\n\n"
-
         for key, definition in defs.items():
-            examples = definition.get("examples", [])
-            description = definition.get(
-                "description", "No description provided for this model."
-            ).strip(" \n")
-            markdown += f"\n\n## {definition.get('title', key)}\n\n"
-            markdown += f"{description}\n\n"
-            if examples:
-                markdown += "### Examples\n\n"
-                for example in examples:
-                    markdown += f"```\n{example}\n```\n\n"
-            markdown += f"### Type: `{definition.get('type', 'object(?)').strip()}`\n\n"
-            markdown += _create_definition_table(definition, defs)
+            markdown += _get_schema_header(
+                definition, key, "No description provided for this model.", nested=True
+            )
+            markdown += _create_definition_table(
+                definition, defs, hide_empty_columns=hide_empty_columns
+            )
 
     if footer:
         # Add timestamp and a link to the project
@@ -94,10 +118,11 @@ def generate(
     return res
 
 
-def _create_definition_table(schema: dict, defs: dict) -> str:
+def _create_definition_table(schema: dict, defs: dict, hide_empty_columns: bool) -> str:
     """
     Create a table of the properties in the schema.
-    Outputs a markdown table with the following columns:
+
+    Returns: Markdown table with the following columns
     - Property name
     - Type
     - Required
@@ -105,6 +130,7 @@ def _create_definition_table(schema: dict, defs: dict) -> str:
     - Deprecated
     - Default value
     - Description
+    - Examples
 
     Search for deprecated string in the description or a deprecated key set to true in the property
     """
@@ -130,8 +156,7 @@ def _create_definition_table(schema: dict, defs: dict) -> str:
 
     schema["properties"] = sort_properties(schema)
 
-    markdown += "| Property | Type | Required | Possible Values | Deprecated | Default | Description | Examples\n"
-    markdown += "| -------- | ---- | -------- | --------------- | ---------- | ------- | ----------- | --------\n"
+    table_items = []
 
     for property_name, property_details in schema["properties"].items():
         property_type = property_details.get("type")
@@ -158,16 +183,76 @@ def _create_definition_table(schema: dict, defs: dict) -> str:
             ]
         )
 
+        item = {
+            "property": property_name,
+            "type": f"`{property_type}`",
+            "required": "✅" if property_name in schema.get("required", []) else "",
+            "possible_values": possible_values,
+            "deprecated": (
+                "⛔️"
+                if "[deprecated]"
+                in str(property_details.get("description", "")).lower()
+                or property_details.get("deprecated")
+                else ""
+            ),
+            "default": "`" + json.dumps(default) + "`" if default else "",
+            "description": description,
+            "examples": examples,
+        }
+        table_items.append(item)
+
+    # This should not happen, but just in case
+    if not table_items:
+        markdown += "No items to display."
+        return markdown
+
+    if hide_empty_columns:
+        always_include_columns = ["property", "type", "required", "description"]
+        # Determine which columns should be included
+        columns = list(table_items[0].keys())
+        include_column = {
+            column: _should_include_column([item[column] for item in table_items])
+            for column in columns
+        }
+
+        # Include the columns that should always be included
+        for column in always_include_columns:
+            include_column[column] = True
+
+        # Generate the header row
+        capitalized_columns = [
+            col.replace("_", " ").capitalize() for col in columns if include_column[col]
+        ]
+        markdown += "| " + " | ".join(capitalized_columns) + " |\n"
+        # Generate the separator row
         markdown += (
-            f"| {property_name} | "
-            f"`{property_type}` | "
-            f"{'✅' if property_name in schema.get('required', []) else ''} | "
-            f"{possible_values}| "
-            f"{'⛔️' if '[deprecated]' in str(property_details.get('description','')).lower() or property_details.get('deprecated') else ''} | "
-            f"{'`'+json.dumps(default)+'`' if default else ''} | "
-            f"{description} |"
-            f"{examples} |\n"
+            "| "
+            + " | ".join(["-" * len(col) for col in columns if include_column[col]])
+            + " |\n"
         )
+
+        # Generate the item rows
+        for item in table_items:
+            markdown += (
+                "| "
+                + " | ".join([str(item[col]) for col in columns if include_column[col]])
+                + " |\n"
+            )
+    else:
+        # Generate the header row
+        capitalized_columns = [
+            col.replace("_", " ").capitalize() for col in table_items[0]
+        ]
+        markdown += "| " + " | ".join(capitalized_columns) + " |\n"
+
+        # Generate the separator row
+        markdown += (
+            "| " + " | ".join(["-" * len(col) for col in table_items[0]]) + " |\n"
+        )
+        # Generate the item rows
+
+        for item in table_items:
+            markdown += "| " + " | ".join(item.values()) + " |\n"
 
     return markdown
 
@@ -176,7 +261,7 @@ def _get_property_ref(ref, defs):
     ref = ref.split("/")[-1]
     if ref in defs:
         return (
-            defs[ref].get("type", "object(?)"),
+            defs[ref].get("type", "Missing type"),
             f"[{ref}](#{ref.replace(' ', '-').lower()})",
         )
     else:

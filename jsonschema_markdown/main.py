@@ -21,6 +21,13 @@ import jsonschema_markdown
     help="Add a footer with a link to the project.",
 )
 @click.option(
+    "--empty-columns/--no-empty-columns",
+    is_flag=True,
+    default=True,
+    show_default=True,
+    help="Remove empty columns from the output, useful when deprecated or examples are not used.",
+)
+@click.option(
     "--resolve/--no-resolve",
     is_flag=True,
     default=False,
@@ -39,6 +46,7 @@ def cli(
     filename,
     title,
     footer,
+    empty_columns,
     resolve,
     debug,
 ):
@@ -54,6 +62,7 @@ def cli(
         "footer": footer,
         "replace_refs": resolve,
         "debug": debug,
+        "hide_empty_columns": not empty_columns,
     }
 
     if title:

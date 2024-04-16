@@ -25,15 +25,19 @@ Usage: jsonschema-markdown [OPTIONS] FILENAME
   Use '-' as FILENAME to read from stdin.
 
 Options:
-  -t, --title TEXT          Do not use the title from the schema, use this
-                            title instead.
-  --footer / --no-footer    Add a footer with a link to the project.
-                            [default: footer]
-  --resolve / --no-resolve  [Experimental] Resolve $ref pointers.  [default:
-                            no-resolve]
-  --debug / --no-debug      Enable debug output.  [default: no-debug]
-  --version                 Show the version and exit.
-  --help                    Show this message and exit.
+  -t, --title TEXT                Do not use the title from the schema, use
+                                  this title instead.
+  --footer / --no-footer          Add a footer with a link to the project.
+                                  [default: footer]
+  --empty-columns / --no-empty-columns
+                                  Remove empty columns from the output, useful
+                                  when deprecated or examples are not used.
+                                  [default: empty-columns]
+  --resolve / --no-resolve        [Experimental] Resolve $ref pointers.
+                                  [default: no-resolve]
+  --debug / --no-debug            Enable debug output.  [default: no-debug]
+  --version                       Show the version and exit.
+  --help                          Show this message and exit.
 
 # Example
 $ jsonschema-markdown schema.json > schema.md
