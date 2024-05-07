@@ -20,7 +20,7 @@ def _should_include_column(column_values):
 
 
 def _get_schema_header(
-    schema: dict, title_fallback: str, description_fallback: str, nested: bool = False
+    schema: dict, ref_key: str, description_fallback: str, nested: bool = False
 ) -> str:
     """
     Get the title and description of the schema.
@@ -31,8 +31,9 @@ def _get_schema_header(
     prefix = "" if not nested else "#"
 
     md = ""
+    title = schema.get("title", ref_key) if not nested else ref_key
     # Add the title and description of the schema
-    md += f"{prefix}# {schema.get('title', title_fallback)}\n\n"
+    md += f"{prefix}# {title}\n\n"
     description = schema.get("description", description_fallback).strip(" \n")
     md += description if description else description_fallback
     md += "\n\n"

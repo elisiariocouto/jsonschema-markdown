@@ -41,7 +41,7 @@ This is the description of the Airbag.
 | -------- | ---- | -------- | --------------- | ----------- |
 | type | `string` | ✅ | `front` `side` `curtain` | The type of airbag. |
 
-## Class
+## CarClass
 
 This is the description of the CarClass.
 
