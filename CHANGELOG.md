@@ -1,3 +1,10 @@
+## 0.3.8 (2024/05/07)
+
+### Miscellaneous Tasks
+
+-  Use PyPI Trusted Publisher. ([b882b20b](https://github.com/elisiariocouto/jsonschema-markdown/commit/b882b20b8d835b7a7f36e2b564a147d2a4e978fc))
+
+
 ## 0.3.7 (2024/05/07)
 
 ### Bug Fixes
