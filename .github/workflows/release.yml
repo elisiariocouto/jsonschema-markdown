@@ -8,6 +8,9 @@ on:
 jobs:
   publish-pypi:
     runs-on: ubuntu-latest
+    permissions:
+      # IMPORTANT: this permission is mandatory for trusted publishing on PyPI
+      id-token: write
 
     steps:
       - uses: actions/checkout@v4
@@ -24,10 +27,8 @@ jobs:
           poetry config virtualenvs.create false
           poetry build
 
-      - name: Publish package
-        env:
-          POETRY_PYPI_TOKEN_PYPI: ${{ secrets.PYPI_TOKEN }}
-        run: poetry publish
+      - name: Publish package distributions to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
 
   push-docker:
     runs-on: ubuntu-latest
