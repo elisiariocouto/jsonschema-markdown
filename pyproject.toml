@@ -26,10 +26,10 @@ loguru = "^0.7.2"
 jsonref = "^1.1.0"
 
 [tool.poetry.group.dev.dependencies]
-black = "^24.2.0"
-ruff = "^0.3.0"
+black = "^24.4.2"
+ruff = "^0.4.3"
 pytest = "^8.0.0"
-pre-commit = "^3.6.1"
+pre-commit = "^3.7.0"
 pydantic = "^2.6.1"
 pytest-cov = "^5.0.0"
 
