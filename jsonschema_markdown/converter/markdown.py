@@ -99,7 +99,7 @@ def generate(
     )
 
     if defs:
-        markdown += "\n\n---\n\n# Definitions\n\n"
+        markdown += "\n---\n\n# Definitions\n\n"
         for key, definition in defs.items():
             markdown += _get_schema_header(
                 definition, key, "No description provided for this model.", nested=True
@@ -110,7 +110,7 @@ def generate(
 
     if footer:
         # Add timestamp and a link to the project
-        markdown += "\n\n---\n\nMarkdown generated with [jsonschema-markdown](https://github.com/elisiariocouto/jsonschema-markdown)."
+        markdown += "\n---\n\nMarkdown generated with [jsonschema-markdown](https://github.com/elisiariocouto/jsonschema-markdown)."
 
     res = markdown.strip(" \n")
     res += "\n"
@@ -254,7 +254,7 @@ def _create_definition_table(schema: dict, defs: dict, hide_empty_columns: bool)
         for item in table_items:
             markdown += "| " + " | ".join(item.values()) + " |\n"
 
-    return markdown
+    return f"{markdown}\n"
 
 
 def _get_property_ref(ref, defs):

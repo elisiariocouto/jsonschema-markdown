@@ -40,6 +40,7 @@ This is the description of the Airbag.
 | Property | Type | Required | Possible values | Deprecated | Default | Description | Examples |
 | -------- | ---- | -------- | --------------- | ---------- | ------- | ----------- | -------- |
 | type | `string` | ✅ | `front` `side` `curtain` |  |  | The type of airbag. |  |
+
 ## Class
 
 This is the description of the CarClass.
@@ -51,6 +52,7 @@ This is the description of the CarClass.
 | type | `string` | ✅ | `sedan` `hatchback` `suv` |  |  | The type of car. |  |
 | doors | `integer` |  | integer |  | `5` | The number of doors the car has. |  |
 | passengers | `integer` |  | integer |  | `5` | The number of passengers the car can carry. |  |
+
 ## Engine
 
 This is the description of the Engine.
@@ -82,6 +84,7 @@ This is the description of the Engine.
 | fuel_type | `string` | ✅ | `gasoline` `diesel` `electric` |  |  | The type of fuel the engine uses. |  |
 | liters | `number` | ✅ | `0.0 < x ` |  |  | The displacement of the engine in liters. |  |
 | turbo | `boolean` |  | boolean |  |  | Whether the engine has a turbo or not. |  |
+
 ## NavigationSystem
 
 This is the description of the NavigationSystem.
@@ -91,6 +94,7 @@ This is the description of the NavigationSystem.
 | Property | Type | Required | Possible values | Deprecated | Default | Description | Examples |
 | -------- | ---- | -------- | --------------- | ---------- | ------- | ----------- | -------- |
 | type | `string` | ✅ | `gps` `carplay` `androidauto` |  |  | The type of navigation system. |  |
+
 ## Upholstery
 
 This is the description of the Upholstery.
