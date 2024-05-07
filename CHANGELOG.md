@@ -1,3 +1,16 @@
+## 0.3.7 (2024/05/07)
+
+### Bug Fixes
+
+-  Add newline after properties table. ([14c60733](https://github.com/elisiariocouto/jsonschema-markdown/commit/14c60733669520e4b35637d20c8c7ecd479e4f17))
+-  Use reference in sub-schema titles. ([3005c3a0](https://github.com/elisiariocouto/jsonschema-markdown/commit/3005c3a091811673d1aaf05b98ff75dc1dd0dc04))
+
+
+### Miscellaneous Tasks
+
+-  Update dependencies. ([7fd491f4](https://github.com/elisiariocouto/jsonschema-markdown/commit/7fd491f41fe4e622dc1e2912ec021fb654f7e93b))
+
+
 ## 0.3.6 (2024/04/16)
 
 ### Features
