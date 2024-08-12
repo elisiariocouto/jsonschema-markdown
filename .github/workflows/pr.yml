@@ -21,8 +21,8 @@ jobs:
           pip install poetry
           poetry config virtualenvs.create false
           poetry install --no-root
-      - name: Black formatting
-        run: poetry run black --diff .
+      - name: Ruff format
+        run: poetry run ruff format --diff .
       - name: Ruff check
         run: poetry run ruff check --output-format=github .
       - name: Test with pytest
