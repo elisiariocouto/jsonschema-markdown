@@ -17,6 +17,11 @@
             "multipleOf": 1,
             "maximum": 150,
             "default": 25
+        },
+        "email": {
+            "type": "string",
+            "format": "email",
+            "description": "Email address of the person."
         }
     }
 }

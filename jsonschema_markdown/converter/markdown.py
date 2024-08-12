@@ -302,7 +302,9 @@ def _handle_array_like_property(property_type: str, property_details: dict, defs
         else (
             "anyOf"
             if "anyOf" in property_details
-            else "allOf" if "allOf" in property_details else None
+            else "allOf"
+            if "allOf" in property_details
+            else None
         )
     )
 
@@ -456,7 +458,10 @@ def _get_property_details(property_type: str, property_details: dict, defs: dict
         _max_length = property_details.get("maxLength")
         _min_length = property_details.get("minLength")
         if _format:
-            return property_type, f"Format: `{_format}`"
+            return (
+                property_type,
+                f"Format: [`{_format}`](https://json-schema.org/understanding-json-schema/reference/string#built-in-formats)",
+            )
         elif _max_length or _min_length:
             if _max_length and _min_length:
                 return (
