@@ -1,3 +1,16 @@
+
+## 0.3.9 (2024/08/14)
+
+### Features
+
+-  Add string `format` support and link to built-in formats documentation. ([6b593bc4](https://github.com/elisiariocouto/jsonschema-markdown/commit/6b593bc43cfc924312b8ab1a5d361ae39443a67b))
+
+
+### Miscellaneous Tasks
+
+-  Update dependencies, drop black dev dependency. ([9942f0e3](https://github.com/elisiariocouto/jsonschema-markdown/commit/9942f0e38be1f56fc2dae838df764e9e3484fb1d))
+
+
 ## 0.3.8 (2024/05/07)
 
 ### Miscellaneous Tasks
