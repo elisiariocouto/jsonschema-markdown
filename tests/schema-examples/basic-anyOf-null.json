@@ -1,0 +1,20 @@
+{
+  "properties": {
+    "bar": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Bar"
+    }
+  },
+  "required": [
+    "bar"
+  ],
+  "title": "Foo",
+  "type": "object"
+}

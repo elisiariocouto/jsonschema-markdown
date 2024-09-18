@@ -42,14 +42,7 @@ import jsonschema_markdown
     help="Enable debug output.",
 )
 @click.version_option(package_name="jsonschema_markdown")
-def cli(
-    filename,
-    title,
-    footer,
-    empty_columns,
-    resolve,
-    debug,
-):
+def cli(filename, title, footer, empty_columns, resolve, debug):
     """
     Load FILENAME and output a markdown version.
 
