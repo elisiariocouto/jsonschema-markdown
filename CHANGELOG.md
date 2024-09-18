@@ -1,4 +1,18 @@
 
+## 0.3.10 (2024/09/18)
+
+### Features
+
+-  Add support for nullable fields, add `null` to the type column on these cases. ([700ce08d](https://github.com/elisiariocouto/jsonschema-markdown/commit/700ce08db9f1090e3d6c83ca4a1a3e867c2a1629))
+
+
+### Miscellaneous Tasks
+
+-  Update readme. ([58acee0a](https://github.com/elisiariocouto/jsonschema-markdown/commit/58acee0a0682ba0ff233ee97c4c33641d48172f7))
+-  Update depencies ([ef668912](https://github.com/elisiariocouto/jsonschema-markdown/commit/ef6689124504fff0a73bcef926ae75d73138bdfc))
+
+
+
 ## 0.3.9 (2024/08/14)
 
 ### Features

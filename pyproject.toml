@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "jsonschema-markdown"
 license = "MIT"
-version = "0.3.9"
+version = "0.3.10"
 description = "Export a JSON Schema document to Markdown documentation."
 authors = ["Elisiário Couto <elisiario@couto.io>"]
 repository = "https://github.com/elisiariocouto/jsonschema-markdown"
