@@ -1,9 +1,14 @@
 # jsonschema-markdown
 
+[![PyPI](https://img.shields.io/pypi/v/jsonschema-markdown)](https://pypi.org/project/jsonschema-markdown/)
+[![Docker](https://img.shields.io/docker/v/elisiariocouto/jsonschema-markdown)](https://hub.docker.com/r/elisiariocouto/jsonschema-markdown)
+
 Generate markdown documentation from JSON Schema files. The main goal is to generate
 documentation that is easy to read and understand.
 
 Can be used as a command line tool or as a library.
+
+Easy to use in CI/CD pipelines, as a Docker image is available.
 
 ## Installation
 
@@ -71,20 +76,20 @@ markdown = jsonschema_markdown.generate(schema)
 
 ## Features
 
-Partially inspired by [json-schema-for-humans](https://github.com/coveooss/json-schema-for-humans),
-this project does not currently support all features of JSON Schema, but it should support:
+The goal is to support the latest JSON Schema specification, `2020-12`. However,
+this project does not currently support all features, but it should support:
 
   - Required fields
   - String patterns
   - Enumerations
   - Default values
   - Descriptions and titles
-  - Nested objects
-  - Basic OneOf, AnyOf, AllOf functionality
+  - Nested objects using `$defs` or `definitions`
+  - Basic `oneOf`, `anyOf`, `allOf` functionality
   - Arrays
   - Integers with minimum, maximum values and exclusives
   - Boolean values
-  - Deprecation notices (searches for case-insensitive `deprecated` in the field description)
+  - Deprecated fields (using the `deprecated` option, additionaly searches for case-insensitive `deprecated` in the field description)
 
 ## Caveats
   - This project is still in early development, and the output may change in the future.
