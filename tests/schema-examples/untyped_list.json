@@ -1,0 +1,23 @@
+{
+    "description": "Test case with untyped list",
+    "properties": {
+        "type": {
+            "const": "test",
+            "default": "test",
+            "enum": [
+                "test"
+            ],
+            "title": "Type",
+            "type": "string"
+        },
+        "ingress_cidr_blocks": {
+            "default": [],
+            "description": "A list of CIDR blocks allowed to connect.",
+            "items": {},
+            "title": "Ingress Cidr Blocks",
+            "type": "array"
+        }
+    },
+    "title": "Component",
+    "type": "object"
+}

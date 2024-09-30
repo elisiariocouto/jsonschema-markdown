@@ -360,7 +360,9 @@ def _handle_array_like_property(
         return " or ".join(types), array_separator[array_type].join(details)
 
 
-def _get_property_details(property_type: str, property_details: dict, defs: dict):
+def _get_property_details(
+    property_type: str, property_details: dict, defs: dict
+) -> tuple[str, str]:
     """
     Get the possible values for a property.
     """
@@ -390,6 +392,9 @@ def _get_property_details(property_type: str, property_details: dict, defs: dict
         t, d = _handle_array_like_property(property_type, property_details, defs)
         if t and d:
             return t, d
+
+    if property_details.get("items") == {}:
+        return f"`{property_type}`", "Any type"
 
     if "items" in property_details:
         if any(key in property_details["items"] for key in ["oneOf", "anyOf", "allOf"]):
