@@ -1,4 +1,12 @@
 
+## 0.3.11 (2024/09/30)
+
+### Bug Fixes
+
+-  Add support for lists with unknown types. ([fa2e888d](https://github.com/elisiariocouto/jsonschema-markdown/commit/fa2e888d3a98e080cfffecb8328d23b7c2add4a5))
+
+
+
 ## 0.3.10 (2024/09/18)
 
 ### Features
