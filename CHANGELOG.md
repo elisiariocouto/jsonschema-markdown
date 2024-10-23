@@ -1,4 +1,12 @@
 
+## 0.3.12 (2024/10/23)
+
+### Features
+
+-  Add support to format examples as YAML or JSON (#20) ([bde2e0a3](https://github.com/elisiariocouto/jsonschema-markdown/commit/bde2e0a3ff5a8ac8e51a3d99985f4bda42a939ad))
+
+
+
 ## 0.3.11 (2024/09/30)
 
 ### Bug Fixes
