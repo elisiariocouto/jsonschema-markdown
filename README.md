@@ -90,6 +90,7 @@ this project does not currently support all features, but it should support:
   - Integers with minimum, maximum values and exclusives
   - Boolean values
   - Deprecated fields (using the `deprecated` option, additionaly searches for case-insensitive `deprecated` in the field description)
+  - Supports optional YAML and JSON formatting for examples
 
 ## Caveats
   - This project is still in early development, and the output may change in the future.

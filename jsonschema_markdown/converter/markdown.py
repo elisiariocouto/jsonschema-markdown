@@ -1,5 +1,6 @@
 import contextlib
 import json
+import yaml
 import sys
 import urllib.parse
 
@@ -19,8 +20,34 @@ def _should_include_column(column_values):
     return any(value for value in column_values)
 
 
+def _format_example(example, examples_format):
+    """
+    Format the example based on the examples_format. Only works for dict.
+    """
+
+    try:
+        if examples_format == "yaml":
+            if isinstance(example, dict):
+                return f"```yaml\n{yaml.dump(example)}\n```"
+            else:
+                return f"```yaml\n{example}\n```"
+        elif examples_format == "json":
+            if isinstance(example, dict):
+                return f"```json\n{json.dumps(example, indent=2)}\n```"
+            else:
+                return f"```json\n{example}\n```"
+    except Exception:
+        logger.debug(f"Was not able to serialize: {example}")
+
+    return f"```\n{example}\n```"
+
+
 def _get_schema_header(
-    schema: dict, ref_key: str, description_fallback: str, nested: bool = False
+    schema: dict,
+    ref_key: str,
+    description_fallback: str,
+    nested: bool = False,
+    examples_format: str = "text",
 ) -> str:
     """
     Get the title and description of the schema.
@@ -43,7 +70,8 @@ def _get_schema_header(
     if examples:
         md += f"{prefix}### Examples\n\n"
         for example in examples:
-            md += f"```\n{example}\n```\n\n"
+            md += _format_example(example, examples_format)
+            md += "\n\n"
 
     md += f"{prefix}### Type: `{schema.get('type', 'object(?)').strip()}`\n\n"
 
@@ -57,6 +85,7 @@ def generate(
     replace_refs: bool = False,
     debug: bool = False,
     hide_empty_columns: bool = False,
+    examples_format: str = "text",
 ) -> str:
     """
     Generate a markdown string from a given JSON schema.
@@ -92,6 +121,7 @@ def generate(
         _schema,
         title,
         "JSON Schema missing a description, provide it using the `description` key in the root of the JSON document.",
+        examples_format=examples_format,
     )
 
     defs = _schema.get("definitions", _schema.get("$defs", {}))
@@ -103,7 +133,11 @@ def generate(
         markdown += "\n---\n\n# Definitions\n\n"
         for key, definition in defs.items():
             markdown += _get_schema_header(
-                definition, key, "No description provided for this model.", nested=True
+                definition,
+                key,
+                "No description provided for this model.",
+                nested=True,
+                examples_format=examples_format,
             )
             markdown += _create_definition_table(
                 definition, defs, hide_empty_columns=hide_empty_columns

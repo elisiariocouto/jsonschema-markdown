@@ -41,8 +41,15 @@ import jsonschema_markdown
     show_default=True,
     help="Enable debug output.",
 )
+@click.option(
+    "--examples-format",
+    type=click.Choice(["text", "yaml", "json"], case_sensitive=False),
+    default="text",
+    show_default=True,
+    help="Format of the examples in the output.",
+)
 @click.version_option(package_name="jsonschema_markdown")
-def cli(filename, title, footer, empty_columns, resolve, debug):
+def cli(filename, title, footer, empty_columns, resolve, debug, examples_format):
     """
     Load FILENAME and output a markdown version.
 
@@ -56,6 +63,7 @@ def cli(filename, title, footer, empty_columns, resolve, debug):
         "replace_refs": resolve,
         "debug": debug,
         "hide_empty_columns": not empty_columns,
+        "examples_format": examples_format,
     }
 
     if title:
