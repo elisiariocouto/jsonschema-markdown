@@ -41,6 +41,9 @@ Options:
   --resolve / --no-resolve        [Experimental] Resolve $ref pointers.
                                   [default: no-resolve]
   --debug / --no-debug            Enable debug output.  [default: no-debug]
+  --examples-format [text|yaml|json]
+                                  Format of the examples in the output.
+                                  [default: text]
   --version                       Show the version and exit.
   --help                          Show this message and exit.
 
@@ -96,3 +99,80 @@ this project does not currently support all features, but it should support:
   - This project is still in early development, and the output may change in the future.
   - Custom definitions are expected to be in the same file as the schema that uses them,
     in the `definitions` or `$defs` parameter at the root of the document.
+  - Inline nested definitions are not represented in the output yet. See #18.
+
+---
+
+## Examples
+
+### Example 1 Input
+
+Given the following JSON Schema:
+```json
+{
+  "$id": "https://example.com/movie.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "description": "A representation of a movie",
+  "type": "object",
+  "required": ["title", "director", "releaseDate"],
+  "properties": {
+    "title": {
+      "type": "string"
+    },
+    "director": {
+      "type": "string"
+    },
+    "releaseDate": {
+      "type": "string",
+      "format": "date"
+    },
+    "genre": {
+      "type": "string",
+      "enum": ["Action", "Comedy", "Drama", "Science Fiction"]
+    },
+    "duration": {
+      "type": "string"
+    },
+    "cast": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "additionalItems": false
+    }
+  }
+}
+```
+
+### Example 1 Ouput
+The following markdown will be generated:
+
+---
+
+# jsonschema-markdown
+
+A representation of a movie
+
+### Type: `object`
+
+| Property | Type | Required | Possible values | Deprecated | Default | Description | Examples |
+| -------- | ---- | -------- | --------------- | ---------- | ------- | ----------- | -------- |
+| title | `string` | ✅ | string |  |  |  |  |
+| director | `string` | ✅ | string |  |  |  |  |
+| releaseDate | `string` | ✅ | Format: [`date`](https://json-schema.org/understanding-json-schema/reference/string#built-in-formats) |  |  |  |  |
+| genre | `string` |  | `Action` `Comedy` `Drama` `Science Fiction` |  |  |  |  |
+| duration | `string` |  | string |  |  |  |  |
+| cast | `array` |  | string |  |  |  |  |
+
+
+---
+
+Markdown generated with [jsonschema-markdown](https://github.com/elisiariocouto/jsonschema-markdown).
+
+---
+
+### Example 2
+
+In [tests/model.py](tests/model.py) you can see a more complex example of a model that is exported as a JSON Schema.
+
+The output can be seen in [tests/model.md](tests/model.md).
