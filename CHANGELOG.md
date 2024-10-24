@@ -1,4 +1,12 @@
 
+## 0.3.13 (2024/10/24)
+
+### Bug Fixes
+
+-  Deduplicate array types. ([59cd8ee4](https://github.com/elisiariocouto/jsonschema-markdown/commit/59cd8ee458a99e1d976ec95a8a095a6f89476c87))
+
+
+
 ## 0.3.12 (2024/10/23)
 
 ### Features
