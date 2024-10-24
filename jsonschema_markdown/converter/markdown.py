@@ -1,9 +1,9 @@
 import contextlib
 import json
-import yaml
 import sys
 import urllib.parse
 
+import yaml
 from loguru import logger
 
 from jsonschema_markdown.utils import (
@@ -37,7 +37,7 @@ def _format_example(example, examples_format):
             else:
                 return f"```json\n{example}\n```"
     except Exception:
-        logger.debug(f"Was not able to serialize: {example}")
+        logger.debug(f"Failed to format example in '{examples_format}': {example}")
 
     return f"```\n{example}\n```"
 
@@ -389,9 +389,14 @@ def _handle_array_like_property(
     # Arrays should return the type as array
     # Other array-like properties should return the types of the nested oneOf, anyOf or allOf
     if return_type:
-        return return_type, array_separator[array_type].join(details)
+        return return_type, array_separator[array_type].join(sorted(details))
     else:
-        return " or ".join(types), array_separator[array_type].join(details)
+        # Dedeuplicate list of types, join them with null at the end if present
+        types = sorted(set(types))
+        if "`null`" in types:
+            types.remove("`null`")
+            types.append("`null`")
+        return " or ".join(types), array_separator[array_type].join(sorted(details))
 
 
 def _get_property_details(

@@ -24,6 +24,7 @@ UTF-8 characters work: áéíóú
 | color | `string` | ✅ | Length: `1 <= string <= 100` |  | The color of the car. |  |
 | kms | `integer` |  | integer |  | The number of kilometers the car has. |  |
 | manufacturer_config | `array` |  | [Airbag](#airbag) and/or [NavigationSystem](#navigationsystem) and/or [Upholstery](#upholstery) |  | The manufacturer's extras. |  |
+| extra_pack | `object` or `null` |  | [ExtraPackAdvanced](#extrapackadvanced) and/or [ExtraPackBasic](#extrapackbasic) |  | The extra pack of the car. |  |
 | brand_country | `string` | ✅ | [`^[A-Z]{2}$`](https://regex101.com/?regex=%5E%5BA-Z%5D%7B2%7D%24) | ⛔️ | [Deprecated] The country where the brand is from. |  |
 
 
@@ -84,6 +85,31 @@ This is the description of the Engine.
 | fuel_type | `string` | ✅ | `gasoline` `diesel` `electric` | The type of fuel the engine uses. |
 | liters | `number` | ✅ | `0.0 < x ` | The displacement of the engine in liters. |
 | turbo | `boolean` |  | boolean | Whether the engine has a turbo or not. |
+
+## ExtraPackAdvanced
+
+This is the description of the ExtraPack2.
+
+#### Type: `object`
+
+| Property | Type | Required | Possible values | Default | Description |
+| -------- | ---- | -------- | --------------- | ------- | ----------- |
+| heated_seats | `boolean` |  | boolean | `true` | Whether the car has heated seats. |
+| heated_steering_wheel | `boolean` |  | boolean | `true` | Whether the car has a heated steering wheel. |
+| parking_sensors | `boolean` |  | boolean | `true` | Whether the car has parking sensors. |
+| adaptive_cruise_control | `boolean` |  | boolean | `true` | Whether the car has adaptive cruise control |
+
+## ExtraPackBasic
+
+This is the description of the ExtraPack1.
+
+#### Type: `object`
+
+| Property | Type | Required | Possible values | Default | Description |
+| -------- | ---- | -------- | --------------- | ------- | ----------- |
+| heated_seats | `boolean` |  | boolean |  | Whether the car has heated seats. |
+| heated_steering_wheel | `boolean` |  | boolean |  | Whether the car has a heated steering wheel. |
+| parking_sensors | `boolean` |  | boolean | `true` | Whether the car has parking sensors. |
 
 ## NavigationSystem
 

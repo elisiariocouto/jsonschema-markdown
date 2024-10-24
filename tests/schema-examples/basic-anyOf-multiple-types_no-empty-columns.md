@@ -6,7 +6,7 @@ JSON Schema missing a description, provide it using the `description` key in the
 
 | Property | Type | Required | Possible values | Description |
 | -------- | ---- | -------- | --------------- | ----------- |
-| bar | `string` or `integer` | ✅ | string and/or integer |  |
+| bar | `integer` or `string` | ✅ | integer and/or string |  |
 
 
 ---

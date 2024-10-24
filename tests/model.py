@@ -3,6 +3,41 @@ from typing import Literal, Union
 from pydantic import BaseModel, ConfigDict, Field
 
 
+class ExtraPackBasic(BaseModel):
+    """
+    This is the description of the ExtraPack1.
+    """
+
+    heated_seats: bool = Field(
+        default=False, description="Whether the car has heated seats."
+    )
+    heated_steering_wheel: bool = Field(
+        default=False, description="Whether the car has a heated steering wheel."
+    )
+    parking_sensors: bool = Field(
+        default=True, description="Whether the car has parking sensors."
+    )
+
+
+class ExtraPackAdvanced(BaseModel):
+    """
+    This is the description of the ExtraPack2.
+    """
+
+    heated_seats: bool = Field(
+        default=True, description="Whether the car has heated seats."
+    )
+    heated_steering_wheel: bool = Field(
+        default=True, description="Whether the car has a heated steering wheel."
+    )
+    parking_sensors: bool = Field(
+        default=True, description="Whether the car has parking sensors."
+    )
+    adaptive_cruise_control: bool = Field(
+        default=True, description="Whether the car has adaptive cruise control"
+    )
+
+
 class CarClass(BaseModel):
     """
     This is the description of the CarClass.
@@ -174,6 +209,9 @@ class Car(BaseModel):
     )
     manufacturer_config: list[Union[Airbag, NavigationSystem, Upholstery]] = Field(
         default=[], description="The manufacturer's extras."
+    )
+    extra_pack: Union[ExtraPackBasic, ExtraPackAdvanced, None] = Field(
+        default=None, description="The extra pack of the car."
     )
 
     model_config = ConfigDict(
