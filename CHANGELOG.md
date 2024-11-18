@@ -1,4 +1,12 @@
 
+## 0.3.15 (2024/11/18)
+
+### Miscellaneous Tasks
+
+-  Separate PyPI publishing to create a non-reusable workflow. ([d71d4fbb](https://github.com/elisiariocouto/jsonschema-markdown/commit/d71d4fbb94328ebced51b42253bfa6d4aecd1ff2))
+
+
+
 ## 0.3.14 (2024/11/18)
 
 ### Miscellaneous Tasks
