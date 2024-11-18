@@ -6,12 +6,8 @@ on:
       - "**"
 
 jobs:
-  publish-pypi:
+  build:
     runs-on: ubuntu-latest
-    permissions:
-      # IMPORTANT: this permission is mandatory for trusted publishing on PyPI
-      id-token: write
-
     steps:
       - uses: actions/checkout@v4
 
@@ -27,7 +23,29 @@ jobs:
           poetry config virtualenvs.create false
           poetry build
 
-      - name: Publish package distributions to PyPI
+      - name: Store the distribution packages
+        uses: actions/upload-artifact@v4
+        with:
+          name: python-package-distributions
+          path: dist/
+
+  publish-to-pypi:
+    name: Publish Python distribution to PyPI
+    needs:
+      - build
+    runs-on: ubuntu-latest
+    environment:
+      name: pypi
+      url: https://pypi.org/p/<package-name> # Replace <package-name> with your PyPI project name
+    permissions:
+      id-token: write # IMPORTANT: mandatory for trusted publishing
+    steps:
+      - name: Download all the dists
+        uses: actions/download-artifact@v4
+        with:
+          name: python-package-distributions
+          path: dist/
+      - name: Publish distribution to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
 
   push-docker:
