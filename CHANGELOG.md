@@ -1,4 +1,12 @@
 
+## 0.3.16 (2024/11/18)
+
+### Miscellaneous Tasks
+
+-  Fix project link in PyPI publish job. ([d7d7e1f4](https://github.com/elisiariocouto/jsonschema-markdown/commit/d7d7e1f48b8b4eeb0e663bbd509b9fe5b78a48f6))
+
+
+
 ## 0.3.15 (2024/11/18)
 
 ### Miscellaneous Tasks
