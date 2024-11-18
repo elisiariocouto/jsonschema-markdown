@@ -1,4 +1,18 @@
 
+## 0.3.14 (2024/11/18)
+
+### Miscellaneous Tasks
+
+-  Update dependencies. ([534c3421](https://github.com/elisiariocouto/jsonschema-markdown/commit/534c3421977fe097e40ec46051a7b4ef6179b552))
+-  Update pre-commit hooks. ([c5e7610d](https://github.com/elisiariocouto/jsonschema-markdown/commit/c5e7610d245ab5cc8772bd7ee7a9254515171fa9))
+
+
+### Testing
+
+-  Add Python 3.13 to the test matrix. ([59dfc02b](https://github.com/elisiariocouto/jsonschema-markdown/commit/59dfc02b8b54cea96f2265585a9d9a45a077665f))
+
+
+
 ## 0.3.13 (2024/10/24)
 
 ### Bug Fixes
