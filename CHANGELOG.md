@@ -1,4 +1,12 @@
 
+## 0.3.17 (2024/11/19)
+
+### Miscellaneous Tasks
+
+-  Enable PyPI publish verbose mode. ([abae2c92](https://github.com/elisiariocouto/jsonschema-markdown/commit/abae2c9215caa6b52facfb2e4d6e63fa538f86c0))
+
+
+
 ## 0.3.16 (2024/11/18)
 
 ### Miscellaneous Tasks
