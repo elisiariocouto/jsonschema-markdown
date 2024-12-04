@@ -1,4 +1,17 @@
 
+## 0.3.18 (2024/12/04)
+
+### Bug Fixes
+
+-  Add missing pyyaml dependency. ([3dcf62f8](https://github.com/elisiariocouto/jsonschema-markdown/commit/3dcf62f8a1e97bac2bd53083dd5073528624a5d6))
+
+
+### Miscellaneous Tasks
+
+-  Update dependencies. ([98d59d26](https://github.com/elisiariocouto/jsonschema-markdown/commit/98d59d2614d7f21c4712a29e5332457904877d5c))
+
+
+
 ## 0.3.17 (2024/11/19)
 
 ### Miscellaneous Tasks
