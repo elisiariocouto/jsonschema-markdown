@@ -11,18 +11,18 @@ function check_command {
 
 check_command git
 check_command git-cliff
-check_command poetry
+check_command uv
 
 if [ -z "$1" ]; then
     echo " > No semver verb specified, run release with <major|minor|patch> parameter."
     exit 1
 fi
 
-CURRENT_VERSION=$(poetry version -s)
+CURRENT_VERSION=$(uvx poetry version -s)
 echo " > Current version is $CURRENT_VERSION"
 
-poetry version "$1"
-NEXT_VERSION=$(poetry version -s)
+uvx poetry version "$1"
+NEXT_VERSION=$(uvx poetry version -s)
 
 echo " > jsonschema-markdown bumped to $NEXT_VERSION"
 echo "Updating CHANGELOG.md"
