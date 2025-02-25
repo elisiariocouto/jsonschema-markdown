@@ -1,4 +1,18 @@
 
+## 2025.2.0 (2025/02/25)
+
+### Features
+
+-  Add support for nested properties. ([3fa5639d](https://github.com/elisiariocouto/jsonschema-markdown/commit/3fa5639d46dbd156f6d5c0a8a0fbd031d63c5100))
+
+
+### Miscellaneous Tasks
+
+-  Move to uv. ([8afcc66f](https://github.com/elisiariocouto/jsonschema-markdown/commit/8afcc66fcdf17d6dc1886eeffcbaffe5b2e7c47b))
+-  Move from semantic versioning to calendar versioning. ([fbeb55e3](https://github.com/elisiariocouto/jsonschema-markdown/commit/fbeb55e3b3cdf8cf527ae3fe91bb67ae530797e0))
+
+
+
 ## 0.3.18 (2024/12/04)
 
 ### Bug Fixes
