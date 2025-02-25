@@ -153,6 +153,86 @@ def generate(
     return res
 
 
+def _process_properties_recursively(
+    properties: dict, property_path: str, required_props: list, defs: dict
+) -> list:
+    """
+    Recursively process schema properties, including nested objects and arrays.
+
+    Args:
+        properties: Dictionary of properties to process
+        property_path: Current property path (for nested notation)
+        required_props: List of required properties at current level
+        defs: Definitions dictionary
+
+    Returns:
+        List of property items for markdown table
+    """
+    table_items = []
+
+    for prop_name, prop_details in properties.items():
+        # Build the full property path using dot notation
+        full_path = f"{property_path}.{prop_name}" if property_path else prop_name
+
+        prop_type = prop_details.get("type")
+        logger.debug(f"Processing {full_path} of type {prop_type}")
+
+        # Process the current property
+        property_type, possible_values = _get_property_details(
+            prop_type, prop_details, defs
+        )
+
+        default = prop_details.get("default")
+        description = prop_details.get("description", "").strip(" \n")
+
+        examples = ", ".join(
+            [f"```{str(example)}```" for example in prop_details.get("examples", [])]
+        )
+
+        # Add the current property to our results
+        item = {
+            "property": full_path,
+            "type": property_type,
+            "required": "✅" if prop_name in required_props else "",
+            "possible_values": possible_values,
+            "deprecated": (
+                "⛔️"
+                if "[deprecated]" in str(prop_details.get("description", "")).lower()
+                or prop_details.get("deprecated")
+                else ""
+            ),
+            "default": "`" + json.dumps(default) + "`" if default else "",
+            "description": description,
+            "examples": examples,
+        }
+        table_items.append(item)
+
+        # If this is an object with properties, process its nested properties
+        if prop_type == "object" and prop_details.get("properties"):
+            nested_items = _process_properties_recursively(
+                prop_details["properties"],
+                full_path,
+                prop_details.get("required", []),
+                defs,
+            )
+            table_items.extend(nested_items)
+
+        # If this is an array with items that are objects, process them too
+        elif prop_type == "array" and isinstance(prop_details.get("items"), dict):
+            items_schema = prop_details["items"]
+            if items_schema.get("type") == "object" and items_schema.get("properties"):
+                array_path = f"{full_path}[]"  # Add [] to indicate array items
+                nested_items = _process_properties_recursively(
+                    items_schema["properties"],
+                    array_path,
+                    items_schema.get("required", []),
+                    defs,
+                )
+                table_items.extend(nested_items)
+
+    return table_items
+
+
 def _create_definition_table(schema: dict, defs: dict, hide_empty_columns: bool) -> str:
     """
     Create a table of the properties in the schema.
@@ -189,52 +269,16 @@ def _create_definition_table(schema: dict, defs: dict, hide_empty_columns: bool)
     if not schema.get("properties"):
         return markdown
 
-    schema["properties"] = sort_properties(schema)
+    # Use the sort_properties function to maintain the order
+    sorted_properties = sort_properties(schema)
 
-    table_items = []
-
-    for property_name, property_details in schema["properties"].items():
-        property_type = property_details.get("type")
-
-        logger.debug(f"Processing {property_name} of type {property_type}")
-        logger.debug(f"Property details: {property_details}")
-
-        property_type, possible_values = _get_property_details(
-            property_type, property_details, defs
-        )
-
-        logger.debug(
-            f"Finished processing {property_name} of type {property_type}: {possible_values}"
-        )
-
-        default = property_details.get("default")
-        description = property_details.get("description", "").strip(" \n")
-
-        # Add backticks for each example, and join them with a comma and a space into a single string
-        examples = ", ".join(
-            [
-                f"```{str(example)}```"
-                for example in property_details.get("examples", [])
-            ]
-        )
-
-        item = {
-            "property": property_name,
-            "type": property_type,
-            "required": "✅" if property_name in schema.get("required", []) else "",
-            "possible_values": possible_values,
-            "deprecated": (
-                "⛔️"
-                if "[deprecated]"
-                in str(property_details.get("description", "")).lower()
-                or property_details.get("deprecated")
-                else ""
-            ),
-            "default": "`" + json.dumps(default) + "`" if default else "",
-            "description": description,
-            "examples": examples,
-        }
-        table_items.append(item)
+    # Process properties recursively instead of just the top level
+    table_items = _process_properties_recursively(
+        sorted_properties,
+        "",  # Start with empty path
+        schema.get("required", []),
+        defs,
+    )
 
     # This should not happen, but just in case
     if not table_items:

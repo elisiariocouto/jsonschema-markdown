@@ -1,0 +1,55 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "properties": {
+        "Foobar": {
+            "type": "object",
+            "properties": {
+                "A": {
+                    "type": "string"
+                },
+                "B": {
+                    "type": "string"
+                }
+            }
+        },
+        "Foobaz": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "C": {
+                        "type": "string"
+                    },
+                    "D": {
+                        "type": "string"
+                    },
+                    "E": {
+                        "type": "object",
+                        "properties": {
+                            "F": {
+                                "type": "string"
+                            }
+                        },
+                        "additionalProperties": false,
+                        "required": [
+                            "F"
+                        ]
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "C",
+                    "D",
+                    "E"
+                ]
+            },
+            "additionalItems": false
+        }
+
+    },
+    "required": [
+        "Foobar",
+        "Foobaz"
+    ]
+}
