@@ -2,6 +2,7 @@
 
 [![PyPI](https://img.shields.io/pypi/v/jsonschema-markdown)](https://pypi.org/project/jsonschema-markdown/)
 [![Docker](https://img.shields.io/docker/v/elisiariocouto/jsonschema-markdown)](https://hub.docker.com/r/elisiariocouto/jsonschema-markdown)
+[![CalVer](https://img.shields.io/badge/CalVer-YYYY.MM.MICRO-22bfda.svg)](https://calver.org)
 
 Generate markdown documentation from JSON Schema files. The main goal is to generate
 documentation that is easy to read and understand.
@@ -9,6 +10,8 @@ documentation that is easy to read and understand.
 Can be used as a command line tool or as a library.
 
 Easy to use in CI/CD pipelines, as a Docker image is available.
+
+> **Note:** This project follows [CalVer](https://calver.org) (YYYY.MM.MICRO) versioning and maintains backward compatibility whenever possible. New features and enhancements are always encouraged!
 
 ## Installation
 
@@ -88,18 +91,17 @@ this project does not currently support all features, but it should support:
   - Default values
   - Descriptions and titles
   - Nested objects using `$defs` or `definitions`
+  - Nested objects with dot notation (e.g., `parent.child[].property`)
   - Basic `oneOf`, `anyOf`, `allOf` functionality
   - Arrays
   - Integers with minimum, maximum values and exclusives
   - Boolean values
-  - Deprecated fields (using the `deprecated` option, additionaly searches for case-insensitive `deprecated` in the field description)
+  - Deprecated fields (using the `deprecated` option, additionally searches for case-insensitive `deprecated` in the field description)
   - Supports optional YAML and JSON formatting for examples
 
 ## Caveats
-  - This project is still in early development, and the output may change in the future.
   - Custom definitions are expected to be in the same file as the schema that uses them,
     in the `definitions` or `$defs` parameter at the root of the document.
-  - Inline nested definitions are not represented in the output yet. See #18.
 
 ---
 
@@ -144,7 +146,7 @@ Given the following JSON Schema:
 }
 ```
 
-### Example 1 Ouput
+### Example 1 Output
 The following markdown will be generated:
 
 ---
