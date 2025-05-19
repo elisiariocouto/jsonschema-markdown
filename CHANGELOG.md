@@ -1,4 +1,30 @@
 
+## 2025.5.0 (2025/05/19)
+
+### Documentation
+
+-  Update features and versioning scheme in README.md ([9bcdcb08](https://github.com/elisiariocouto/jsonschema-markdown/commit/9bcdcb081f55bcae16b0e8f30559b25d2dc77421))
+
+
+### Miscellaneous Tasks
+
+-  Update dependencies. ([438b691f](https://github.com/elisiariocouto/jsonschema-markdown/commit/438b691f7e5fc5919b61b0835687f88cc56376ed))
+
+
+
+## 2025.5.0 (2025/05/19)
+
+### Documentation
+
+-  Update features and versioning scheme in README.md ([9bcdcb08](https://github.com/elisiariocouto/jsonschema-markdown/commit/9bcdcb081f55bcae16b0e8f30559b25d2dc77421))
+
+
+### Miscellaneous Tasks
+
+-  Update dependencies. ([438b691f](https://github.com/elisiariocouto/jsonschema-markdown/commit/438b691f7e5fc5919b61b0835687f88cc56376ed))
+
+
+
 ## 2025.2.0 (2025/02/25)
 
 ### Features
