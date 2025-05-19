@@ -79,7 +79,7 @@ class Engine(BaseModel):
     )
     liters: float = Field(
         description="The displacement of the engine in liters.",
-        gt=0,
+        gt=0.0,
     )
 
     model_config = ConfigDict(
