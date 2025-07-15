@@ -1,0 +1,30 @@
+{
+    "properties": {
+        "bool_prop": {
+            "default": false,
+            "title": "Bool Prop",
+            "type": "boolean"
+        },
+        "int_prop": {
+            "default": 0,
+            "title": "Int Prop",
+            "type": "integer"
+        },
+        "str_prop": {
+            "default": "",
+            "title": "Str Prop",
+            "type": "string"
+        },
+        "nullable_prop": {
+            "default": null,
+            "title": "Nullable Prop",
+            "type": "string"
+        },
+        "no_default_string": {
+            "title": "No Default String",
+            "type": "string"
+        }
+    },
+    "title": "TestModel",
+    "type": "object"
+}

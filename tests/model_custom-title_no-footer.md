@@ -22,9 +22,9 @@ UTF-8 characters work: áéíóú
 | car_class | `object` | ✅ | [CarClass](#carclass) |  |  | The class of the car. | ```{'doors': 5, 'passengers': 5, 'type': 'sedan'}```, ```{'doors': 3, 'passengers': 2, 'type': 'hatchback'}```, ```{'doors': 5, 'passengers': 5, 'type': 'suv'}``` |
 | engine | `object` | ✅ | [Engine](#engine) |  |  | The engine of the car. |  |
 | color | `string` | ✅ | Length: `1 <= string <= 100` |  |  | The color of the car. |  |
-| kms | `integer` |  | integer |  |  | The number of kilometers the car has. |  |
-| manufacturer_config | `array` |  | [Airbag](#airbag) and/or [NavigationSystem](#navigationsystem) and/or [Upholstery](#upholstery) |  |  | The manufacturer's extras. |  |
-| extra_pack | `object` or `null` |  | [ExtraPackAdvanced](#extrapackadvanced) and/or [ExtraPackBasic](#extrapackbasic) |  |  | The extra pack of the car. |  |
+| kms | `integer` |  | integer |  | `null` | The number of kilometers the car has. |  |
+| manufacturer_config | `array` |  | [Airbag](#airbag) and/or [NavigationSystem](#navigationsystem) and/or [Upholstery](#upholstery) |  | `[]` | The manufacturer's extras. |  |
+| extra_pack | `object` or `null` |  | [ExtraPackAdvanced](#extrapackadvanced) and/or [ExtraPackBasic](#extrapackbasic) |  | `null` | The extra pack of the car. |  |
 | brand_country | `string` | ✅ | [`^[A-Z]{2}$`](https://regex101.com/?regex=%5E%5BA-Z%5D%7B2%7D%24) | ⛔️ |  | [Deprecated] The country where the brand is from. |  |
 
 
@@ -84,7 +84,7 @@ This is the description of the Engine.
 | power | `integer` | ✅ | integer |  |  | The power of the engine in HP. |  |
 | fuel_type | `string` | ✅ | `gasoline` `diesel` `electric` |  |  | The type of fuel the engine uses. |  |
 | liters | `number` | ✅ | `0.0 < x ` |  |  | The displacement of the engine in liters. |  |
-| turbo | `boolean` |  | boolean |  |  | Whether the engine has a turbo or not. |  |
+| turbo | `boolean` |  | boolean |  | `false` | Whether the engine has a turbo or not. |  |
 
 ## ExtraPackAdvanced
 
@@ -107,8 +107,8 @@ This is the description of the ExtraPack1.
 
 | Property | Type | Required | Possible values | Deprecated | Default | Description | Examples |
 | -------- | ---- | -------- | --------------- | ---------- | ------- | ----------- | -------- |
-| heated_seats | `boolean` |  | boolean |  |  | Whether the car has heated seats. |  |
-| heated_steering_wheel | `boolean` |  | boolean |  |  | Whether the car has a heated steering wheel. |  |
+| heated_seats | `boolean` |  | boolean |  | `false` | Whether the car has heated seats. |  |
+| heated_steering_wheel | `boolean` |  | boolean |  | `false` | Whether the car has a heated steering wheel. |  |
 | parking_sensors | `boolean` |  | boolean |  | `true` | Whether the car has parking sensors. |  |
 
 ## NavigationSystem
@@ -130,4 +130,4 @@ This is the description of the Upholstery.
 | Property | Type | Required | Possible values | Deprecated | Default | Description | Examples |
 | -------- | ---- | -------- | --------------- | ---------- | ------- | ----------- | -------- |
 | type | `string` | ✅ | `leather` `fabric` |  |  | The type of upholstery. |  |
-| stitching | `object` |  | object |  |  | Metadata about the stitching. |  |
+| stitching | `object` |  | object |  | `{}` | Metadata about the stitching. |  |
