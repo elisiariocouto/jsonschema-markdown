@@ -182,7 +182,12 @@ def _process_properties_recursively(
             prop_type, prop_details, defs
         )
 
-        default = prop_details.get("default")
+        has_default_value = "default" in prop_details
+        default_value = (
+            "`" + json.dumps(prop_details.get("default")) + "`"
+            if has_default_value
+            else ""
+        )
         description = prop_details.get("description", "").strip(" \n")
 
         examples = ", ".join(
@@ -201,7 +206,7 @@ def _process_properties_recursively(
                 or prop_details.get("deprecated")
                 else ""
             ),
-            "default": "`" + json.dumps(default) + "`" if default else "",
+            "default": default_value,
             "description": description,
             "examples": examples,
         }

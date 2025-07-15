@@ -7,7 +7,7 @@ Test case with untyped list
 | Property | Type | Required | Possible values | Default | Description |
 | -------- | ---- | -------- | --------------- | ------- | ----------- |
 | type | `string` |  | `test` | `"test"` |  |
-| ingress_cidr_blocks | `array` |  | Any type |  | A list of CIDR blocks allowed to connect. |
+| ingress_cidr_blocks | `array` |  | Any type | `[]` | A list of CIDR blocks allowed to connect. |
 
 
 ---
