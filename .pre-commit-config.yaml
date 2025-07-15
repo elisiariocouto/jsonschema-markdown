@@ -9,7 +9,7 @@ repos:
     hooks:
       - id: generate-test-markdown
         name: Generate test markdown from schema examples
-        entry: uv run ./scripts/generate-tests.sh
+        entry: ./scripts/generate-tests.sh
         language: system
         pass_filenames: false
   - repo: https://github.com/pre-commit/pre-commit-hooks
