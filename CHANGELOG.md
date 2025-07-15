@@ -1,4 +1,20 @@
 
+## 2025.7.0 (2025/07/15)
+
+### Bug Fixes
+
+-  Show default values, even if they are falsy. ([b9ab5c4f](https://github.com/elisiariocouto/jsonschema-markdown/commit/b9ab5c4f122370492d48f15c0bde6d56b6de8937))
+
+
+### Miscellaneous Tasks
+
+-  Update dependencies. ([8726990c](https://github.com/elisiariocouto/jsonschema-markdown/commit/8726990cf04d7a482664a9b7679740ffd65764ef))
+-  Use uv instead of poetry on release script. ([27121029](https://github.com/elisiariocouto/jsonschema-markdown/commit/27121029c4e00c7eb500f942e1788698581b5fbd))
+-  Add uv.lock to release script. ([eabf9eb8](https://github.com/elisiariocouto/jsonschema-markdown/commit/eabf9eb866adeb174e62b244676c00bba26c7e32))
+-  Fix pre-commit script. ([54141567](https://github.com/elisiariocouto/jsonschema-markdown/commit/541415677994c46f8c603feb8fa6424fb7087063))
+
+
+
 ## 2025.5.0 (2025/05/19)
 
 ### Documentation
