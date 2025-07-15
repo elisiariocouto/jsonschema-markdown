@@ -11,7 +11,7 @@ function check_command {
 
 check_command git
 check_command git-cliff
-check_command uvx
+check_command uv
 
 # Get current date components
 YEAR=$(date +%Y)
@@ -30,7 +30,7 @@ else
 fi
 
 NEXT_VERSION="${YEAR}.${MONTH}.${MICRO}"
-CURRENT_VERSION=$(uvx poetry version -s)
+CURRENT_VERSION=$(uv version --short)
 
 echo " > Current version is $CURRENT_VERSION"
 echo " > Setting new version to $NEXT_VERSION"
