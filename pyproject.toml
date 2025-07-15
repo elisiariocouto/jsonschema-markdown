@@ -3,12 +3,12 @@ name = "jsonschema-markdown"
 version = "2025.5.0"
 description = "Export a JSON Schema document to Markdown documentation."
 authors = [{ name = "Elisiário Couto", email = "elisiario@couto.io" }]
-requires-python = "~=3.9"
+requires-python = ">=3.9"
 readme = "README.md"
 license = "MIT"
 keywords = ["jsonschema", "markdown", "documentation", "docs", "json"]
 classifiers = [
-    "Development Status :: 3 - Alpha",
+    "Development Status :: 4 - Beta",
     "Environment :: Console",
     "Intended Audience :: Developers",
     "Topic :: Documentation",
