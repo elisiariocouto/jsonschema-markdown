@@ -43,7 +43,7 @@ echo "Updating CHANGELOG.md"
 git-cliff --unreleased --tag "$NEXT_VERSION" --prepend CHANGELOG.md > /dev/null
 
 echo " > Commiting changes and adding git tag"
-git add pyproject.toml CHANGELOG.md
+git add pyproject.toml CHANGELOG.md uv.lock
 git commit -m "chore(ci): Bump version to $NEXT_VERSION"
 git tag -a "$NEXT_VERSION" -m "$NEXT_VERSION"
 
