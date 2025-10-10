@@ -48,8 +48,25 @@ import jsonschema_markdown
     show_default=True,
     help="Format of the examples in the output.",
 )
+@click.option(
+    "--sort-yaml-keys/--no-sort-yaml-keys",
+    is_flag=True,
+    default=True,
+    show_default=True,
+    help="Sort keys in YAML examples. "
+    "Only applies when --examples-format is yaml.",
+)
 @click.version_option(package_name="jsonschema_markdown")
-def cli(filename, title, footer, empty_columns, resolve, debug, examples_format):
+def cli(
+    filename,
+    title,
+    footer,
+    empty_columns,
+    resolve,
+    debug,
+    examples_format,
+    sort_yaml_keys,
+):
     """
     Load FILENAME and output a markdown version.
 
@@ -64,6 +81,7 @@ def cli(filename, title, footer, empty_columns, resolve, debug, examples_format)
         "debug": debug,
         "hide_empty_columns": not empty_columns,
         "examples_format": examples_format,
+        "sort_yaml_keys": sort_yaml_keys,
     }
 
     if title:

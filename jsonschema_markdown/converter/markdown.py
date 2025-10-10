@@ -20,7 +20,7 @@ def _should_include_column(column_values):
     return any(value for value in column_values)
 
 
-def _format_example(example, examples_format):
+def _format_example(example, examples_format, sort_yaml_keys=True):
     """
     Format the example based on the examples_format. Only works for dict.
     """
@@ -28,7 +28,7 @@ def _format_example(example, examples_format):
     try:
         if examples_format == "yaml":
             if isinstance(example, dict):
-                return f"```yaml\n{yaml.dump(example)}\n```"
+                return f"```yaml\n{yaml.dump(example, sort_keys=sort_yaml_keys)}\n```"
             else:
                 return f"```yaml\n{example}\n```"
         elif examples_format == "json":
@@ -48,6 +48,7 @@ def _get_schema_header(
     description_fallback: str,
     nested: bool = False,
     examples_format: str = "text",
+    sort_yaml_keys: bool = True,
 ) -> str:
     """
     Get the title and description of the schema.
@@ -70,7 +71,7 @@ def _get_schema_header(
     if examples:
         md += f"{prefix}### Examples\n\n"
         for example in examples:
-            md += _format_example(example, examples_format)
+            md += _format_example(example, examples_format, sort_yaml_keys)
             md += "\n\n"
 
     md += f"{prefix}### Type: `{schema.get('type', 'object(?)').strip()}`\n\n"
@@ -86,6 +87,7 @@ def generate(
     debug: bool = False,
     hide_empty_columns: bool = False,
     examples_format: str = "text",
+    sort_yaml_keys: bool = True,
 ) -> str:
     """
     Generate a markdown string from a given JSON schema.
@@ -96,6 +98,9 @@ def generate(
         footer: Whether to include a footer section in the markdown with the current date and time.
         replace_refs: This feature is experimental. Whether to replace JSON references with their resolved values.
         debug: Whether to print debug messages.
+        hide_empty_columns: Whether to hide empty columns in the output.
+        examples_format: Format of the examples in the output (text, yaml, json).
+        sort_yaml_keys: Whether to sort keys when formatting YAML examples.
 
     Returns:
         str: The generated markdown string.
@@ -122,6 +127,7 @@ def generate(
         title,
         "JSON Schema missing a description, provide it using the `description` key in the root of the JSON document.",
         examples_format=examples_format,
+        sort_yaml_keys=sort_yaml_keys,
     )
 
     defs = _schema.get("definitions", _schema.get("$defs", {}))
@@ -138,6 +144,7 @@ def generate(
                 "No description provided for this model.",
                 nested=True,
                 examples_format=examples_format,
+                sort_yaml_keys=sort_yaml_keys,
             )
             markdown += _create_definition_table(
                 definition, defs, hide_empty_columns=hide_empty_columns
