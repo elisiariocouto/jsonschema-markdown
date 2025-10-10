@@ -20,7 +20,7 @@ def _should_include_column(column_values):
     return any(value for value in column_values)
 
 
-def _format_example(example, examples_format, sort_yaml_keys=True):
+def _format_example(example, examples_format, sort_yaml_keys=False):
     """
     Format the example based on the examples_format. Only works for dict.
     """
@@ -48,7 +48,7 @@ def _get_schema_header(
     description_fallback: str,
     nested: bool = False,
     examples_format: str = "text",
-    sort_yaml_keys: bool = True,
+    sort_yaml_keys: bool = False,
 ) -> str:
     """
     Get the title and description of the schema.
@@ -87,7 +87,7 @@ def generate(
     debug: bool = False,
     hide_empty_columns: bool = False,
     examples_format: str = "text",
-    sort_yaml_keys: bool = True,
+    sort_yaml_keys: bool = False,
 ) -> str:
     """
     Generate a markdown string from a given JSON schema.

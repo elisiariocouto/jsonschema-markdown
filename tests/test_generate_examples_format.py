@@ -61,11 +61,12 @@ def test_yaml_sort_keys(example, sort_yaml_keys, expected_md):
     assert formatted == expected_md
 
 
-def test_sort_yaml_keys_default_true():
-    """Test that the default value for sort_yaml_keys is True."""
+def test_sort_yaml_keys_default_false():
+    """Test that the default value for sort_yaml_keys is False."""
     example = {"z_key": "value1", "a_key": "value2"}
     formatted = _format_example(example, "yaml")
-    expected = "```yaml\na_key: value2\nz_key: value1\n\n```"
+    # Should preserve insertion order (z before a)
+    expected = "```yaml\nz_key: value1\na_key: value2\n\n```"
     assert formatted == expected
 
 

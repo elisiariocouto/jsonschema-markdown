@@ -51,7 +51,7 @@ import jsonschema_markdown
 @click.option(
     "--sort-yaml-keys/--no-sort-yaml-keys",
     is_flag=True,
-    default=True,
+    default=False,
     show_default=True,
     help="Sort keys in YAML examples. "
     "Only applies when --examples-format is yaml.",

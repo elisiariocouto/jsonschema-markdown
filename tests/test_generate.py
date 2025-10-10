@@ -76,7 +76,7 @@ def test_generate_yaml_format_without_sort_keys():
     assert z_pos < a_pos < m_pos
 
 
-def test_generate_yaml_format_default_sorts():
+def test_generate_yaml_format_default_preserves_order():
     schema = {
         "title": "TestSchema",
         "type": "object",
@@ -87,6 +87,6 @@ def test_generate_yaml_format_default_sorts():
         "properties": {"field": {"type": "string"}},
     }
     markdown = generate(schema, examples_format="yaml")
-    a_pos = markdown.index("a_field")
     z_pos = markdown.index("z_field")
-    assert a_pos < z_pos
+    a_pos = markdown.index("a_field")
+    assert z_pos < a_pos
