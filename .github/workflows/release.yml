@@ -1,6 +1,7 @@
 name: Upload Python Package
 permissions:
-  contents: read
+  contents: write # Required for creating releases
+  packages: write # Required for pushing to GHCR
 
 on:
   push:
@@ -85,3 +86,31 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+
+  create-github-release:
+    name: Create GitHub Release
+    runs-on: ubuntu-latest
+    needs: [build, publish-to-pypi, push-docker]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Generate release notes
+        uses: orhun/git-cliff-action@v4
+        id: release_notes
+        with:
+          config: cliff.toml
+          args: --current
+        env:
+          GITHUB_REPO: ${{ github.repository }}
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
+          name: Release ${{ github.ref_name }}
+          body: ${{ steps.release_notes.outputs.content }}
+          draft: false
+          prerelease: false
