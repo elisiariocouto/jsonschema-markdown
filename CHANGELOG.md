@@ -1,4 +1,12 @@
 
+## 2025.10.1 (2025/10/15)
+
+### Miscellaneous Tasks
+
+-  Automate GitHub release creation and fix Actions permissions. ([f52935dc](https://github.com/elisiariocouto/jsonschema-markdown/commit/f52935dcc3b0eb7ded7c90a4f12129b7cb11fe22))
+
+
+
 ## 2025.10.0 (2025/10/15)
 
 ### Features
