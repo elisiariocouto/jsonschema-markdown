@@ -1,3 +1,16 @@
+
+## 2025.10.0 (2025/10/15)
+
+### Features
+
+-  Add flags to control key ordering in YAML examples. ([decda980](https://github.com/elisiariocouto/jsonschema-markdown/commit/decda98094fad8ed09a7cbe0b9bb6e3657d60565))
+
+
+### Miscellaneous Tasks
+
+-  Set Actions permissions to read-only. ([cdf1e515](https://github.com/elisiariocouto/jsonschema-markdown/commit/cdf1e5155720c4bbdf70cb9dfaae78a9fd09b1db))
+
+
 ## 2025.7.0 (2025/07/15)
 
 ### Bug Fixes
