@@ -47,6 +47,10 @@ Options:
   --examples-format [text|yaml|json]
                                   Format of the examples in the output.
                                   [default: text]
+  --sort-yaml-keys / --no-sort-yaml-keys
+                                  Sort keys in YAML examples. Only applies
+                                  when --examples-format is yaml.  [default:
+                                  no-sort-yaml-keys]
   --version                       Show the version and exit.
   --help                          Show this message and exit.
 
@@ -98,6 +102,7 @@ this project does not currently support all features, but it should support:
   - Boolean values
   - Deprecated fields (using the `deprecated` option, additionally searches for case-insensitive `deprecated` in the field description)
   - Supports optional YAML and JSON formatting for examples
+  - Configurable key ordering in YAML examples (preserves insertion order by default, optional sorting)
 
 ## Caveats
   - Custom definitions are expected to be in the same file as the schema that uses them,
