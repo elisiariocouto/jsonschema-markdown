@@ -1,10 +1,3 @@
-## Unreleased
-
-### Features
-
--  Add `--sort-yaml-keys/--no-sort-yaml-keys` CLI flag to control key ordering in YAML examples. By default, YAML examples now preserve insertion order to match JSON behavior (keys appear in the order they were defined). Use `--sort-yaml-keys` to sort keys alphabetically. This also adds a `sort_yaml_keys` parameter to the `generate()` function for library usage.
-
-
 ## 2025.7.0 (2025/07/15)
 
 ### Bug Fixes

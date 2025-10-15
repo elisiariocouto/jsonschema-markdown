@@ -37,9 +37,7 @@ def test_generate_yaml_format_with_sort_keys():
         "title": "TestSchema",
         "type": "object",
         "description": "Test schema with examples",
-        "examples": [
-            {"z_field": "last", "a_field": "first", "m_field": "middle"}
-        ],
+        "examples": [{"z_field": "last", "a_field": "first", "m_field": "middle"}],
         "properties": {"field": {"type": "string"}},
     }
     markdown = generate(schema, examples_format="yaml", sort_yaml_keys=True)
@@ -58,14 +56,10 @@ def test_generate_yaml_format_without_sort_keys():
         "title": "TestSchema",
         "type": "object",
         "description": "Test schema with examples",
-        "examples": [
-            {"z_field": "last", "a_field": "first", "m_field": "middle"}
-        ],
+        "examples": [{"z_field": "last", "a_field": "first", "m_field": "middle"}],
         "properties": {"field": {"type": "string"}},
     }
-    markdown = generate(
-        schema, examples_format="yaml", sort_yaml_keys=False
-    )
+    markdown = generate(schema, examples_format="yaml", sort_yaml_keys=False)
 
     z_pos = markdown.index("z_field")
     a_pos = markdown.index("a_field")
@@ -81,9 +75,7 @@ def test_generate_yaml_format_default_preserves_order():
         "title": "TestSchema",
         "type": "object",
         "description": "Test schema with examples",
-        "examples": [
-            {"z_field": "last", "a_field": "first"}
-        ],
+        "examples": [{"z_field": "last", "a_field": "first"}],
         "properties": {"field": {"type": "string"}},
     }
     markdown = generate(schema, examples_format="yaml")

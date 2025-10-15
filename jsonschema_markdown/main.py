@@ -53,8 +53,7 @@ import jsonschema_markdown
     is_flag=True,
     default=False,
     show_default=True,
-    help="Sort keys in YAML examples. "
-    "Only applies when --examples-format is yaml.",
+    help="Sort keys in YAML examples. Only applies when --examples-format is yaml.",
 )
 @click.version_option(package_name="jsonschema_markdown")
 def cli(

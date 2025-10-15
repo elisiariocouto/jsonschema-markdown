@@ -41,8 +41,7 @@ def test_generate_examples_format(example, format_type, expected_md):
                 "outer_a": "value",
             },
             True,
-            "```yaml\nouter_a: value\n"
-            "outer_z:\n  inner_a: 2\n  inner_z: 1\n\n```",
+            "```yaml\nouter_a: value\nouter_z:\n  inner_a: 2\n  inner_z: 1\n\n```",
         ),
         # Test nested dict with unsorted keys (preserves order)
         (
@@ -51,8 +50,7 @@ def test_generate_examples_format(example, format_type, expected_md):
                 "outer_a": "value",
             },
             False,
-            "```yaml\nouter_z:\n  inner_z: 1\n  inner_a: 2\n"
-            "outer_a: value\n\n```",
+            "```yaml\nouter_z:\n  inner_z: 1\n  inner_a: 2\nouter_a: value\n\n```",
         ),
     ],
 )
