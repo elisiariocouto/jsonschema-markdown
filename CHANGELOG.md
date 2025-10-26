@@ -1,4 +1,24 @@
 
+## 2025.10.2 (2025/10/26)
+
+### Bug Fixes
+
+-  Remove duplicate newlines when using YAML on examples. ([4cca8c31](https://github.com/elisiariocouto/jsonschema-markdown/commit/4cca8c3135927a66d9ff7d8f02097f2e4a9ec568))
+-  Replace newlines with `<br />` in field descriptions to prevent table render issues. ([4e7947c3](https://github.com/elisiariocouto/jsonschema-markdown/commit/4e7947c33b172a08483acbbae06f355970a0a57d))
+
+
+### Documentation
+
+-  Recommend using `uv` instead of `pipx` for CLI installation. ([f47783ea](https://github.com/elisiariocouto/jsonschema-markdown/commit/f47783ea4c19c88d2949dd422109ddaa0e5c77a0))
+
+
+### Miscellaneous Tasks
+
+-  Update dependencies. ([8cc04256](https://github.com/elisiariocouto/jsonschema-markdown/commit/8cc0425667b2d20352185eede3f505f390900602))
+-  Add Python 3.14 to test matrix. ([a34831b7](https://github.com/elisiariocouto/jsonschema-markdown/commit/a34831b7b3a3d9fe65dab1c2592200e361ab4a24))
+
+
+
 ## 2025.10.1 (2025/10/15)
 
 ### Miscellaneous Tasks
