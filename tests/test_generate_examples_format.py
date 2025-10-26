@@ -6,7 +6,7 @@ from jsonschema_markdown.converter.markdown import _format_example
 @pytest.mark.parametrize(
     "example, format_type, expected_md",
     [
-        ({"key": "value"}, "yaml", "```yaml\nkey: value\n\n```"),
+        ({"key": "value"}, "yaml", "```yaml\nkey: value\n```"),
         ("example string", "yaml", "```yaml\nexample string\n```"),
         ({"key": "value"}, "json", '```json\n{\n  "key": "value"\n}\n```'),
         ("example string", "json", "```json\nexample string\n```"),
@@ -26,13 +26,13 @@ def test_generate_examples_format(example, format_type, expected_md):
         (
             {"z_key": "value1", "a_key": "value2", "m_key": "value3"},
             True,
-            "```yaml\na_key: value2\nm_key: value3\nz_key: value1\n\n```",
+            "```yaml\na_key: value2\nm_key: value3\nz_key: value1\n```",
         ),
         # Test unsorted keys (preserves order)
         (
             {"z_key": "value1", "a_key": "value2", "m_key": "value3"},
             False,
-            "```yaml\nz_key: value1\na_key: value2\nm_key: value3\n\n```",
+            "```yaml\nz_key: value1\na_key: value2\nm_key: value3\n```",
         ),
         # Test nested dict with sorted keys
         (
@@ -41,7 +41,7 @@ def test_generate_examples_format(example, format_type, expected_md):
                 "outer_a": "value",
             },
             True,
-            "```yaml\nouter_a: value\nouter_z:\n  inner_a: 2\n  inner_z: 1\n\n```",
+            "```yaml\nouter_a: value\nouter_z:\n  inner_a: 2\n  inner_z: 1\n```",
         ),
         # Test nested dict with unsorted keys (preserves order)
         (
@@ -50,7 +50,7 @@ def test_generate_examples_format(example, format_type, expected_md):
                 "outer_a": "value",
             },
             False,
-            "```yaml\nouter_z:\n  inner_z: 1\n  inner_a: 2\nouter_a: value\n\n```",
+            "```yaml\nouter_z:\n  inner_z: 1\n  inner_a: 2\nouter_a: value\n```",
         ),
     ],
 )
@@ -64,7 +64,7 @@ def test_sort_yaml_keys_default_false():
     example = {"z_key": "value1", "a_key": "value2"}
     formatted = _format_example(example, "yaml")
     # Should preserve insertion order (z before a)
-    expected = "```yaml\nz_key: value1\na_key: value2\n\n```"
+    expected = "```yaml\nz_key: value1\na_key: value2\n```"
     assert formatted == expected
 
 

@@ -28,7 +28,7 @@ def _format_example(example, examples_format, sort_yaml_keys=False):
     try:
         if examples_format == "yaml":
             if isinstance(example, dict):
-                return f"```yaml\n{yaml.dump(example, sort_keys=sort_yaml_keys)}\n```"
+                return f"```yaml\n{yaml.dump(example, sort_keys=sort_yaml_keys).strip()}\n```"
             else:
                 return f"```yaml\n{example}\n```"
         elif examples_format == "json":
