@@ -16,7 +16,7 @@ Easy to use in CI/CD pipelines, as a Docker image is available.
 ## Installation
 
 ```bash
-pipx install jsonschema-markdown
+uv tool install jsonschema-markdown
 ```
 
 ## Usage
