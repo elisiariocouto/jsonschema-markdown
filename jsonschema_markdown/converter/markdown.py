@@ -197,6 +197,10 @@ def _process_properties_recursively(
         )
         description = prop_details.get("description", "").strip(" \n")
 
+        # Replace newlines in description with <br /> for markdown to prevent table breaking
+        if "\n" in description:
+            description = description.replace("\n", "<br />")
+
         examples = ", ".join(
             [f"```{str(example)}```" for example in prop_details.get("examples", [])]
         )

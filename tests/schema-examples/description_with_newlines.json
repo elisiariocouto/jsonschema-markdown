@@ -1,0 +1,12 @@
+{
+  "$id": "example.schema.json",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Example",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "The name of the example.\n\nIt can be used in one of three ways:\n\n- Item one\n- Item two\n- Item three\n"
+    }
+  }
+}

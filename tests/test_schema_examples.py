@@ -16,10 +16,14 @@ def get_test_cases():
             md_path = os.path.join(
                 SCHEMA_EXAMPLES_DIR, filename.replace(".json", ".md")
             )
+            test_cases.append((json_path, md_path, {}))
+
             md_no_empty_columns_path = os.path.join(
                 SCHEMA_EXAMPLES_DIR, filename.replace(".json", "_no-empty-columns.md")
             )
-            test_cases.append((json_path, md_path, {}))
+            # Do not add test case if the markdown file does not exist
+            if not os.path.exists(md_no_empty_columns_path):
+                continue
             test_cases.append(
                 (json_path, md_no_empty_columns_path, {"hide_empty_columns": True})
             )
