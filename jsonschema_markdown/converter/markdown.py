@@ -515,7 +515,7 @@ def _get_property_details(
     elif "pattern" in property_details:
         pattern = property_details["pattern"]
         # escape any pipe characters in the pattern string to prevent markdown table formatting issues
-        md_table_safe = pattern.replace('|', r'\|')
+        md_table_safe = pattern.replace("|", r"\|")
         res_details = f"[`{md_table_safe}`](https://regex101.com/?regex={urllib.parse.quote_plus(pattern)})"
         return f"`{property_type}`", res_details
     elif "const" in property_details:

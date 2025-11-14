@@ -22,6 +22,7 @@ UTF-8 characters work: áéíóú
 | car_class | `object` | ✅ | [CarClass](#carclass) |  |  | The class of the car. | ```{'doors': 5, 'passengers': 5, 'type': 'sedan'}```, ```{'doors': 3, 'passengers': 2, 'type': 'hatchback'}```, ```{'doors': 5, 'passengers': 5, 'type': 'suv'}``` |
 | engine | `object` | ✅ | [Engine](#engine) |  |  | The engine of the car. |  |
 | color | `string` | ✅ | Length: `1 <= string <= 100` |  |  | The color of the car. |  |
+| light_technology | `string` | ✅ | [`LED\|Halogen\|Xenon`](https://regex101.com/?regex=LED%7CHalogen%7CXenon) |  |  | The light technology of the car. |  |
 | kms | `integer` |  | integer |  | `null` | The number of kilometers the car has. |  |
 | manufacturer_config | `array` |  | [Airbag](#airbag) and/or [NavigationSystem](#navigationsystem) and/or [Upholstery](#upholstery) |  | `[]` | The manufacturer's extras. |  |
 | extra_pack | `object` or `null` |  | [ExtraPackAdvanced](#extrapackadvanced) and/or [ExtraPackBasic](#extrapackbasic) |  | `null` | The extra pack of the car. |  |

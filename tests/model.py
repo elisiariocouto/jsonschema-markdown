@@ -213,6 +213,10 @@ class Car(BaseModel):
     extra_pack: Union[ExtraPackBasic, ExtraPackAdvanced, None] = Field(
         default=None, description="The extra pack of the car."
     )
+    light_technology: str = Field(
+        description="The light technology of the car.",
+        pattern="LED|Halogen|Xenon",
+    )
 
     model_config = ConfigDict(
         json_schema_extra={
