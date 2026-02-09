@@ -449,14 +449,18 @@ def _handle_array_like_property(
     # Arrays should return the type as array
     # Other array-like properties should return the types of the nested oneOf, anyOf or allOf
     if return_type:
-        return return_type, array_separator[array_type].join(sorted(details))
+        return return_type, array_separator[array_type].join(
+            sorted(x for x in details if x is not None)
+        )
     else:
         # Dedeuplicate list of types, join them with null at the end if present
         types = sorted(set(types))
         if "`null`" in types:
             types.remove("`null`")
             types.append("`null`")
-        return " or ".join(types), array_separator[array_type].join(sorted(details))
+        return " or ".join(types), array_separator[array_type].join(
+            sorted(x for x in details if x is not None)
+        )
 
 
 def _get_property_details(
