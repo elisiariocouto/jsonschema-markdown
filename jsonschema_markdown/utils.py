@@ -35,9 +35,10 @@ def sort_properties(schema: dict) -> dict:
     properties = dict(
         sorted(
             properties.items(),
-            key=lambda item: "[deprecated]"
-            in str(item[1].get("description", "")).lower()
-            or item[1].get("deprecated", False),
+            key=lambda item: (
+                "[deprecated]" in str(item[1].get("description", "")).lower()
+                or item[1].get("deprecated", False)
+            ),
         )
     )
 
