@@ -97,6 +97,7 @@ this project does not currently support all features, but it should support:
   - Nested objects using `$defs` or `definitions`
   - Nested objects with dot notation (e.g., `parent.child[].property`)
   - Basic `oneOf`, `anyOf`, `allOf` functionality
+  - Conditional schemas with `if`/`then`/`else`
   - Arrays
   - Integers with minimum, maximum values and exclusives
   - Boolean values

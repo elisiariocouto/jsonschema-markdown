@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "User Account with Age Restrictions",
+  "type": "object",
+  "description": "User account with conditional requirements based on age.",
+  "properties": {
+    "age": {
+      "type": "integer",
+      "description": "User's age"
+    },
+    "parental_consent": {
+      "type": "string",
+      "description": "Parental consent document"
+    },
+    "email": {
+      "type": "string",
+      "description": "Email address"
+    }
+  },
+  "if": {
+    "properties": {
+      "age": {
+        "maximum": 18
+      }
+    }
+  },
+  "then": {
+    "properties": {
+      "parental_consent": {
+        "type": "string",
+        "pattern": "^consent-[a-z0-9]+$",
+        "description": "Parental consent ID (required for minors)"
+      }
+    }
+  }
+}

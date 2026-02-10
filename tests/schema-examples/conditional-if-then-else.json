@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Address with If/Then/Else",
+  "type": "object",
+  "description": "An address with conditional structure based on country.",
+  "properties": {
+    "country": {
+      "type": "string",
+      "description": "Country code"
+    },
+    "postal_code": {
+      "type": "string",
+      "description": "Postal code"
+    }
+  },
+  "if": {
+    "properties": {
+      "country": {
+        "const": "USA"
+      }
+    }
+  },
+  "then": {
+    "properties": {
+      "postal_code": {
+        "type": "string",
+        "pattern": "[0-9]{5}",
+        "description": "US ZIP code format"
+      }
+    }
+  },
+  "else": {
+    "properties": {
+      "postal_code": {
+        "type": "string",
+        "pattern": "[A-Z]{2}[0-9]{5}",
+        "description": "International postal code format"
+      }
+    }
+  }
+}

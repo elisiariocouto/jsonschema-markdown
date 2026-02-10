@@ -161,7 +161,11 @@ def generate(
 
 
 def _process_properties_recursively(
-    properties: dict, property_path: str, required_props: list, defs: dict
+    properties: dict,
+    property_path: str,
+    required_props: list,
+    defs: dict,
+    conditional_properties: dict = {},
 ) -> list:
     """
     Recursively process schema properties, including nested objects and arrays.
@@ -171,6 +175,7 @@ def _process_properties_recursively(
         property_path: Current property path (for nested notation)
         required_props: List of required properties at current level
         defs: Definitions dictionary
+        conditional_properties: Dict mapping property names to conditional variants
 
     Returns:
         List of property items for markdown table
@@ -211,6 +216,7 @@ def _process_properties_recursively(
             "type": property_type,
             "required": "✅" if prop_name in required_props else "",
             "possible_values": possible_values,
+            "conditional": "" if conditional_properties else "",
             "deprecated": (
                 "⛔️"
                 if "[deprecated]" in str(prop_details.get("description", "")).lower()
@@ -221,7 +227,28 @@ def _process_properties_recursively(
             "description": description,
             "examples": examples,
         }
+
+        # Remove conditional key if there are no conditionals to keep consistent dict keys
+        if not conditional_properties:
+            del item["conditional"]
+
         table_items.append(item)
+
+        # Add conditional variants if they exist
+        if full_path in conditional_properties:
+            for conditional_variant in conditional_properties[full_path]:
+                conditional_item = {
+                    "property": full_path,
+                    "type": conditional_variant["type"],
+                    "required": "✅" if conditional_variant.get("required") else "",
+                    "possible_values": conditional_variant["possible_values"],
+                    "conditional": conditional_variant["condition"],
+                    "deprecated": "",
+                    "default": "",
+                    "description": "",
+                    "examples": "",
+                }
+                table_items.append(conditional_item)
 
         # If this is an object with properties, process its nested properties
         if prop_type == "object" and prop_details.get("properties"):
@@ -230,6 +257,7 @@ def _process_properties_recursively(
                 full_path,
                 prop_details.get("required", []),
                 defs,
+                conditional_properties,
             )
             table_items.extend(nested_items)
 
@@ -243,6 +271,7 @@ def _process_properties_recursively(
                     array_path,
                     items_schema.get("required", []),
                     defs,
+                    conditional_properties,
                 )
                 table_items.extend(nested_items)
 
@@ -288,12 +317,19 @@ def _create_definition_table(schema: dict, defs: dict, hide_empty_columns: bool)
     # Use the sort_properties function to maintain the order
     sorted_properties = sort_properties(schema)
 
+    # Extract and process conditionals
+    conditionals = _extract_conditionals(schema)
+    conditional_properties = {}
+    if conditionals:
+        conditional_properties = _process_conditionals(conditionals, defs)
+
     # Process properties recursively instead of just the top level
     table_items = _process_properties_recursively(
         sorted_properties,
         "",  # Start with empty path
         schema.get("required", []),
         defs,
+        conditional_properties,
     )
 
     # This should not happen, but just in case
@@ -457,6 +493,141 @@ def _handle_array_like_property(
             types.remove("`null`")
             types.append("`null`")
         return " or ".join(types), array_separator[array_type].join(sorted(details))
+
+
+def _extract_conditionals(schema: dict) -> list:
+    """
+    Extract if/then/else structures from a schema.
+
+    Returns a list of conditional blocks, each containing 'if', 'then', and optionally 'else'.
+    """
+    conditionals = []
+
+    # Check for direct if/then/else at schema level
+    if "if" in schema:
+        if_block = schema["if"]
+        then_block = schema.get("then", {})
+        else_block = schema.get("else", {})
+
+        # Per JSON Schema spec, we ignore if without then or else
+        if then_block or else_block:
+            conditionals.append(
+                {"if": if_block, "then": then_block, "else": else_block}
+            )
+
+    # Check for conditionals within allOf
+    all_of = schema.get("allOf", [])
+    if isinstance(all_of, list):
+        for item in all_of:
+            if isinstance(item, dict) and "if" in item:
+                if_block = item["if"]
+                then_block = item.get("then", {})
+                else_block = item.get("else", {})
+
+                if then_block or else_block:
+                    conditionals.append(
+                        {"if": if_block, "then": then_block, "else": else_block}
+                    )
+
+    return conditionals
+
+
+def _format_condition(if_schema: dict) -> str:
+    """
+    Convert an if schema into a human-readable condition string.
+
+    Handles const, enum, type, minimum, maximum, pattern, and property constraints.
+    """
+    if not isinstance(if_schema, dict):
+        return "Complex condition"
+
+    conditions = []
+
+    # Handle properties with constraints
+    if "properties" in if_schema and isinstance(if_schema["properties"], dict):
+        for prop_name, prop_schema in if_schema["properties"].items():
+            if isinstance(prop_schema, dict):
+                if "const" in prop_schema:
+                    conditions.append(f"{prop_name} = {prop_schema['const']}")
+                elif "enum" in prop_schema:
+                    values = ", ".join(str(v) for v in prop_schema["enum"])
+                    conditions.append(f"{prop_name} in [{values}]")
+                elif "type" in prop_schema:
+                    conditions.append(f"{prop_name} is {prop_schema['type']}")
+                elif "minimum" in prop_schema:
+                    conditions.append(f"{prop_name} >= {prop_schema['minimum']}")
+                elif "maximum" in prop_schema:
+                    conditions.append(f"{prop_name} <= {prop_schema['maximum']}")
+                elif "pattern" in prop_schema:
+                    conditions.append(f'{prop_name} matches "{prop_schema["pattern"]}"')
+
+    # If we found conditions, format them
+    if conditions:
+        condition_str = " AND ".join(conditions)
+        return f"**If** {condition_str}"
+
+    return "Complex condition"
+
+
+def _process_conditionals(conditionals: list, defs: dict) -> dict:
+    """
+    Process conditional schemas into property modifications.
+
+    Returns a dict mapping property paths to lists of conditional variants.
+    Each variant includes condition, type, possible_values, and required status.
+    """
+    conditional_properties = {}
+
+    for conditional_block in conditionals:
+        condition = _format_condition(conditional_block["if"])
+
+        # Process 'then' schema
+        then_schema = conditional_block.get("then", {})
+        if isinstance(then_schema, dict) and "properties" in then_schema:
+            for prop_name, prop_details in then_schema["properties"].items():
+                prop_type = prop_details.get("type")
+                property_type, possible_values = _get_property_details(
+                    prop_type, prop_details, defs
+                )
+
+                if prop_name not in conditional_properties:
+                    conditional_properties[prop_name] = []
+
+                conditional_properties[prop_name].append(
+                    {
+                        "condition": condition,
+                        "type": property_type,
+                        "possible_values": possible_values,
+                        "required": prop_name in then_schema.get("required", []),
+                    }
+                )
+
+        # Process 'else' schema
+        else_schema = conditional_block.get("else", {})
+        if isinstance(else_schema, dict) and "properties" in else_schema:
+            else_condition = _format_condition(conditional_block["if"])
+            # Indicate it's the else branch
+            else_condition = else_condition.replace("**If**", "**If NOT**")
+
+            for prop_name, prop_details in else_schema["properties"].items():
+                prop_type = prop_details.get("type")
+                property_type, possible_values = _get_property_details(
+                    prop_type, prop_details, defs
+                )
+
+                if prop_name not in conditional_properties:
+                    conditional_properties[prop_name] = []
+
+                conditional_properties[prop_name].append(
+                    {
+                        "condition": else_condition,
+                        "type": property_type,
+                        "possible_values": possible_values,
+                        "required": prop_name in else_schema.get("required", []),
+                    }
+                )
+
+    return conditional_properties
 
 
 def _get_property_details(

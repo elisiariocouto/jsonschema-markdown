@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Address with Conditional Postal Code",
+  "type": "object",
+  "description": "An address object with conditional postal code format based on country.",
+  "properties": {
+    "country": {
+      "type": "string",
+      "description": "Country code"
+    },
+    "postal_code": {
+      "type": "string",
+      "description": "Postal code"
+    }
+  },
+  "if": {
+    "properties": {
+      "country": {
+        "const": "USA"
+      }
+    }
+  },
+  "then": {
+    "properties": {
+      "postal_code": {
+        "type": "string",
+        "pattern": "[0-9]{5}",
+        "description": "US postal code (5 digits)"
+      }
+    }
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Subscription with Conditional Required Fields",
+  "type": "object",
+  "description": "A subscription that requires additional fields for premium tier.",
+  "properties": {
+    "tier": {
+      "type": "string",
+      "enum": ["basic", "premium"],
+      "description": "Subscription tier"
+    },
+    "payment_method": {
+      "type": "string",
+      "description": "Payment method"
+    },
+    "billing_address": {
+      "type": "string",
+      "description": "Billing address"
+    }
+  },
+  "if": {
+    "properties": {
+      "tier": {
+        "const": "premium"
+      }
+    }
+  },
+  "then": {
+    "properties": {
+      "payment_method": {
+        "type": "string",
+        "description": "Payment method (required for premium)"
+      },
+      "billing_address": {
+        "type": "string",
+        "description": "Billing address (required for premium)"
+      }
+    },
+    "required": ["payment_method", "billing_address"]
+  }
+}

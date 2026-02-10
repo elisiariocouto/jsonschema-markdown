@@ -1,0 +1,73 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Multi-Country Address",
+  "type": "object",
+  "description": "Address with postal code validation for multiple countries.",
+  "properties": {
+    "country": {
+      "type": "string",
+      "enum": ["USA", "Canada", "UK"],
+      "description": "Country code"
+    },
+    "postal_code": {
+      "type": "string",
+      "description": "Postal code"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "country": {
+            "const": "USA"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "postal_code": {
+            "type": "string",
+            "pattern": "[0-9]{5}",
+            "description": "USA ZIP code"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "country": {
+            "const": "Canada"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "postal_code": {
+            "type": "string",
+            "pattern": "[A-Z][0-9][A-Z] [0-9][A-Z][0-9]",
+            "description": "Canadian postal code"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "country": {
+            "const": "UK"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "postal_code": {
+            "type": "string",
+            "pattern": "[A-Z]{1,2}[0-9]{1,2} [0-9][A-Z]{2}",
+            "description": "UK postcode"
+          }
+        }
+      }
+    }
+  ]
+}

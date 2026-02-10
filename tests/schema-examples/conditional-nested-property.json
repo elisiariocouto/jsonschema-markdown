@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Person with Address",
+  "type": "object",
+  "description": "A person object with nested address that has conditionals.",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Person's name"
+    },
+    "address": {
+      "type": "object",
+      "description": "Person's address",
+      "properties": {
+        "country": {
+          "type": "string",
+          "description": "Country code"
+        },
+        "postal_code": {
+          "type": "string",
+          "description": "Postal code"
+        }
+      },
+      "if": {
+        "properties": {
+          "country": {
+            "const": "USA"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "postal_code": {
+            "type": "string",
+            "pattern": "[0-9]{5}",
+            "description": "US ZIP code format"
+          }
+        }
+      }
+    }
+  }
+}
