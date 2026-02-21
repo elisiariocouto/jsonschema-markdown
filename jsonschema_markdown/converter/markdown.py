@@ -297,11 +297,11 @@ def _process_properties_recursively(
                     distinct_types = {t for t in all_prop_types if t}
                     if len(distinct_types) == 1:
                         combined_type = next(iter(distinct_types))
-                        combined_values = next(
-                            (v for v in all_prop_values if v), ""
-                        )
+                        combined_values = next((v for v in all_prop_values if v), "")
                     else:
-                        combined_type = ", ".join(sorted(distinct_types)) if distinct_types else ""
+                        combined_type = (
+                            ", ".join(sorted(distinct_types)) if distinct_types else ""
+                        )
                         combined_values = ""
                     combined_item = {
                         "property": combined_name,
