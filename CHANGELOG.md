@@ -1,4 +1,28 @@
 
+## 2026.2.0 (2026/02/21)
+
+### Bug Fixes
+
+-  Handle anyOf/oneOf/allOf with constraint-only entries in array items ([7e75dd37](https://github.com/elisiariocouto/jsonschema-markdown/commit/7e75dd37572328c9689e62e7b3cb12d6054c4537))
+-  Handle heterogeneous types in combined row and expand _TYPE_INFO_KEYS ([19867037](https://github.com/elisiariocouto/jsonschema-markdown/commit/198670370a65a3d0e1f56d85d449adfef920d7f0))
+
+
+### Features
+
+-  Add support for if/then/else conditionals. ([025ced7f](https://github.com/elisiariocouto/jsonschema-markdown/commit/025ced7f7e302be5a231c5e842f9254e6ccc767a))
+
+
+### Miscellaneous Tasks
+
+-  Reformat codebase. ([b61d8a0c](https://github.com/elisiariocouto/jsonschema-markdown/commit/b61d8a0c01f10bd63bc8b516604a5a57e89055f2))
+
+
+### Refactor
+
+-  Extract _get_combinator_key helper and _COMBINATOR_SEPARATORS constant; add AGENTS.md ([9c90fdaa](https://github.com/elisiariocouto/jsonschema-markdown/commit/9c90fdaaa372fe74f1748ad3907cca4a4fb50876))
+
+
+
 ## 2025.11.0 (2025/11/14)
 
 
