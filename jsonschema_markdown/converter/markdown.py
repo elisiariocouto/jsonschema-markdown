@@ -266,24 +266,13 @@ def _process_properties_recursively(
             items_schema = prop_details["items"]
             if items_schema.get("type") == "object" and items_schema.get("properties"):
                 array_path = f"{full_path}[]"  # Add [] to indicate array items
-                _combinator_key = (
-                    "oneOf"
-                    if "oneOf" in items_schema
-                    else (
-                        "anyOf"
-                        if "anyOf" in items_schema
-                        else "allOf"
-                        if "allOf" in items_schema
-                        else None
-                    )
-                )
-                _separator = {"oneOf": " or ", "anyOf": " and/or ", "allOf": " and "}
+                _combinator_key = _get_combinator_key(items_schema)
                 if _combinator_key is not None and all(
                     _is_constraint_only(e) for e in items_schema[_combinator_key]
                 ):
                     # The combinator entries are pure constraints (e.g. required only),
                     # not type alternatives. Emit a single combined row for all properties.
-                    combined_name = _separator[_combinator_key].join(
+                    combined_name = _COMBINATOR_SEPARATORS[_combinator_key].join(
                         f"{array_path}.{p}" for p in items_schema["properties"]
                     )
                     all_prop_types = []
@@ -502,9 +491,20 @@ _TYPE_INFO_KEYS = frozenset(
 )
 
 
+_COMBINATOR_SEPARATORS = {"oneOf": " or ", "anyOf": " and/or ", "allOf": " and "}
+
+
 def _is_constraint_only(schema_entry: dict) -> bool:
     """Return True if entry has only constraint keywords (e.g. required), no type info."""
     return not any(key in schema_entry for key in _TYPE_INFO_KEYS)
+
+
+def _get_combinator_key(schema: dict) -> str | None:
+    """Return the first combinator keyword found in schema, or None."""
+    for key in ("oneOf", "anyOf", "allOf"):
+        if key in schema:
+            return key
+    return None
 
 
 def _handle_array_like_property(
@@ -515,17 +515,7 @@ def _handle_array_like_property(
     """
     # TODO: Refactor this function to be more readable, handle arrays in a separate function
 
-    array_type = (
-        "oneOf"
-        if "oneOf" in property_details
-        else (
-            "anyOf"
-            if "anyOf" in property_details
-            else "allOf"
-            if "allOf" in property_details
-            else None
-        )
-    )
+    array_type = _get_combinator_key(property_details)
 
     if array_type is None:
         logger.warning(
@@ -534,8 +524,6 @@ def _handle_array_like_property(
         # TODO: Support for items, prefixItems, contains, minContains, maxContains, uniqueItems, unevaluatedItems
         # https://json-schema.org/understanding-json-schema/reference/array
         return f"`{property_type}`", {}
-
-    array_separator = {"oneOf": " or ", "anyOf": " and/or ", "allOf": " and "}
 
     removed_null = False
     with contextlib.suppress(Exception):
@@ -573,14 +561,16 @@ def _handle_array_like_property(
     # Other array-like properties should return the types of the nested oneOf, anyOf or allOf
     non_null_details = sorted(d for d in details if d is not None)
     if return_type:
-        return return_type, array_separator[array_type].join(non_null_details)
+        return return_type, _COMBINATOR_SEPARATORS[array_type].join(non_null_details)
     else:
         # Dedeuplicate list of types, join them with null at the end if present
         types = sorted(set(types))
         if "`null`" in types:
             types.remove("`null`")
             types.append("`null`")
-        return " or ".join(types), array_separator[array_type].join(non_null_details)
+        return " or ".join(types), _COMBINATOR_SEPARATORS[array_type].join(
+            non_null_details
+        )
 
 
 def _extract_conditionals(schema: dict) -> list:
