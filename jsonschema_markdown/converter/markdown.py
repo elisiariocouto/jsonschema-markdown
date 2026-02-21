@@ -318,6 +318,41 @@ def _process_properties_recursively(
     return table_items
 
 
+def _extract_all_conditionals(schema: dict, defs: dict, prefix: str = "") -> dict:
+    """
+    Recursively extract and process conditionals from a schema and all nested objects.
+
+    Args:
+        schema: The JSON schema to extract conditionals from.
+        defs: Definitions dictionary for resolving references.
+        prefix: Current property path prefix for nested objects (e.g. "address").
+
+    Returns:
+        A dict mapping full property paths (e.g. "address.postal_code") to lists of
+        conditional variant dictionaries, each containing condition, type,
+        possible_values, and required status.
+    """
+    conditional_properties = {}
+
+    # Extract conditionals at current level
+    conditionals = _extract_conditionals(schema)
+    if conditionals:
+        processed = _process_conditionals(conditionals, defs)
+        for prop_name, variants in processed.items():
+            full_path = f"{prefix}.{prop_name}" if prefix else prop_name
+            conditional_properties[full_path] = variants
+
+    # Recurse into nested object properties
+    properties = schema.get("properties", {})
+    for prop_name, prop_details in properties.items():
+        if isinstance(prop_details, dict) and prop_details.get("type") == "object":
+            full_path = f"{prefix}.{prop_name}" if prefix else prop_name
+            nested = _extract_all_conditionals(prop_details, defs, full_path)
+            conditional_properties.update(nested)
+
+    return conditional_properties
+
+
 def _create_definition_table(schema: dict, defs: dict, hide_empty_columns: bool) -> str:
     """
     Create a table of the properties in the schema.
@@ -357,11 +392,8 @@ def _create_definition_table(schema: dict, defs: dict, hide_empty_columns: bool)
     # Use the sort_properties function to maintain the order
     sorted_properties = sort_properties(schema)
 
-    # Extract and process conditionals
-    conditionals = _extract_conditionals(schema)
-    conditional_properties = {}
-    if conditionals:
-        conditional_properties = _process_conditionals(conditionals, defs)
+    # Extract and process conditionals from all levels (including nested objects)
+    conditional_properties = _extract_all_conditionals(schema, defs)
 
     # Process properties recursively instead of just the top level
     table_items = _process_properties_recursively(
