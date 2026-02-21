@@ -266,14 +266,52 @@ def _process_properties_recursively(
             items_schema = prop_details["items"]
             if items_schema.get("type") == "object" and items_schema.get("properties"):
                 array_path = f"{full_path}[]"  # Add [] to indicate array items
-                nested_items = _process_properties_recursively(
-                    items_schema["properties"],
-                    array_path,
-                    items_schema.get("required", []),
-                    defs,
-                    conditional_properties,
+                _combinator_key = (
+                    "oneOf"
+                    if "oneOf" in items_schema
+                    else (
+                        "anyOf"
+                        if "anyOf" in items_schema
+                        else "allOf"
+                        if "allOf" in items_schema
+                        else None
+                    )
                 )
-                table_items.extend(nested_items)
+                _separator = {"oneOf": " or ", "anyOf": " and/or ", "allOf": " and "}
+                if _combinator_key is not None and all(
+                    _is_constraint_only(e) for e in items_schema[_combinator_key]
+                ):
+                    # The combinator entries are pure constraints (e.g. required only),
+                    # not type alternatives. Emit a single combined row for all properties.
+                    combined_name = _separator[_combinator_key].join(
+                        f"{array_path}.{p}" for p in items_schema["properties"]
+                    )
+                    first_prop = next(iter(items_schema["properties"].values()))
+                    p_type, p_values = _get_property_details(
+                        first_prop.get("type"), first_prop, defs
+                    )
+                    combined_item = {
+                        "property": combined_name,
+                        "type": p_type,
+                        "required": "",
+                        "possible_values": p_values,
+                        "deprecated": "",
+                        "default": "",
+                        "description": "",
+                        "examples": "",
+                    }
+                    if conditional_properties:
+                        combined_item["conditional"] = ""
+                    table_items.append(combined_item)
+                else:
+                    nested_items = _process_properties_recursively(
+                        items_schema["properties"],
+                        array_path,
+                        items_schema.get("required", []),
+                        defs,
+                        conditional_properties,
+                    )
+                    table_items.extend(nested_items)
 
     return table_items
 
@@ -454,6 +492,29 @@ def get_property_if_ref(property_details: dict, defs) -> tuple:
     return None, None
 
 
+_TYPE_INFO_KEYS = frozenset(
+    {
+        "type",
+        "$ref",
+        "properties",
+        "anyOf",
+        "oneOf",
+        "allOf",
+        "enum",
+        "const",
+        "items",
+        "pattern",
+        "format",
+        "additionalProperties",
+    }
+)
+
+
+def _is_constraint_only(schema_entry: dict) -> bool:
+    """Return True if entry has only constraint keywords (e.g. required), no type info."""
+    return not any(key in schema_entry for key in _TYPE_INFO_KEYS)
+
+
 def _handle_array_like_property(
     property_type: str, property_details: dict, defs: dict, is_array=False
 ):
@@ -493,6 +554,8 @@ def _handle_array_like_property(
     details = []
 
     for value in property_details[array_type]:
+        if _is_constraint_only(value):
+            continue
         ref_type, ref_details = get_property_if_ref(value, defs)
         if ref_type or ref_details:
             types.append(ref_type)
@@ -516,15 +579,16 @@ def _handle_array_like_property(
 
     # Arrays should return the type as array
     # Other array-like properties should return the types of the nested oneOf, anyOf or allOf
+    non_null_details = sorted(d for d in details if d is not None)
     if return_type:
-        return return_type, array_separator[array_type].join(sorted(details))
+        return return_type, array_separator[array_type].join(non_null_details)
     else:
         # Dedeuplicate list of types, join them with null at the end if present
         types = sorted(set(types))
         if "`null`" in types:
             types.remove("`null`")
             types.append("`null`")
-        return " or ".join(types), array_separator[array_type].join(sorted(details))
+        return " or ".join(types), array_separator[array_type].join(non_null_details)
 
 
 def _extract_conditionals(schema: dict) -> list:

@@ -1,0 +1,30 @@
+{
+  "properties": {
+    "list": {
+      "description": "List",
+      "items": {
+        "anyOf": [
+          {
+            "required": ["A"]
+          },
+          {
+            "required": ["B"]
+          }
+        ],
+        "properties": {
+          "A": {
+            "type": "string"
+          },
+          "B": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "minItems": 1,
+      "type": "array"
+    }
+  },
+  "title": "Example",
+  "type": "object"
+}
