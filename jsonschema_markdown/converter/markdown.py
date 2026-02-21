@@ -286,15 +286,28 @@ def _process_properties_recursively(
                     combined_name = _separator[_combinator_key].join(
                         f"{array_path}.{p}" for p in items_schema["properties"]
                     )
-                    first_prop = next(iter(items_schema["properties"].values()))
-                    p_type, p_values = _get_property_details(
-                        first_prop.get("type"), first_prop, defs
-                    )
+                    all_prop_types = []
+                    all_prop_values = []
+                    for _prop in items_schema["properties"].values():
+                        _p_type, _p_values = _get_property_details(
+                            _prop.get("type"), _prop, defs
+                        )
+                        all_prop_types.append(_p_type)
+                        all_prop_values.append(_p_values)
+                    distinct_types = {t for t in all_prop_types if t}
+                    if len(distinct_types) == 1:
+                        combined_type = next(iter(distinct_types))
+                        combined_values = next(
+                            (v for v in all_prop_values if v), ""
+                        )
+                    else:
+                        combined_type = ", ".join(sorted(distinct_types)) if distinct_types else ""
+                        combined_values = ""
                     combined_item = {
                         "property": combined_name,
-                        "type": p_type,
+                        "type": combined_type,
                         "required": "",
-                        "possible_values": p_values,
+                        "possible_values": combined_values,
                         "deprecated": "",
                         "default": "",
                         "description": "",
@@ -474,6 +487,17 @@ _TYPE_INFO_KEYS = frozenset(
         "pattern",
         "format",
         "additionalProperties",
+        "not",
+        "if",
+        "then",
+        "else",
+        "prefixItems",
+        "contains",
+        "patternProperties",
+        "propertyNames",
+        "contentEncoding",
+        "contentMediaType",
+        "contentSchema",
     }
 )
 
