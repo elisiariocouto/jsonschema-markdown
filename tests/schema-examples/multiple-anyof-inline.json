@@ -1,0 +1,551 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "scene_time": {
+      "format": "date-time",
+      "title": "Scene Time",
+      "type": "string"
+    },
+    "cinema_event": {
+      "anyOf": [
+        {
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "director_verdict",
+              "default": "director_verdict",
+              "title": "Kind",
+              "type": "string"
+            },
+            "studio_lot": {
+              "title": "Studio Lot",
+              "type": "string"
+            },
+            "director_contact": {
+              "title": "Director Contact",
+              "type": "string"
+            },
+            "producer_contact": {
+              "title": "Producer Contact",
+              "type": "string"
+            },
+            "franchise": {
+              "title": "Franchise",
+              "type": "string"
+            },
+            "release_stage": {
+              "title": "Release Stage",
+              "type": "string"
+            },
+            "verdict": {
+              "title": "Verdict",
+              "type": "string"
+            },
+            "reel_code": {
+              "title": "Reel Code",
+              "type": "string"
+            },
+            "screening_id": {
+              "title": "Screening Id",
+              "type": "string"
+            },
+            "character_arc": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Character Arc"
+            },
+            "cut_style": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Cut Style"
+            }
+          },
+          "required": [
+            "studio_lot",
+            "director_contact",
+            "producer_contact",
+            "franchise",
+            "release_stage",
+            "verdict",
+            "reel_code",
+            "screening_id"
+          ],
+          "title": "DirectorVerdict",
+          "type": "object"
+        },
+        {
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "prop_vault_action",
+              "default": "prop_vault_action",
+              "title": "Kind",
+              "type": "string"
+            },
+            "crew_member": {
+              "title": "Crew Member",
+              "type": "string"
+            },
+            "prop_name": {
+              "title": "Prop Name",
+              "type": "string"
+            },
+            "studio_lot": {
+              "title": "Studio Lot",
+              "type": "string"
+            },
+            "franchise": {
+              "title": "Franchise",
+              "type": "string"
+            },
+            "release_stage": {
+              "title": "Release Stage",
+              "type": "string"
+            },
+            "action": {
+              "title": "Action",
+              "type": "string"
+            }
+          },
+          "required": [
+            "crew_member",
+            "prop_name",
+            "studio_lot",
+            "franchise",
+            "release_stage",
+            "action"
+          ],
+          "title": "PropVaultAction",
+          "type": "object"
+        },
+        {
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "casting_slot_action",
+              "default": "casting_slot_action",
+              "title": "Kind",
+              "type": "string"
+            },
+            "final_notes": {
+              "anyOf": [
+                {
+                  "properties": {
+                    "contact": {
+                      "title": "Contact",
+                      "type": "string"
+                    },
+                    "stage_name": {
+                      "title": "Stage Name",
+                      "type": "string"
+                    },
+                    "mark_ms": {
+                      "title": "Mark Ms",
+                      "type": "integer"
+                    },
+                    "commentary": {
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ],
+                      "default": null,
+                      "title": "Commentary"
+                    }
+                  },
+                  "required": [
+                    "contact",
+                    "stage_name",
+                    "mark_ms"
+                  ],
+                  "title": "Credit",
+                  "type": "object"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null
+            },
+            "character_arc": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Character Arc"
+            },
+            "production_meta": {
+              "anyOf": [
+                {
+                  "additionalProperties": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "items": {
+                          "type": "string"
+                        },
+                        "type": "array"
+                      }
+                    ]
+                  },
+                  "type": "object"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Production Meta"
+            },
+            "audition_notes": {
+              "anyOf": [
+                {
+                  "properties": {
+                    "contact": {
+                      "title": "Contact",
+                      "type": "string"
+                    },
+                    "stage_name": {
+                      "title": "Stage Name",
+                      "type": "string"
+                    },
+                    "mark_ms": {
+                      "title": "Mark Ms",
+                      "type": "integer"
+                    },
+                    "commentary": {
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ],
+                      "default": null,
+                      "title": "Commentary"
+                    }
+                  },
+                  "required": [
+                    "contact",
+                    "stage_name",
+                    "mark_ms"
+                  ],
+                  "title": "Credit",
+                  "type": "object"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null
+            },
+            "casting_lane": {
+              "anyOf": [
+                {
+                  "enum": [
+                    "ensemble",
+                    "lead",
+                    "franchise"
+                  ],
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Casting Lane"
+            },
+            "phase_state": {
+              "title": "Phase State",
+              "type": "string"
+            }
+          },
+          "required": [
+            "phase_state"
+          ],
+          "title": "CastingSlotAction",
+          "type": "object"
+        },
+        {
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "set_renaming",
+              "default": "set_renaming",
+              "title": "Kind",
+              "type": "string"
+            },
+            "old_set": {
+              "title": "Old Set",
+              "type": "string"
+            },
+            "new_set": {
+              "title": "New Set",
+              "type": "string"
+            },
+            "release_stage": {
+              "title": "Release Stage",
+              "type": "string"
+            },
+            "franchise": {
+              "title": "Franchise",
+              "type": "string"
+            },
+            "reel_code": {
+              "title": "Reel Code",
+              "type": "string"
+            },
+            "studio_project_id": {
+              "title": "Studio Project Id",
+              "type": "string"
+            },
+            "screening_id": {
+              "title": "Screening Id",
+              "type": "string"
+            }
+          },
+          "required": [
+            "old_set",
+            "new_set",
+            "release_stage",
+            "franchise",
+            "reel_code",
+            "studio_project_id",
+            "screening_id"
+          ],
+          "title": "SetRenaming",
+          "type": "object"
+        },
+        {
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "box_office_action",
+              "default": "box_office_action",
+              "title": "Kind",
+              "type": "string"
+            },
+            "analyst": {
+              "title": "Analyst",
+              "type": "string"
+            },
+            "franchise": {
+              "title": "Franchise",
+              "type": "string"
+            },
+            "prior_gross": {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Prior Gross"
+            },
+            "updated_gross": {
+              "title": "Updated Gross",
+              "type": "number"
+            },
+            "action": {
+              "title": "Action",
+              "type": "string"
+            },
+            "market": {
+              "title": "Market",
+              "type": "string"
+            }
+          },
+          "required": [
+            "analyst",
+            "franchise",
+            "updated_gross",
+            "action",
+            "market"
+          ],
+          "title": "BoxOfficeAction",
+          "type": "object"
+        },
+        {
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "premiere_event",
+              "default": "premiere_event",
+              "title": "Kind",
+              "type": "string"
+            },
+            "event_kind": {
+              "enum": [
+                "shoot_started",
+                "shoot_paused",
+                "shoot_resumed",
+                "shoot_wrapped",
+                "shoot_failed"
+              ],
+              "title": "Event Kind",
+              "type": "string"
+            },
+            "release_stage": {
+              "title": "Release Stage",
+              "type": "string"
+            },
+            "franchise": {
+              "title": "Franchise",
+              "type": "string"
+            },
+            "reel_code": {
+              "title": "Reel Code",
+              "type": "string"
+            },
+            "screening_id": {
+              "title": "Screening Id",
+              "type": "string"
+            },
+            "festival_id": {
+              "title": "Festival Id",
+              "type": "string"
+            },
+            "scene_hash": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Scene Hash"
+            },
+            "studio_project_id": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Studio Project Id"
+            }
+          },
+          "required": [
+            "event_kind",
+            "release_stage",
+            "franchise",
+            "reel_code",
+            "screening_id",
+            "festival_id"
+          ],
+          "title": "PremiereEvent",
+          "type": "object"
+        },
+        {
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "crew_event",
+              "default": "crew_event",
+              "title": "Kind",
+              "type": "string"
+            },
+            "event_kind": {
+              "enum": [
+                "crew_called",
+                "crew_wrapped",
+                "crew_issue"
+              ],
+              "title": "Event Kind",
+              "type": "string"
+            },
+            "release_stage": {
+              "title": "Release Stage",
+              "type": "string"
+            },
+            "franchise": {
+              "title": "Franchise",
+              "type": "string"
+            },
+            "screening_id": {
+              "title": "Screening Id",
+              "type": "string"
+            },
+            "crew_unit": {
+              "title": "Crew Unit",
+              "type": "string"
+            },
+            "act": {
+              "title": "Act",
+              "type": "string"
+            },
+            "reel_code": {
+              "title": "Reel Code",
+              "type": "string"
+            },
+            "outcome": {
+              "anyOf": [
+                {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Outcome"
+            }
+          },
+          "required": [
+            "event_kind",
+            "release_stage",
+            "franchise",
+            "screening_id",
+            "crew_unit",
+            "act",
+            "reel_code",
+            "outcome"
+          ],
+          "title": "CrewEvent",
+          "type": "object"
+        }
+      ],
+      "title": "Cinema Event"
+    }
+  },
+  "required": [
+    "scene_time",
+    "cinema_event"
+  ],
+  "title": "StudioAudit",
+  "type": "object"
+}

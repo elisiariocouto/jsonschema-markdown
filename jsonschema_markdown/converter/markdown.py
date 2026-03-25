@@ -1,4 +1,5 @@
 import contextlib
+import copy
 import json
 import sys
 import urllib.parse
@@ -79,6 +80,95 @@ def _get_schema_header(
     return md
 
 
+def _extract_inline_defs(schema: dict) -> dict:
+    """
+    Walk the schema tree and extract inline object definitions from
+    anyOf/oneOf/allOf combinators into $defs, replacing them with $ref.
+
+    Returns a new schema dict (deep copy) with inline objects promoted to $defs.
+    """
+    schema = copy.deepcopy(schema)
+
+    defs_key = "definitions" if "definitions" in schema else "$defs"
+
+    if defs_key not in schema:
+        schema[defs_key] = {}
+
+    defs = schema[defs_key]
+    counter = [0]
+
+    def _make_ref(name: str) -> dict:
+        return {"$ref": f"#/{defs_key}/{name}"}
+
+    def _choose_name(obj: dict) -> str:
+        title = obj.get("title")
+        if not title:
+            counter[0] += 1
+            return f"InlineObject{counter[0]}"
+
+        name = title
+        if name in defs:
+            if defs[name] == obj:
+                return name
+            suffix = 2
+            while f"{title}_{suffix}" in defs:
+                suffix += 1
+            return f"{title}_{suffix}"
+        return name
+
+    def _is_extractable(entry: dict) -> bool:
+        if not isinstance(entry, dict) or "$ref" in entry:
+            return False
+        has_properties = bool(entry.get("properties"))
+        is_object = entry.get("type") == "object" or (
+            has_properties and "type" not in entry
+        )
+        return is_object and has_properties
+
+    def _process_combinator(parent: dict, combinator_key: str):
+        entries = parent[combinator_key]
+        for i, entry in enumerate(entries):
+            if not isinstance(entry, dict):
+                continue
+            _walk(entry)
+            if _is_extractable(entry):
+                name = _choose_name(entry)
+                if name not in defs:
+                    defs[name] = entry
+                entries[i] = _make_ref(name)
+
+    def _walk(node: dict):
+        if not isinstance(node, dict):
+            return
+
+        for _prop_name, prop_details in node.get("properties", {}).items():
+            if not isinstance(prop_details, dict):
+                continue
+
+            for combinator in ("anyOf", "oneOf", "allOf"):
+                if combinator in prop_details:
+                    _process_combinator(prop_details, combinator)
+
+            items = prop_details.get("items")
+            if isinstance(items, dict):
+                for combinator in ("anyOf", "oneOf", "allOf"):
+                    if combinator in items:
+                        _process_combinator(items, combinator)
+                _walk(items)
+
+            _walk(prop_details)
+
+    _walk(schema)
+
+    for def_name in list(defs.keys()):
+        _walk(defs[def_name])
+
+    if not defs:
+        del schema[defs_key]
+
+    return schema
+
+
 def generate(
     schema: dict,
     title: str = "jsonschema-markdown",
@@ -119,6 +209,8 @@ def generate(
         _schema: dict = jsonref.replace_refs(schema)  # type: ignore
     else:
         _schema = schema
+
+    _schema = _extract_inline_defs(_schema)
     markdown = ""
 
     # Add the title and description of the schema
