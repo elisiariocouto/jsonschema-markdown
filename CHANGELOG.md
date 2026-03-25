@@ -1,4 +1,18 @@
 
+## 2026.3.0 (2026/03/25)
+
+### Features
+
+-  Extract inline object definitions from anyOf/oneOf/allOf into $defs ([c38051b6](https://github.com/elisiariocouto/jsonschema-markdown/commit/c38051b60ec82c56989736d09b555043f61f2ce4))
+
+
+### Miscellaneous Tasks
+
+-  Update AGENTS.md. ([b50f03c3](https://github.com/elisiariocouto/jsonschema-markdown/commit/b50f03c3ac251209c841cec18000c87fca8a8fd8))
+-  Update dependencies. ([a941fb3b](https://github.com/elisiariocouto/jsonschema-markdown/commit/a941fb3bbcd7c9516a06ad16a1268042d39df8dd))
+
+
+
 ## 2026.2.0 (2026/02/21)
 
 ### Bug Fixes

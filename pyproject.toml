@@ -1,6 +1,6 @@
 [project]
 name = "jsonschema-markdown"
-version = "2026.2.0"
+version = "2026.3.0"
 description = "Export a JSON Schema document to Markdown documentation."
 authors = [{ name = "Elisiário Couto", email = "elisiario@couto.io" }]
 requires-python = ">=3.9"
