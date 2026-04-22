@@ -21,6 +21,13 @@ def _should_include_column(column_values):
     return any(value for value in column_values)
 
 
+def _type_matches(prop_type: str | list | None, target: str) -> bool:
+    """True if prop_type equals target or is a list containing target (nullable form)."""
+    if prop_type == target:
+        return True
+    return isinstance(prop_type, list) and target in prop_type
+
+
 def _format_example(example, examples_format, sort_yaml_keys=False):
     """
     Format the example based on the examples_format. Only works for dict.
@@ -120,7 +127,7 @@ def _extract_inline_defs(schema: dict) -> dict:
         if not isinstance(entry, dict) or "$ref" in entry:
             return False
         has_properties = bool(entry.get("properties"))
-        is_object = entry.get("type") == "object" or (
+        is_object = _type_matches(entry.get("type"), "object") or (
             has_properties and "type" not in entry
         )
         return is_object and has_properties
@@ -343,7 +350,7 @@ def _process_properties_recursively(
                 table_items.append(conditional_item)
 
         # If this is an object with properties, process its nested properties
-        if prop_type == "object" and prop_details.get("properties"):
+        if _type_matches(prop_type, "object") and prop_details.get("properties"):
             nested_items = _process_properties_recursively(
                 prop_details["properties"],
                 full_path,
@@ -354,9 +361,13 @@ def _process_properties_recursively(
             table_items.extend(nested_items)
 
         # If this is an array with items that are objects, process them too
-        elif prop_type == "array" and isinstance(prop_details.get("items"), dict):
+        elif _type_matches(prop_type, "array") and isinstance(
+            prop_details.get("items"), dict
+        ):
             items_schema = prop_details["items"]
-            if items_schema.get("type") == "object" and items_schema.get("properties"):
+            if _type_matches(items_schema.get("type"), "object") and items_schema.get(
+                "properties"
+            ):
                 array_path = f"{full_path}[]"  # Add [] to indicate array items
                 _combinator_key = _get_combinator_key(items_schema)
                 if _combinator_key is not None and all(
@@ -437,7 +448,9 @@ def _extract_all_conditionals(schema: dict, defs: dict, prefix: str = "") -> dic
     # Recurse into nested object properties
     properties = schema.get("properties", {})
     for prop_name, prop_details in properties.items():
-        if isinstance(prop_details, dict) and prop_details.get("type") == "object":
+        if isinstance(prop_details, dict) and _type_matches(
+            prop_details.get("type"), "object"
+        ):
             full_path = f"{prefix}.{prop_name}" if prefix else prop_name
             nested = _extract_all_conditionals(prop_details, defs, full_path)
             conditional_properties.update(nested)
@@ -838,6 +851,22 @@ def _get_property_details(
     """
     Get the possible values for a property.
     """
+
+    # Normalize list-form types (e.g. ["object", "null"]) into a recognizable
+    # base type plus an optional "or null" suffix so the rest of this function
+    # can rely on scalar type strings.
+    if isinstance(property_type, list):
+        non_null = [t for t in property_type if t != "null"]
+        has_null = "null" in property_type
+        if len(non_null) == 1:
+            base_type, base_details = _get_property_details(
+                non_null[0], property_details, defs
+            )
+            if has_null:
+                return f"{base_type} or `null`", base_details
+            return base_type, base_details
+        types = " or ".join(f"`{t}`" for t in property_type)
+        return types, ""
 
     # Check if the property is a reference
     ref_type, ref_details = get_property_if_ref(property_details, defs)

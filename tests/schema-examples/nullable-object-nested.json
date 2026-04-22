@@ -1,0 +1,32 @@
+{
+  "title": "NullableObjectNested",
+  "description": "Schema with a nullable object property that still has nested fields rendered.",
+  "type": "object",
+  "properties": {
+    "profile": {
+      "type": ["object", "null"],
+      "description": "User profile, or null if anonymous.",
+      "properties": {
+        "first_name": {
+          "type": "string"
+        },
+        "last_name": {
+          "type": "string"
+        }
+      },
+      "required": ["first_name"]
+    },
+    "history": {
+      "type": ["array", "null"],
+      "description": "Action history or null.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "action": { "type": "string" },
+          "timestamp": { "type": "string", "format": "date-time" }
+        }
+      }
+    }
+  },
+  "required": ["profile"]
+}
