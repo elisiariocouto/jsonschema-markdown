@@ -1,4 +1,30 @@
 
+## 2026.5.0 (2026/05/04)
+
+### Bug Fixes
+
+- **converter:** Render nested properties for nullable object and array types. ([21b01908](https://github.com/elisiariocouto/jsonschema-markdown/commit/21b01908590901dc57acf1a8702092512958ea0f))
+
+
+### Miscellaneous Tasks
+
+-  Update dependencies. ([de99a157](https://github.com/elisiariocouto/jsonschema-markdown/commit/de99a1577e5468ade3b5c36a84f6abf541912c27))
+
+
+
+## 2026.5.0 (2026/05/04)
+
+### Bug Fixes
+
+- **converter:** Render nested properties for nullable object and array types. ([21b01908](https://github.com/elisiariocouto/jsonschema-markdown/commit/21b01908590901dc57acf1a8702092512958ea0f))
+
+
+### Miscellaneous Tasks
+
+-  Update dependencies. ([de99a157](https://github.com/elisiariocouto/jsonschema-markdown/commit/de99a1577e5468ade3b5c36a84f6abf541912c27))
+
+
+
 ## 2026.3.0 (2026/03/25)
 
 ### Features
