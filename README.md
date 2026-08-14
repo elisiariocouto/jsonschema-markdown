@@ -72,13 +72,13 @@ The Docker image is available at:
 
 ## Usage as a library
 
-To use it as a library, load your JSON schema file as Python `dict` and pass it to generate.
+To use it as a library, load your JSON schema file as Python `dict` and pass it to `generate`.
 The function will return a string with the markdown.
 
 ```python
 import jsonschema_markdown
 
-with open('schema.json') as f:
+with open('schema.json', 'r', encoding='utf-8') as f:
     schema = json.load(f)
 
 markdown = jsonschema_markdown.generate(schema)
