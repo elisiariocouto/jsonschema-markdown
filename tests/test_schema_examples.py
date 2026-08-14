@@ -32,10 +32,10 @@ def get_test_cases():
 
 @pytest.mark.parametrize("json_path, md_path, kwargs", get_test_cases())
 def test_schema_examples(json_path, md_path, kwargs):
-    with open(json_path, "r") as f:
+    with open(json_path, "r", encoding="utf-8") as f:
         schema = json.load(f)
 
-    with open(md_path, "r") as f:
+    with open(md_path, "r", encoding="utf-8") as f:
         expected_markdown = f.read()
 
     markdown = jsonschema_markdown.generate(schema, **kwargs)
