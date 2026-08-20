@@ -1,4 +1,5 @@
 import json
+import sys
 
 import click
 
@@ -6,7 +7,7 @@ import jsonschema_markdown
 
 
 @click.command()
-@click.argument("filename", type=click.File("r"))
+@click.argument("filename", type=click.File("r", encoding="utf-8"))
 @click.option(
     "-t",
     "--title",
@@ -88,6 +89,11 @@ def cli(
 
     # Convert the file contents to markdown
     markdown = jsonschema_markdown.generate(file_contents, **kwargs)
+
+    # The generated markdown always contains non-ASCII characters, so force UTF-8
+    # output instead of the platform default (e.g. cp1252 on Windows).
+    if hasattr(sys.stdout, "reconfigure"):
+        sys.stdout.reconfigure(encoding="utf-8")
 
     # Output the markdown
     click.echo(markdown, nl=False)

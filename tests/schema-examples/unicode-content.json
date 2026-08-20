@@ -1,0 +1,28 @@
+{
+  "title": "Café Menu — Spécialités",
+  "description": "Schema with non-ASCII content: accents, em dashes — and CJK (日本語).",
+  "type": "object",
+  "properties": {
+    "plat": {
+      "type": "string",
+      "description": "Le plat du jour — crème brûlée 🍮",
+      "default": "crème brûlée"
+    },
+    "größe": {
+      "type": "string",
+      "description": "Portionsgröße",
+      "enum": ["klein", "mittel", "groß"]
+    },
+    "説明": {
+      "type": "string",
+      "description": "日本語の説明 — CJK property name"
+    },
+    "prix": {
+      "type": "number",
+      "description": "Prix en € (euros)",
+      "minimum": 0
+    }
+  },
+  "required": ["plat", "prix"],
+  "additionalProperties": false
+}
