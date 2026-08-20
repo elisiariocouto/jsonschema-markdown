@@ -36,12 +36,14 @@ def _format_example(example, examples_format, sort_yaml_keys=False):
     try:
         if examples_format == "yaml":
             if isinstance(example, dict):
-                return f"```yaml\n{yaml.dump(example, sort_keys=sort_yaml_keys).strip()}\n```"
+                return f"```yaml\n{yaml.dump(example, sort_keys=sort_yaml_keys, allow_unicode=True).strip()}\n```"
             else:
                 return f"```yaml\n{example}\n```"
         elif examples_format == "json":
             if isinstance(example, dict):
-                return f"```json\n{json.dumps(example, indent=2)}\n```"
+                return (
+                    f"```json\n{json.dumps(example, indent=2, ensure_ascii=False)}\n```"
+                )
             else:
                 return f"```json\n{example}\n```"
     except Exception:
@@ -295,7 +297,7 @@ def _process_properties_recursively(
 
         has_default_value = "default" in prop_details
         default_value = (
-            "`" + json.dumps(prop_details.get("default")) + "`"
+            "`" + json.dumps(prop_details.get("default"), ensure_ascii=False) + "`"
             if has_default_value
             else ""
         )
