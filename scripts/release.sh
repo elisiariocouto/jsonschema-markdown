@@ -36,7 +36,8 @@ echo " > Current version is $CURRENT_VERSION"
 echo " > Setting new version to $NEXT_VERSION"
 
 # Manually update version in pyproject.toml
-sed -i '' "s/^version = .*/version = \"${NEXT_VERSION}\"/" pyproject.toml
+sed "s/^version = .*/version = \"${NEXT_VERSION}\"/" pyproject.toml > pyproject.toml.tmp \
+    && mv pyproject.toml.tmp pyproject.toml
 
 echo " > Version bumped to $NEXT_VERSION"
 echo "Updating CHANGELOG.md"

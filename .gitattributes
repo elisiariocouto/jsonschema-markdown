@@ -1,0 +1,4 @@
+# Keep golden test fixtures and schemas LF so generated output compares equal
+# regardless of the platform's core.autocrlf setting.
+*.md text eol=lf
+*.json text eol=lf
