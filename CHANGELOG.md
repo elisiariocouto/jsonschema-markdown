@@ -1,4 +1,17 @@
 
+## 2026.8.0 (2026/08/21)
+
+### Bug Fixes
+
+- **cli:** Use explicit UTF-8 for schema input and markdown output. ([60bad823](https://github.com/elisiariocouto/jsonschema-markdown/commit/60bad82312f25806ff0729990937c5a15ac96578))
+
+
+### Ci
+
+-  Test on Windows and fix portability issues. ([534c644c](https://github.com/elisiariocouto/jsonschema-markdown/commit/534c644c7b865ccdb2ca02ac2e94efa374db8276))
+
+
+
 ## 2026.5.0 (2026/05/04)
 
 ### Bug Fixes
