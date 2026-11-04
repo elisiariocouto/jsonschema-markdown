@@ -1,4 +1,24 @@
 
+## 2026.11.0 (2026/11/04)
+
+### Features
+
+-  Add Python 3.15 support. ([31362fcc](https://github.com/elisiariocouto/jsonschema-markdown/commit/31362fcca476676d5a309d81ad7dd785c962da35))
+-  Drop Python 3.10 support. ([a4586472](https://github.com/elisiariocouto/jsonschema-markdown/commit/a45864720b5d4f36ca3bf6cb7dbab7a5c8de15eb))
+  - **BREAKING**: Drop Python 3.10 support.
+
+
+### Miscellaneous Tasks
+
+- **deps:** Upgrade dependencies and pre-commit hooks. ([909b1dcb](https://github.com/elisiariocouto/jsonschema-markdown/commit/909b1dcbc3da79ad26fc5525939143857780ffb0))
+
+
+### Ci
+
+-  Bump GitHub Actions to their latest major versions. ([159aee05](https://github.com/elisiariocouto/jsonschema-markdown/commit/159aee05711b1c313883742fa18d99201dda41d1))
+
+
+
 ## 2026.8.0 (2026/08/21)
 
 ### Bug Fixes
