@@ -46,7 +46,7 @@ def _format_example(example, examples_format, sort_yaml_keys=False):
                 )
             else:
                 return f"```json\n{example}\n```"
-    except Exception:
+    except Exception:  # noqa: BLE001 - fall back to a plain code block
         logger.debug(f"Failed to format example in '{examples_format}': {example}")
 
     return f"```\n{example}\n```"
@@ -150,7 +150,7 @@ def _extract_inline_defs(schema: dict) -> dict:
         if not isinstance(node, dict):
             return
 
-        for _prop_name, prop_details in node.get("properties", {}).items():
+        for prop_details in node.get("properties", {}).values():
             if not isinstance(prop_details, dict):
                 continue
 
@@ -308,7 +308,7 @@ def _process_properties_recursively(
             description = description.replace("\n", "<br />")
 
         examples = ", ".join(
-            [f"```{str(example)}```" for example in prop_details.get("examples", [])]
+            [f"```{example!s}```" for example in prop_details.get("examples", [])]
         )
 
         # Add the current property to our results
@@ -317,7 +317,7 @@ def _process_properties_recursively(
             "type": property_type,
             "required": "✅" if prop_name in required_props else "",
             "possible_values": possible_values,
-            "conditional": "" if conditional_properties else "",
+            "conditional": "",
             "deprecated": (
                 "⛔️"
                 if "[deprecated]" in str(prop_details.get("description", "")).lower()
@@ -887,7 +887,7 @@ def _get_property_details(
     if "enum" in property_details:
         return (
             f"`{property_type}`",
-            " ".join([f"`{str(value)}`" for value in property_details["enum"]]),
+            " ".join([f"`{value!s}`" for value in property_details["enum"]]),
         )
 
     # Handle array-like properties
