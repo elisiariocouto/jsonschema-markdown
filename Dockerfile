@@ -1,4 +1,4 @@
-FROM python:3.13-alpine AS builder
+FROM python:3.15-alpine AS builder
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 
 WORKDIR /app
@@ -13,7 +13,7 @@ COPY . /app
 RUN --mount=type=cache,target=/root/.cache/uv \
     uv sync --frozen --no-editable --no-group dev
 
-FROM python:3.13-alpine
+FROM python:3.15-alpine
 
 LABEL org.opencontainers.image.source="https://github.com/elisiariocouto/jsonschema-markdown"
 LABEL org.opencontainers.image.authors="Elisiário Couto <elisiario@couto.io>"
