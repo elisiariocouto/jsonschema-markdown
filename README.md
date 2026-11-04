@@ -78,7 +78,7 @@ The function will return a string with the markdown.
 ```python
 import jsonschema_markdown
 
-with open('schema.json', 'r', encoding='utf-8') as f:
+with open("schema.json", "r", encoding="utf-8") as f:
     schema = json.load(f)
 
 markdown = jsonschema_markdown.generate(schema)
