@@ -39,6 +39,10 @@ echo " > Setting new version to $NEXT_VERSION"
 sed "s/^version = .*/version = \"${NEXT_VERSION}\"/" pyproject.toml > pyproject.toml.tmp \
     && mv pyproject.toml.tmp pyproject.toml
 
+# Refresh uv.lock so it records the new project version. Otherwise the
+# pre-commit hook's `uv run` updates it mid-commit and the commit fails.
+uv lock --quiet
+
 echo " > Version bumped to $NEXT_VERSION"
 echo "Updating CHANGELOG.md"
 git-cliff --unreleased --tag "$NEXT_VERSION" --prepend CHANGELOG.md > /dev/null
