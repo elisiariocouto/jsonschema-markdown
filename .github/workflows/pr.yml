@@ -13,7 +13,6 @@ jobs:
         os:
           - ubuntu-latest
         python-version:
-          - "3.10"
           - "3.11"
           - "3.12"
           - "3.13"
@@ -24,7 +23,7 @@ jobs:
         # specific.
         include:
           - os: windows-latest
-            python-version: "3.10"
+            python-version: "3.11"
           - os: windows-latest
             python-version: "3.15"
     env:
