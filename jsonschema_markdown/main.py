@@ -73,7 +73,10 @@ def cli(
     Use '-' as FILENAME to read from stdin.
     """
 
-    file_contents = json.loads(filename.read())
+    try:
+        file_contents = json.loads(filename.read())
+    except json.JSONDecodeError as exc:
+        raise click.BadParameter(f"invalid JSON: {exc}") from exc
 
     kwargs = {
         "footer": footer,
