@@ -669,10 +669,11 @@ def _strip_null(schema: dict) -> tuple[dict | None, bool | None]:
 
     Returns the schema without null (None when it only allows null) and whether
     its type allows null: True or False, or None when it has no type to decide.
-    Schemas with enum or const already list the exact values allowed, so they
-    are returned as is and rule null out.
+    Schemas with enum or const list the exact values allowed, and a $ref (not
+    followed here) decides them too, so these are returned as is and rule null
+    out even next to a nullable type.
     """
-    if "enum" in schema or "const" in schema:
+    if "enum" in schema or "const" in schema or "$ref" in schema:
         return schema, False
     schema_type = schema.get("type")
     if schema_type is None:
@@ -692,10 +693,14 @@ def _matches_null(entry: dict) -> bool:
     True if null validates against entry. Keywords such as format, required or
     properties only apply to strings or objects, so an entry without a type
     accepts null; a $ref or nested combinator is not followed and counts as not.
+    An enum or const matches null only when it lists it.
     """
-    _, type_allows_null = _strip_null(entry)
-    if type_allows_null is not None:
-        return type_allows_null
+    if "enum" in entry and None not in entry["enum"]:
+        return False
+    if "const" in entry and entry["const"] is not None:
+        return False
+    if "type" in entry:
+        return _type_matches(entry["type"], "null")
     return not any(key in entry for key in ("$ref", "anyOf", "oneOf", "allOf", "not"))
 
 
@@ -767,7 +772,10 @@ def _handle_array_like_property(property_type: str, property_details: dict, defs
         return f"`{property_type}`", {}
 
     entries, combinator_null = _split_null(property_details[array_type], array_type)
-    allows_null = _allows_null(_strip_null(property_details)[1], combinator_null)
+    # The list-form branch of _get_property_details already adds null for a
+    # nullable "type", so the property's own type may only rule null out here
+    own_null = _strip_null(property_details)[1]
+    allows_null = _allows_null(own_null if own_null is False else None, combinator_null)
 
     types = []
     details = []
@@ -815,8 +823,9 @@ def _describe_items(items: dict, defs: dict) -> str:
     alternatives, combinator_null = [], None
     if combinator:
         entries = schema[combinator]
-        # An anyOf/oneOf entry that accepts anything leaves the items unrestricted
-        if combinator == "allOf" or not any(_accepts_anything(e) for e in entries):
+        # An anyOf entry that accepts anything leaves the items unrestricted (in a
+        # oneOf it would instead reject values that also match another entry)
+        if combinator != "anyOf" or not any(_accepts_anything(e) for e in entries):
             non_null, combinator_null = _split_null(entries, combinator)
             alternatives = [e for e in non_null if not _is_constraint_only(e)]
         schema = {k: v for k, v in schema.items() if k != combinator}

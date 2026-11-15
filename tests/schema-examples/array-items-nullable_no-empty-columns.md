@@ -24,7 +24,7 @@ Arrays whose items are nullable (e.g. Pydantic list[Optional[str]]) versus array
 | multi_type_nullable_items | `array` |  | string or integer or null |  | Items with several list-form types or null. |
 | titled_null_items | `array` |  | string or null |  | A null option with extra keywords is still null. |
 | list_type_entry_items | `array` |  | integer and/or string or null |  | Null inside a list-form type of an anyOf entry. |
-| nullable_ref_list_type | `array` |  | [Tag](#tag) or null |  | A reference with a nullable list-form type. |
+| nullable_ref_list_type | `array` |  | [Tag](#tag) |  | A $ref decides the values even next to a nullable type: null is ruled out. |
 | constraint_and_null_items | `array` |  | object |  | The sibling type object rules out the null entry in the anyOf: items are objects only. |
 | constraint_and_null_items[].name | `string` |  | string |  |  |
 | untyped_nullable_items | `array` |  | string or null |  | No type keyword: items still make this an array. |
@@ -44,6 +44,7 @@ Arrays whose items are nullable (e.g. Pydantic list[Optional[str]]) versus array
 | only_titled_null_entry[].b | `integer` |  | integer |  |  |
 | undescribable_or_null | `array` |  |  |  | Options that cannot be described claim nothing, rather than only null. |
 | format_alternatives_nullable_type | `array` |  | string or null |  | format applies only to strings, so the anyOf does not rule out null. |
+| one_of_enum_with_null | `array` |  | `a` `None` |  | null is listed by the enum and also matches the null entry, so oneOf rejects it. |
 
 
 ---

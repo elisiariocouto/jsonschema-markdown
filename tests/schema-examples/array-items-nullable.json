@@ -299,7 +299,7 @@
       "type": "array"
     },
     "nullable_ref_list_type": {
-      "description": "A reference with a nullable list-form type.",
+      "description": "A $ref decides the values even next to a nullable type: null is ruled out.",
       "items": {
         "$ref": "#/$defs/Tag",
         "type": [
@@ -563,6 +563,23 @@
         "type": [
           "string",
           "null"
+        ]
+      },
+      "type": "array"
+    },
+    "one_of_enum_with_null": {
+      "description": "null is listed by the enum and also matches the null entry, so oneOf rejects it.",
+      "items": {
+        "oneOf": [
+          {
+            "enum": [
+              "a",
+              null
+            ]
+          },
+          {
+            "type": "null"
+          }
         ]
       },
       "type": "array"
