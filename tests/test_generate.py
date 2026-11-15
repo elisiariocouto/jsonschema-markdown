@@ -82,3 +82,28 @@ def test_generate_yaml_format_default_preserves_order():
     z_pos = markdown.index("z_field")
     a_pos = markdown.index("a_field")
     assert z_pos < a_pos
+
+
+def test_generate_resolved_refs_keep_null_in_every_property():
+    """Rendering a schema shared via resolved $refs must not lose its null option.
+
+    With replace_refs, properties that reference the same definition share one
+    dict, so detecting null by modifying it dropped null from all but the first.
+    """
+    schema = {
+        "title": "Shared",
+        "type": "object",
+        "properties": {
+            "first_list": {"type": "array", "items": {"$ref": "#/$defs/MaybeStr"}},
+            "second_list": {"type": "array", "items": {"$ref": "#/$defs/MaybeStr"}},
+            "first_value": {"$ref": "#/$defs/MaybeStr"},
+            "second_value": {"$ref": "#/$defs/MaybeStr"},
+        },
+        "$defs": {"MaybeStr": {"anyOf": [{"type": "string"}, {"type": "null"}]}},
+    }
+    markdown = generate(schema, replace_refs=True, hide_empty_columns=True)
+
+    assert "| first_list | `array` |  | string or null |" in markdown
+    assert "| second_list | `array` |  | string or null |" in markdown
+    assert "| first_value | `string` or `null` |" in markdown
+    assert "| second_value | `string` or `null` |" in markdown
