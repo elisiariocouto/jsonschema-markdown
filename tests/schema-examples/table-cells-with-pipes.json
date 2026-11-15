@@ -1,0 +1,51 @@
+{
+  "title": "PipesInTableCells",
+  "description": "Pipe characters in any table cell must be escaped so they do not split the row.",
+  "type": "object",
+  "properties": {
+    "description_pipe": {
+      "type": "string",
+      "description": "A Python type hint such as list[str | None]."
+    },
+    "pre_escaped_description": {
+      "type": "string",
+      "description": "Already escaped: a \\| b stays as written."
+    },
+    "default_pipe": {
+      "type": "string",
+      "default": "a|b",
+      "description": "Default value containing a pipe."
+    },
+    "examples_pipe": {
+      "type": "string",
+      "examples": [
+        "x|y"
+      ],
+      "description": "Example containing a pipe."
+    },
+    "enum_pipe": {
+      "type": "string",
+      "enum": [
+        "a|b",
+        "c"
+      ],
+      "description": "Enum value containing a pipe."
+    },
+    "const_pipe": {
+      "const": "a|b",
+      "description": "Const value containing a pipe."
+    },
+    "pattern_pipe": {
+      "type": "string",
+      "pattern": "^(a|b)$",
+      "description": "Pattern alternation, escaped once."
+    },
+    "name|with|pipes": {
+      "type": "string",
+      "description": "Property name containing pipes."
+    }
+  },
+  "required": [
+    "description_pipe"
+  ]
+}
