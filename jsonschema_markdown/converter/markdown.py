@@ -633,6 +633,11 @@ _TYPE_INFO_KEYS = frozenset(
 _COMBINATOR_SEPARATORS = {"oneOf": " or ", "anyOf": " and/or ", "allOf": " and "}
 
 
+def _append_null(possible_values: str) -> str:
+    """Mark possible values as also allowing null, e.g. 'string' -> 'string or null'."""
+    return f"{possible_values} or null" if possible_values else possible_values
+
+
 def _is_constraint_only(schema_entry: dict) -> bool:
     """Return True if entry has only constraint keywords (e.g. required), no type info."""
     return not any(key in schema_entry for key in _TYPE_INFO_KEYS)
@@ -686,30 +691,27 @@ def _handle_array_like_property(
             types.append(ref_type)
             details.append(ref_details)
 
-    # FIXME: Hacky way to handle arrays with null values
-    return_type = None
-    if is_array:
-        return_type = "`array`"
-        if removed_null:
-            return_type = "`array` or `null`"
-    else:
-        if removed_null:
-            types.append("`null`")
-
-    # Arrays should return the type as array
-    # Other array-like properties should return the types of the nested oneOf, anyOf or allOf
     non_null_details = sorted(d for d in details if d is not None)
-    if return_type:
-        return return_type, _COMBINATOR_SEPARATORS[array_type].join(non_null_details)
-    else:
-        # Dedeuplicate list of types, join them with null at the end if present
-        types = sorted(set(types))
-        if "`null`" in types:
-            types.remove("`null`")
-            types.append("`null`")
-        return " or ".join(types), _COMBINATOR_SEPARATORS[array_type].join(
-            non_null_details
-        )
+    possible_values = _COMBINATOR_SEPARATORS[array_type].join(non_null_details)
+
+    # Arrays should return the type as array. A null option here belongs to the
+    # items (e.g. list[str | None]), so it is a possible item value, not a type
+    # of the array itself.
+    if is_array:
+        if removed_null:
+            possible_values = _append_null(possible_values)
+        return "`array`", possible_values
+
+    # Other array-like properties should return the types of the nested oneOf, anyOf or allOf
+    if removed_null:
+        types.append("`null`")
+
+    # Deduplicate list of types, join them with null at the end if present
+    types = sorted(set(types))
+    if "`null`" in types:
+        types.remove("`null`")
+        types.append("`null`")
+    return " or ".join(types), possible_values
 
 
 def _extract_conditionals(schema: dict) -> list:
@@ -911,9 +913,13 @@ def _get_property_details(
         if ref_type or ref_details:
             return f"`{property_type}`", ref_details
         else:
+            items_type = property_details["items"].get("type")
             ref_type, ref_details = _get_property_details(
-                property_details["items"].get("type"), property_details["items"], defs
+                items_type, property_details["items"], defs
             )
+            # List-form nullable items (e.g. ["string", "null"]) allow null values
+            if isinstance(items_type, list) and "null" in items_type:
+                ref_details = _append_null(ref_details)
             return f"`{property_type}`", ref_details
 
     elif "pattern" in property_details:

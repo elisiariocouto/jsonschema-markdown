@@ -1,0 +1,138 @@
+{
+  "$defs": {
+    "Tag": {
+      "properties": {
+        "name": {
+          "title": "Name",
+          "type": "string"
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "title": "Tag",
+      "type": "object"
+    }
+  },
+  "description": "Arrays whose items are nullable (e.g. Pydantic list[Optional[str]]) versus arrays that are themselves nullable (Optional[list[str]]).",
+  "properties": {
+    "values": {
+      "description": "list[Optional[str]]: items may be null, the array may not.",
+      "items": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ]
+      },
+      "title": "Values",
+      "type": "array"
+    },
+    "values_oneof": {
+      "description": "Nullable items using oneOf.",
+      "items": {
+        "oneOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ]
+      },
+      "title": "Values Oneof",
+      "type": "array"
+    },
+    "values_list_type": {
+      "description": "Nullable items using a list-form type.",
+      "items": {
+        "type": [
+          "string",
+          "null"
+        ]
+      },
+      "title": "Values List Type",
+      "type": "array"
+    },
+    "tags": {
+      "description": "list[Optional[Tag]]: items are a reference or null.",
+      "items": {
+        "anyOf": [
+          {
+            "$ref": "#/$defs/Tag"
+          },
+          {
+            "type": "null"
+          }
+        ]
+      },
+      "title": "Tags",
+      "type": "array"
+    },
+    "optional_values": {
+      "anyOf": [
+        {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Optional[list[str]]: the array may be null, the items may not.",
+      "title": "Optional Values"
+    },
+    "optional_values_nullable_items": {
+      "anyOf": [
+        {
+          "items": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Optional[list[Optional[str]]]: both the array and its items may be null.",
+      "title": "Optional Values Nullable Items"
+    },
+    "optional_values_list_type": {
+      "description": "Nullable array (list-form type) with nullable items; null must appear once in the type.",
+      "items": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ]
+      },
+      "title": "Optional Values List Type",
+      "type": [
+        "array",
+        "null"
+      ]
+    }
+  },
+  "required": [
+    "values"
+  ],
+  "title": "NullableArrays",
+  "type": "object"
+}
