@@ -1,4 +1,3 @@
-import contextlib
 import copy
 import json
 import sys
@@ -372,11 +371,17 @@ def _process_properties_recursively(
             ):
                 array_path = f"{full_path}[]"  # Add [] to indicate array items
                 _combinator_key = _get_combinator_key(items_schema)
-                if _combinator_key is not None and all(
-                    _is_constraint_only(e) for e in items_schema[_combinator_key]
+                _non_null_entries = (
+                    _split_null(items_schema[_combinator_key], _combinator_key)[0]
+                    if _combinator_key is not None
+                    else []
+                )
+                if _non_null_entries and all(
+                    _is_constraint_only(e) for e in _non_null_entries
                 ):
                     # The combinator entries are pure constraints (e.g. required only),
-                    # not type alternatives. Emit a single combined row for all properties.
+                    # not type alternatives; null entries say nothing about the
+                    # objects' properties. Emit a single combined row for all properties.
                     combined_name = _COMBINATOR_SEPARATORS[_combinator_key].join(
                         f"{array_path}.{p}" for p in items_schema["properties"]
                     )
@@ -633,6 +638,112 @@ _TYPE_INFO_KEYS = frozenset(
 _COMBINATOR_SEPARATORS = {"oneOf": " or ", "anyOf": " and/or ", "allOf": " and "}
 
 
+# Keywords that only annotate a schema: one made of nothing else accepts any value
+_ANNOTATION_KEYS = frozenset(
+    {
+        "title",
+        "description",
+        "$comment",
+        "default",
+        "examples",
+        "deprecated",
+        "readOnly",
+        "writeOnly",
+    }
+)
+
+
+def _accepts_anything(schema: dict) -> bool:
+    """True if schema places no restriction on values, e.g. {} or {"description": ...}."""
+    return all(key in _ANNOTATION_KEYS for key in schema)
+
+
+def _is_array_schema(schema: dict) -> bool:
+    """True for an array schema, including one that omits "type" but has items."""
+    return schema.get("type") == "array" or ("type" not in schema and "items" in schema)
+
+
+def _strip_null(schema: dict) -> tuple[dict | None, bool | None]:
+    """
+    Separate null from a schema's own "type" without modifying the schema.
+
+    Returns the schema without null (None when it only allows null) and whether
+    its type allows null: True or False, or None when it has no type to decide.
+    Schemas with enum or const list the exact values allowed, and a $ref (not
+    followed here) decides them too, so these are returned as is and rule null
+    out even next to a nullable type.
+    """
+    if "enum" in schema or "const" in schema or "$ref" in schema:
+        return schema, False
+    schema_type = schema.get("type")
+    if schema_type is None:
+        return schema, None
+    if schema_type == "null":
+        return None, True
+    if not isinstance(schema_type, list) or "null" not in schema_type:
+        return schema, False
+    remaining = [t for t in schema_type if t != "null"]
+    if not remaining:
+        return None, True
+    return {**schema, "type": remaining[0] if len(remaining) == 1 else remaining}, True
+
+
+def _matches_null(entry: dict) -> bool:
+    """
+    True if null validates against entry. Keywords such as format, required or
+    properties only apply to strings or objects, so an entry without a type
+    accepts null; a $ref or nested combinator is not followed and counts as not.
+    An enum or const matches null only when it lists it.
+    """
+    if "enum" in entry and None not in entry["enum"]:
+        return False
+    if "const" in entry and entry["const"] is not None:
+        return False
+    if "type" in entry:
+        return _type_matches(entry["type"], "null")
+    return not any(key in entry for key in ("$ref", "anyOf", "oneOf", "allOf", "not"))
+
+
+def _split_null(entries: list, combinator: str) -> tuple[list, bool | None]:
+    """
+    Separate null from oneOf/anyOf/allOf entries without modifying them.
+
+    Returns the entries without null and the combinator's decision on null:
+    False if null fails it (anyOf needs one entry matching null, oneOf exactly
+    one, allOf every entry), True if null passes and an entry offers it
+    explicitly, and None if null passes without being mentioned, e.g. when
+    every entry only holds "required".
+    """
+    non_null = []
+    offers_null = False
+    for entry in entries:
+        stripped, type_allows_null = _strip_null(entry)
+        if stripped is not None:
+            non_null.append(stripped)
+        offers_null = offers_null or bool(type_allows_null)
+
+    matches = [_matches_null(entry) for entry in entries]
+    if combinator == "anyOf":
+        valid = any(matches)
+    elif combinator == "oneOf":
+        valid = matches.count(True) == 1
+    else:
+        valid = all(matches)
+    if not valid:
+        return non_null, False
+    return non_null, True if offers_null else None
+
+
+def _allows_null(*decisions: bool | None) -> bool:
+    """
+    Combine null decisions from keywords that all apply to the same value, such
+    as a schema's own type and its combinator: null is allowed when one of them
+    allows it and none rules it out.
+    """
+    decided = [d for d in decisions if d is not None]
+    return bool(decided) and all(decided)
+
+
 def _is_constraint_only(schema_entry: dict) -> bool:
     """Return True if entry has only constraint keywords (e.g. required), no type info."""
     return not any(key in schema_entry for key in _TYPE_INFO_KEYS)
@@ -646,14 +757,10 @@ def _get_combinator_key(schema: dict) -> str | None:
     return None
 
 
-def _handle_array_like_property(
-    property_type: str, property_details: dict, defs: dict, is_array=False
-):
+def _handle_array_like_property(property_type: str, property_details: dict, defs: dict):
     """
-    Handle properties that are array-like.
+    Handle properties that combine schemas with oneOf, anyOf or allOf.
     """
-    # TODO: Refactor this function to be more readable, handle arrays in a separate function
-
     array_type = _get_combinator_key(property_details)
 
     if array_type is None:
@@ -664,15 +771,16 @@ def _handle_array_like_property(
         # https://json-schema.org/understanding-json-schema/reference/array
         return f"`{property_type}`", {}
 
-    removed_null = False
-    with contextlib.suppress(Exception):
-        property_details[array_type].remove({"type": "null"})
-        removed_null = True
+    entries, combinator_null = _split_null(property_details[array_type], array_type)
+    # The list-form branch of _get_property_details already adds null for a
+    # nullable "type", so the property's own type may only rule null out here
+    own_null = _strip_null(property_details)[1]
+    allows_null = _allows_null(own_null if own_null is False else None, combinator_null)
 
     types = []
     details = []
 
-    for value in property_details[array_type]:
+    for value in entries:
         if _is_constraint_only(value):
             continue
         ref_type, ref_details = get_property_if_ref(value, defs)
@@ -686,30 +794,90 @@ def _handle_array_like_property(
             types.append(ref_type)
             details.append(ref_details)
 
-    # FIXME: Hacky way to handle arrays with null values
-    return_type = None
-    if is_array:
-        return_type = "`array`"
-        if removed_null:
-            return_type = "`array` or `null`"
-    else:
-        if removed_null:
-            types.append("`null`")
-
-    # Arrays should return the type as array
-    # Other array-like properties should return the types of the nested oneOf, anyOf or allOf
     non_null_details = sorted(d for d in details if d is not None)
-    if return_type:
-        return return_type, _COMBINATOR_SEPARATORS[array_type].join(non_null_details)
+    possible_values = _COMBINATOR_SEPARATORS[array_type].join(non_null_details)
+
+    # Return the types of the nested oneOf, anyOf or allOf, deduplicated and
+    # with null at the end if present
+    if allows_null:
+        types.append("`null`")
+    types = sorted(set(types))
+    if "`null`" in types:
+        types.remove("`null`")
+        types.append("`null`")
+    return " or ".join(types), possible_values
+
+
+def _describe_items(items: dict, defs: dict) -> str:
+    """
+    Describe the possible values of an array's items, e.g. "string or null".
+
+    A null option makes the items nullable (list[str | None]), not the array
+    itself, so it is described here instead of in the array's type.
+    """
+    schema, own_null = _strip_null(items)
+    if schema is None:
+        return "null"
+
+    combinator = _get_combinator_key(schema)
+    alternatives, combinator_null = [], None
+    if combinator:
+        entries = schema[combinator]
+        # An anyOf entry that accepts anything leaves the items unrestricted (in a
+        # oneOf it would instead reject values that also match another entry)
+        if combinator != "anyOf" or not any(_accepts_anything(e) for e in entries):
+            non_null, combinator_null = _split_null(entries, combinator)
+            alternatives = [e for e in non_null if not _is_constraint_only(e)]
+        schema = {k: v for k, v in schema.items() if k != combinator}
+    # The schema's own type and its combinator both apply, e.g. a sibling
+    # "type": "object" rules out a null entry in the anyOf
+    allows_null = _allows_null(own_null, combinator_null)
+
+    # Nested arrays go last so "integer and/or array of string" stays readable
+    descriptions = sorted(
+        {d for d in (_describe_element(e, defs) for e in alternatives) if d},
+        key=lambda d: (d.startswith("array of "), d),
+    )
+    if descriptions:
+        description = _COMBINATOR_SEPARATORS[combinator].join(descriptions)
+    elif alternatives and _accepts_anything(schema):
+        # Options exist (e.g. {"format": "date"}) but none can be described:
+        # claim nothing rather than suggest the items can only be null
+        return ""
+    elif combinator_null is not None and _accepts_anything(schema):
+        # The combinator only offered null and nothing else describes the items
+        description = ""
     else:
-        # Dedeuplicate list of types, join them with null at the end if present
-        types = sorted(set(types))
-        if "`null`" in types:
-            types.remove("`null`")
-            types.append("`null`")
-        return " or ".join(types), _COMBINATOR_SEPARATORS[array_type].join(
-            non_null_details
-        )
+        # No combinator, or one that only adds constraints (e.g. required) or null
+        description = _describe_element(schema, defs)
+
+    if not allows_null:
+        return description
+    if not description:
+        return "null"
+    # The comma attaches null to the items, not to a nested array's own items:
+    # "array of string, or null" vs "array of string or null"
+    nested_array = any(_is_array_schema(e) for e in alternatives or [schema])
+    return f"{description}{', or' if nested_array else ' or'} null"
+
+
+def _describe_element(schema: dict, defs: dict) -> str:
+    """Describe one kind of value an array may hold; nested arrays read "array of X"."""
+    ref_type, ref_details = get_property_if_ref(schema, defs)
+    if ref_type or ref_details:
+        return ref_details
+    if _accepts_anything(schema):
+        return "Any type"
+    if _is_array_schema(schema):
+        inner = _describe_items(schema["items"], defs) if "items" in schema else ""
+        return f"array of {inner}" if inner else "array"
+
+    schema_type = schema.get("type")
+    type_names, details = _get_property_details(schema_type, schema, defs)
+    if not details and schema_type is not None:
+        # Several list-form types (e.g. ["string", "integer"]) are only named in the type
+        details = type_names.replace("`", "")
+    return details or ""
 
 
 def _extract_conditionals(schema: dict) -> list:
@@ -896,26 +1064,12 @@ def _get_property_details(
         if t and d:
             return t, d
 
-    if property_details.get("items") == {}:
-        return f"`{property_type}`", "Any type"
-
     if "items" in property_details:
-        if any(key in property_details["items"] for key in ["oneOf", "anyOf", "allOf"]):
-            t, d = _handle_array_like_property(
-                property_type, property_details["items"], defs, is_array=True
-            )
-            if t and d:
-                return t, d
-
-        ref_type, ref_details = get_property_if_ref(property_details["items"], defs)
-        if ref_type or ref_details:
-            return f"`{property_type}`", ref_details
-        else:
-            ref_type, ref_details = _get_property_details(
-                property_details["items"].get("type"), property_details["items"], defs
-            )
-            return f"`{property_type}`", ref_details
-
+        # A schema with items describes an array even when "type" is omitted
+        return (
+            f"`{property_type or 'array'}`",
+            _describe_items(property_details["items"], defs),
+        )
     elif "pattern" in property_details:
         pattern = property_details["pattern"]
         # escape any pipe characters in the pattern string to prevent markdown table formatting issues

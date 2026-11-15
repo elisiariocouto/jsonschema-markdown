@@ -82,3 +82,65 @@ def test_generate_yaml_format_default_preserves_order():
     z_pos = markdown.index("z_field")
     a_pos = markdown.index("a_field")
     assert z_pos < a_pos
+
+
+def test_generate_resolved_refs_keep_null_in_every_property():
+    """Rendering a schema shared via resolved $refs must not lose its null option.
+
+    With replace_refs, properties that reference the same definition share one
+    dict, so detecting null by modifying it dropped null from all but the first.
+    """
+    schema = {
+        "title": "Shared",
+        "type": "object",
+        "properties": {
+            "first_list": {"type": "array", "items": {"$ref": "#/$defs/MaybeStr"}},
+            "second_list": {"type": "array", "items": {"$ref": "#/$defs/MaybeStr"}},
+            "first_value": {"$ref": "#/$defs/MaybeStr"},
+            "second_value": {"$ref": "#/$defs/MaybeStr"},
+        },
+        "$defs": {"MaybeStr": {"anyOf": [{"type": "string"}, {"type": "null"}]}},
+    }
+    markdown = generate(schema, replace_refs=True, hide_empty_columns=True)
+
+    assert "| first_list | `array` |  | string or null |" in markdown
+    assert "| second_list | `array` |  | string or null |" in markdown
+    assert "| first_value | `string` or `null` |" in markdown
+    assert "| second_value | `string` or `null` |" in markdown
+
+
+def _table_row(markdown: str, prop: str) -> str:
+    return next(
+        line for line in markdown.splitlines() if line.startswith(f"| {prop} |")
+    )
+
+
+def test_generate_nullable_property_with_untyped_alternatives_lists_null_once():
+    """The property's own nullable type adds null; the anyOf must not add it again."""
+    schema = {
+        "title": "T",
+        "type": "object",
+        "properties": {
+            "p": {
+                "type": ["string", "null"],
+                "anyOf": [{"pattern": "^a"}, {"pattern": "^b"}],
+            }
+        },
+    }
+    row = _table_row(generate(schema, hide_empty_columns=True), "p")
+
+    assert row.count("`null`") == 1
+
+
+def test_generate_one_of_with_any_value_entry_is_not_any_type():
+    """In a oneOf, values matching the always-matching entry and another are rejected."""
+    schema = {
+        "title": "T",
+        "type": "object",
+        "properties": {
+            "p": {"type": "array", "items": {"oneOf": [{}, {"type": "string"}]}}
+        },
+    }
+    row = _table_row(generate(schema, hide_empty_columns=True), "p")
+
+    assert "Any type" not in row

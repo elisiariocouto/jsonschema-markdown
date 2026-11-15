@@ -1,0 +1,593 @@
+{
+  "$defs": {
+    "Tag": {
+      "properties": {
+        "name": {
+          "title": "Name",
+          "type": "string"
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "title": "Tag",
+      "type": "object"
+    }
+  },
+  "description": "Arrays whose items are nullable (e.g. Pydantic list[Optional[str]]) versus arrays that are themselves nullable (Optional[list[str]]).",
+  "properties": {
+    "values": {
+      "description": "list[Optional[str]]: items may be null, the array may not.",
+      "items": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ]
+      },
+      "title": "Values",
+      "type": "array"
+    },
+    "values_oneof": {
+      "description": "Nullable items using oneOf.",
+      "items": {
+        "oneOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ]
+      },
+      "title": "Values Oneof",
+      "type": "array"
+    },
+    "values_list_type": {
+      "description": "Nullable items using a list-form type.",
+      "items": {
+        "type": [
+          "string",
+          "null"
+        ]
+      },
+      "title": "Values List Type",
+      "type": "array"
+    },
+    "tags": {
+      "description": "list[Optional[Tag]]: items are a reference or null.",
+      "items": {
+        "anyOf": [
+          {
+            "$ref": "#/$defs/Tag"
+          },
+          {
+            "type": "null"
+          }
+        ]
+      },
+      "title": "Tags",
+      "type": "array"
+    },
+    "optional_values": {
+      "anyOf": [
+        {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Optional[list[str]]: the array may be null, the items may not.",
+      "title": "Optional Values"
+    },
+    "optional_values_nullable_items": {
+      "anyOf": [
+        {
+          "items": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Optional[list[Optional[str]]]: both the array and its items may be null.",
+      "title": "Optional Values Nullable Items"
+    },
+    "optional_values_list_type": {
+      "description": "Nullable array (list-form type) with nullable items; null must appear once in the type.",
+      "items": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ]
+      },
+      "title": "Optional Values List Type",
+      "type": [
+        "array",
+        "null"
+      ]
+    },
+    "nested_nullable_lists": {
+      "description": "list[Optional[list[str]]]: the inner lists may be null, their strings may not.",
+      "items": {
+        "anyOf": [
+          {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          {
+            "type": "null"
+          }
+        ]
+      },
+      "type": "array"
+    },
+    "nested_nullable_items": {
+      "description": "list[list[Optional[str]]]: the strings may be null, the inner lists may not.",
+      "items": {
+        "items": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "type": "array"
+      },
+      "type": "array"
+    },
+    "nested_nullable_lists_list_type": {
+      "description": "Nullable inner lists using a list-form type.",
+      "items": {
+        "items": {
+          "type": "string"
+        },
+        "type": [
+          "array",
+          "null"
+        ]
+      },
+      "type": "array"
+    },
+    "nested_mixed_items": {
+      "description": "Items are an integer, a list of strings or null.",
+      "items": {
+        "anyOf": [
+          {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          {
+            "type": "integer"
+          },
+          {
+            "type": "null"
+          }
+        ]
+      },
+      "type": "array"
+    },
+    "enum_items": {
+      "description": "Nullable list-form type restricted by an enum without null: null is not allowed.",
+      "items": {
+        "enum": [
+          "x",
+          "y"
+        ],
+        "type": [
+          "string",
+          "null"
+        ]
+      },
+      "type": "array"
+    },
+    "const_items": {
+      "description": "Nullable list-form type restricted by a const: null is not allowed.",
+      "items": {
+        "const": "x",
+        "type": [
+          "string",
+          "null"
+        ]
+      },
+      "type": "array"
+    },
+    "enum_or_null_items": {
+      "description": "An enum or null.",
+      "items": {
+        "anyOf": [
+          {
+            "enum": [
+              "x",
+              "y"
+            ]
+          },
+          {
+            "type": "null"
+          }
+        ]
+      },
+      "type": "array"
+    },
+    "only_null_items": {
+      "description": "Items may only be null.",
+      "items": {
+        "anyOf": [
+          {
+            "type": "null"
+          }
+        ]
+      },
+      "type": "array"
+    },
+    "multi_type_nullable_items": {
+      "description": "Items with several list-form types or null.",
+      "items": {
+        "anyOf": [
+          {
+            "type": [
+              "string",
+              "integer"
+            ]
+          },
+          {
+            "type": "null"
+          }
+        ]
+      },
+      "type": "array"
+    },
+    "titled_null_items": {
+      "description": "A null option with extra keywords is still null.",
+      "items": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "title": "Nothing",
+            "type": "null"
+          }
+        ]
+      },
+      "type": "array"
+    },
+    "list_type_entry_items": {
+      "description": "Null inside a list-form type of an anyOf entry.",
+      "items": {
+        "anyOf": [
+          {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          {
+            "type": "integer"
+          }
+        ]
+      },
+      "type": "array"
+    },
+    "nullable_ref_list_type": {
+      "description": "A $ref decides the values even next to a nullable type: null is ruled out.",
+      "items": {
+        "$ref": "#/$defs/Tag",
+        "type": [
+          "object",
+          "null"
+        ]
+      },
+      "type": "array"
+    },
+    "constraint_and_null_items": {
+      "description": "The sibling type object rules out the null entry in the anyOf: items are objects only.",
+      "items": {
+        "anyOf": [
+          {
+            "required": [
+              "name"
+            ]
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "properties": {
+          "name": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "untyped_nullable_items": {
+      "description": "No type keyword: items still make this an array.",
+      "items": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ]
+      }
+    },
+    "sibling_type_rules_out_null": {
+      "description": "The sibling type string rules out the null entry: items are strings only.",
+      "items": {
+        "anyOf": [
+          {
+            "maxLength": 3
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "required_alternatives_and_null": {
+      "description": "Constraint-only anyOf plus a null entry still gives one combined row.",
+      "items": {
+        "anyOf": [
+          {
+            "required": [
+              "a"
+            ]
+          },
+          {
+            "required": [
+              "b"
+            ]
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "properties": {
+          "a": {
+            "type": "string"
+          },
+          "b": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "all_of_null_in_one_entry": {
+      "description": "allOf needs every entry to allow null, so null is not allowed.",
+      "items": {
+        "allOf": [
+          {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          {
+            "type": "string"
+          }
+        ]
+      },
+      "type": "array"
+    },
+    "one_of_null_in_two_entries": {
+      "description": "null matches both oneOf entries, so oneOf rejects it.",
+      "items": {
+        "oneOf": [
+          {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          {
+            "type": [
+              "integer",
+              "null"
+            ]
+          }
+        ]
+      },
+      "type": "array"
+    },
+    "untyped_nested_nullable_lists": {
+      "description": "Inner lists without a type keyword are still nested arrays.",
+      "items": {
+        "anyOf": [
+          {
+            "items": {
+              "type": "string"
+            }
+          },
+          {
+            "type": "null"
+          }
+        ]
+      },
+      "type": "array"
+    },
+    "three_level_nested": {
+      "description": "Three levels of arrays keep every level.",
+      "items": {
+        "items": {
+          "type": "array"
+        },
+        "type": "array"
+      },
+      "type": "array"
+    },
+    "any_value_or_null": {
+      "description": "An entry that accepts anything makes the items unrestricted.",
+      "items": {
+        "anyOf": [
+          {},
+          {
+            "type": "null"
+          }
+        ]
+      },
+      "type": "array"
+    },
+    "duplicate_entries": {
+      "description": "Entries that differ only in nullability are listed once.",
+      "items": {
+        "anyOf": [
+          {
+            "type": "integer"
+          },
+          {
+            "type": [
+              "integer",
+              "null"
+            ]
+          }
+        ]
+      },
+      "type": "array"
+    },
+    "one_of_required_and_nullable_type": {
+      "description": "null matches both required-only oneOf entries, so oneOf rejects it: items are objects only.",
+      "items": {
+        "oneOf": [
+          {
+            "required": [
+              "a"
+            ]
+          },
+          {
+            "required": [
+              "b"
+            ]
+          }
+        ],
+        "properties": {
+          "a": {
+            "type": "string"
+          },
+          "b": {
+            "type": "string"
+          }
+        },
+        "type": [
+          "object",
+          "null"
+        ]
+      },
+      "type": "array"
+    },
+    "only_titled_null_entry": {
+      "description": "A combinator holding only a null entry does not merge the item rows.",
+      "items": {
+        "anyOf": [
+          {
+            "title": "Nothing",
+            "type": "null"
+          }
+        ],
+        "properties": {
+          "a": {
+            "type": "string"
+          },
+          "b": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "a"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "undescribable_or_null": {
+      "description": "Options that cannot be described claim nothing, rather than only null.",
+      "items": {
+        "anyOf": [
+          {
+            "format": "date"
+          },
+          {
+            "type": "null"
+          }
+        ]
+      },
+      "type": "array"
+    },
+    "format_alternatives_nullable_type": {
+      "description": "format applies only to strings, so the anyOf does not rule out null.",
+      "items": {
+        "anyOf": [
+          {
+            "format": "date"
+          },
+          {
+            "format": "date-time"
+          }
+        ],
+        "type": [
+          "string",
+          "null"
+        ]
+      },
+      "type": "array"
+    },
+    "one_of_enum_with_null": {
+      "description": "null is listed by the enum and also matches the null entry, so oneOf rejects it.",
+      "items": {
+        "oneOf": [
+          {
+            "enum": [
+              "a",
+              null
+            ]
+          },
+          {
+            "type": "null"
+          }
+        ]
+      },
+      "type": "array"
+    }
+  },
+  "required": [
+    "values"
+  ],
+  "title": "NullableArrays",
+  "type": "object"
+}
