@@ -37,6 +37,13 @@ Arrays whose items are nullable (e.g. Pydantic list[Optional[str]]) versus array
 | three_level_nested | `array` |  | array of array |  | Three levels of arrays keep every level. |
 | any_value_or_null | `array` |  | Any type |  | An entry that accepts anything makes the items unrestricted. |
 | duplicate_entries | `array` |  | integer or null |  | Entries that differ only in nullability are listed once. |
+| one_of_required_and_nullable_type | `array` |  | object |  | null matches both required-only oneOf entries, so oneOf rejects it: items are objects only. |
+| one_of_required_and_nullable_type[].a or one_of_required_and_nullable_type[].b | `string` |  | string |  |  |
+| only_titled_null_entry | `array` |  | object |  | A combinator holding only a null entry does not merge the item rows. |
+| only_titled_null_entry[].a | `string` | ✅ | string |  |  |
+| only_titled_null_entry[].b | `integer` |  | integer |  |  |
+| undescribable_or_null | `array` |  |  |  | Options that cannot be described claim nothing, rather than only null. |
+| format_alternatives_nullable_type | `array` |  | string or null |  | format applies only to strings, so the anyOf does not rule out null. |
 
 
 ---

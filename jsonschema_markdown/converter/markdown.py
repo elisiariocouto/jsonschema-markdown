@@ -371,11 +371,13 @@ def _process_properties_recursively(
             ):
                 array_path = f"{full_path}[]"  # Add [] to indicate array items
                 _combinator_key = _get_combinator_key(items_schema)
-                if _combinator_key is not None and all(
-                    _is_constraint_only(e)
-                    for e in _split_null(
-                        items_schema[_combinator_key], _combinator_key
-                    )[0]
+                _non_null_entries = (
+                    _split_null(items_schema[_combinator_key], _combinator_key)[0]
+                    if _combinator_key is not None
+                    else []
+                )
+                if _non_null_entries and all(
+                    _is_constraint_only(e) for e in _non_null_entries
                 ):
                     # The combinator entries are pure constraints (e.g. required only),
                     # not type alternatives; null entries say nothing about the
@@ -685,32 +687,46 @@ def _strip_null(schema: dict) -> tuple[dict | None, bool | None]:
     return {**schema, "type": remaining[0] if len(remaining) == 1 else remaining}, True
 
 
+def _matches_null(entry: dict) -> bool:
+    """
+    True if null validates against entry. Keywords such as format, required or
+    properties only apply to strings or objects, so an entry without a type
+    accepts null; a $ref or nested combinator is not followed and counts as not.
+    """
+    _, type_allows_null = _strip_null(entry)
+    if type_allows_null is not None:
+        return type_allows_null
+    return not any(key in entry for key in ("$ref", "anyOf", "oneOf", "allOf", "not"))
+
+
 def _split_null(entries: list, combinator: str) -> tuple[list, bool | None]:
     """
     Separate null from oneOf/anyOf/allOf entries without modifying them.
 
-    Returns the entries without null and whether the combinator allows null:
-    anyOf needs one entry that allows it, oneOf exactly one, allOf every entry.
-    Entries that only add constraints (e.g. required) do not count, and the
-    result is None when no entry decides.
+    Returns the entries without null and the combinator's decision on null:
+    False if null fails it (anyOf needs one entry matching null, oneOf exactly
+    one, allOf every entry), True if null passes and an entry offers it
+    explicitly, and None if null passes without being mentioned, e.g. when
+    every entry only holds "required".
     """
     non_null = []
-    decisions = []
+    offers_null = False
     for entry in entries:
-        stripped, allows_null = _strip_null(entry)
+        stripped, type_allows_null = _strip_null(entry)
         if stripped is not None:
             non_null.append(stripped)
-        if allows_null is None and not _is_constraint_only(entry):
-            allows_null = False  # e.g. a $ref, or an untyped array with items
-        if allows_null is not None:
-            decisions.append(allows_null)
-    if not decisions:
-        return non_null, None
+        offers_null = offers_null or bool(type_allows_null)
+
+    matches = [_matches_null(entry) for entry in entries]
     if combinator == "anyOf":
-        return non_null, any(decisions)
-    if combinator == "oneOf":
-        return non_null, decisions.count(True) == 1
-    return non_null, all(decisions)
+        valid = any(matches)
+    elif combinator == "oneOf":
+        valid = matches.count(True) == 1
+    else:
+        valid = all(matches)
+    if not valid:
+        return non_null, False
+    return non_null, True if offers_null else None
 
 
 def _allows_null(*decisions: bool | None) -> bool:
@@ -815,6 +831,10 @@ def _describe_items(items: dict, defs: dict) -> str:
     )
     if descriptions:
         description = _COMBINATOR_SEPARATORS[combinator].join(descriptions)
+    elif alternatives and _accepts_anything(schema):
+        # Options exist (e.g. {"format": "date"}) but none can be described:
+        # claim nothing rather than suggest the items can only be null
+        return ""
     elif combinator_null is not None and _accepts_anything(schema):
         # The combinator only offered null and nothing else describes the items
         description = ""

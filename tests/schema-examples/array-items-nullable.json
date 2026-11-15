@@ -480,6 +480,92 @@
         ]
       },
       "type": "array"
+    },
+    "one_of_required_and_nullable_type": {
+      "description": "null matches both required-only oneOf entries, so oneOf rejects it: items are objects only.",
+      "items": {
+        "oneOf": [
+          {
+            "required": [
+              "a"
+            ]
+          },
+          {
+            "required": [
+              "b"
+            ]
+          }
+        ],
+        "properties": {
+          "a": {
+            "type": "string"
+          },
+          "b": {
+            "type": "string"
+          }
+        },
+        "type": [
+          "object",
+          "null"
+        ]
+      },
+      "type": "array"
+    },
+    "only_titled_null_entry": {
+      "description": "A combinator holding only a null entry does not merge the item rows.",
+      "items": {
+        "anyOf": [
+          {
+            "title": "Nothing",
+            "type": "null"
+          }
+        ],
+        "properties": {
+          "a": {
+            "type": "string"
+          },
+          "b": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "a"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "undescribable_or_null": {
+      "description": "Options that cannot be described claim nothing, rather than only null.",
+      "items": {
+        "anyOf": [
+          {
+            "format": "date"
+          },
+          {
+            "type": "null"
+          }
+        ]
+      },
+      "type": "array"
+    },
+    "format_alternatives_nullable_type": {
+      "description": "format applies only to strings, so the anyOf does not rule out null.",
+      "items": {
+        "anyOf": [
+          {
+            "format": "date"
+          },
+          {
+            "format": "date-time"
+          }
+        ],
+        "type": [
+          "string",
+          "null"
+        ]
+      },
+      "type": "array"
     }
   },
   "required": [
