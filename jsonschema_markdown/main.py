@@ -73,7 +73,15 @@ def cli(
     Use '-' as FILENAME to read from stdin.
     """
 
-    file_contents = json.loads(filename.read())
+    try:
+        file_contents = json.loads(filename.read())
+    except json.JSONDecodeError as e:
+        raise click.BadParameter(f"invalid JSON: {e}", param_hint="'FILENAME'") from e
+
+    if not isinstance(file_contents, dict):
+        raise click.BadParameter(
+            "expected a JSON object at the top level", param_hint="'FILENAME'"
+        )
 
     kwargs = {
         "footer": footer,

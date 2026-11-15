@@ -1,5 +1,6 @@
 import builtins
 
+import pytest
 from click.testing import CliRunner
 
 from jsonschema_markdown.main import cli
@@ -45,3 +46,32 @@ def test_cli_reads_unicode_with_non_utf8_locale(monkeypatch):
 
     assert result.exit_code == 0, result.exception
     assert "Café Menu — Spécialités" in result.output
+
+
+def test_cli_rejects_invalid_json_file(tmp_path):
+    bad = tmp_path / "bad.json"
+    bad.write_text("{not valid json", encoding="utf-8")
+
+    result = CliRunner().invoke(cli, [str(bad)])
+
+    assert result.exit_code == 2
+    assert "Invalid value for 'FILENAME': invalid JSON" in result.output
+    assert "Expecting property name enclosed in double quotes" in result.output
+
+
+def test_cli_rejects_invalid_json_stdin():
+    result = CliRunner().invoke(cli, ["-"], input="{not valid json")
+
+    assert result.exit_code == 2
+    assert "Invalid value for 'FILENAME': invalid JSON" in result.output
+
+
+@pytest.mark.parametrize("document", ["[1, 2]", '"a string"', "42", "true", "null"])
+def test_cli_rejects_non_object_json(document):
+    result = CliRunner().invoke(cli, ["-"], input=document)
+
+    assert result.exit_code == 2
+    assert (
+        "Invalid value for 'FILENAME': expected a JSON object at the top level"
+        in result.output
+    )
