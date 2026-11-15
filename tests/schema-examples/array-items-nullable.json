@@ -310,7 +310,7 @@
       "type": "array"
     },
     "constraint_and_null_items": {
-      "description": "Objects or null, where the anyOf also holds a constraint-only entry.",
+      "description": "The sibling type object rules out the null entry in the anyOf: items are objects only.",
       "items": {
         "anyOf": [
           {
@@ -343,6 +343,143 @@
           }
         ]
       }
+    },
+    "sibling_type_rules_out_null": {
+      "description": "The sibling type string rules out the null entry: items are strings only.",
+      "items": {
+        "anyOf": [
+          {
+            "maxLength": 3
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "required_alternatives_and_null": {
+      "description": "Constraint-only anyOf plus a null entry still gives one combined row.",
+      "items": {
+        "anyOf": [
+          {
+            "required": [
+              "a"
+            ]
+          },
+          {
+            "required": [
+              "b"
+            ]
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "properties": {
+          "a": {
+            "type": "string"
+          },
+          "b": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "all_of_null_in_one_entry": {
+      "description": "allOf needs every entry to allow null, so null is not allowed.",
+      "items": {
+        "allOf": [
+          {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          {
+            "type": "string"
+          }
+        ]
+      },
+      "type": "array"
+    },
+    "one_of_null_in_two_entries": {
+      "description": "null matches both oneOf entries, so oneOf rejects it.",
+      "items": {
+        "oneOf": [
+          {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          {
+            "type": [
+              "integer",
+              "null"
+            ]
+          }
+        ]
+      },
+      "type": "array"
+    },
+    "untyped_nested_nullable_lists": {
+      "description": "Inner lists without a type keyword are still nested arrays.",
+      "items": {
+        "anyOf": [
+          {
+            "items": {
+              "type": "string"
+            }
+          },
+          {
+            "type": "null"
+          }
+        ]
+      },
+      "type": "array"
+    },
+    "three_level_nested": {
+      "description": "Three levels of arrays keep every level.",
+      "items": {
+        "items": {
+          "type": "array"
+        },
+        "type": "array"
+      },
+      "type": "array"
+    },
+    "any_value_or_null": {
+      "description": "An entry that accepts anything makes the items unrestricted.",
+      "items": {
+        "anyOf": [
+          {},
+          {
+            "type": "null"
+          }
+        ]
+      },
+      "type": "array"
+    },
+    "duplicate_entries": {
+      "description": "Entries that differ only in nullability are listed once.",
+      "items": {
+        "anyOf": [
+          {
+            "type": "integer"
+          },
+          {
+            "type": [
+              "integer",
+              "null"
+            ]
+          }
+        ]
+      },
+      "type": "array"
     }
   },
   "required": [

@@ -25,9 +25,18 @@ Arrays whose items are nullable (e.g. Pydantic list[Optional[str]]) versus array
 | titled_null_items | `array` |  | string or null |  |  | A null option with extra keywords is still null. |  |
 | list_type_entry_items | `array` |  | integer and/or string or null |  |  | Null inside a list-form type of an anyOf entry. |  |
 | nullable_ref_list_type | `array` |  | [Tag](#tag) or null |  |  | A reference with a nullable list-form type. |  |
-| constraint_and_null_items | `array` |  | object or null |  |  | Objects or null, where the anyOf also holds a constraint-only entry. |  |
+| constraint_and_null_items | `array` |  | object |  |  | The sibling type object rules out the null entry in the anyOf: items are objects only. |  |
 | constraint_and_null_items[].name | `string` |  | string |  |  |  |  |
 | untyped_nullable_items | `array` |  | string or null |  |  | No type keyword: items still make this an array. |  |
+| sibling_type_rules_out_null | `array` |  | string |  |  | The sibling type string rules out the null entry: items are strings only. |  |
+| required_alternatives_and_null | `array` |  | object |  |  | Constraint-only anyOf plus a null entry still gives one combined row. |  |
+| required_alternatives_and_null[].a and/or required_alternatives_and_null[].b | `string` |  | string |  |  |  |  |
+| all_of_null_in_one_entry | `array` |  | string |  |  | allOf needs every entry to allow null, so null is not allowed. |  |
+| one_of_null_in_two_entries | `array` |  | integer or string |  |  | null matches both oneOf entries, so oneOf rejects it. |  |
+| untyped_nested_nullable_lists | `array` |  | array of string, or null |  |  | Inner lists without a type keyword are still nested arrays. |  |
+| three_level_nested | `array` |  | array of array |  |  | Three levels of arrays keep every level. |  |
+| any_value_or_null | `array` |  | Any type |  |  | An entry that accepts anything makes the items unrestricted. |  |
+| duplicate_entries | `array` |  | integer or null |  |  | Entries that differ only in nullability are listed once. |  |
 
 
 ---
