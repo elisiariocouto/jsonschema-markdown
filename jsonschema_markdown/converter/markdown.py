@@ -1,6 +1,7 @@
 import contextlib
 import copy
 import json
+import re
 import sys
 import urllib.parse
 
@@ -12,6 +13,15 @@ from jsonschema_markdown.utils import (
     create_enum_markdown,
     sort_properties,
 )
+
+# A pipe ends a Markdown table cell unless a backslash precedes it, so only bare
+# pipes are escaped: text that already reads "a \| b" is left as written.
+_UNESCAPED_PIPE = re.compile(r"(?<!\\)\|")
+
+
+def _escape_table_cell(value: str) -> str:
+    """Escape pipes so a cell's content cannot split its Markdown table row."""
+    return _UNESCAPED_PIPE.sub(r"\\|", value)
 
 
 def _should_include_column(column_values):
@@ -545,7 +555,11 @@ def _create_definition_table(schema: dict, defs: dict, hide_empty_columns: bool)
         for item in table_items:
             markdown += (
                 "| "
-                + " | ".join([str(item[col]) for col in columns if include_column[col]])
+                + " | ".join(
+                    _escape_table_cell(str(item[col]))
+                    for col in columns
+                    if include_column[col]
+                )
                 + " |\n"
             )
     else:
@@ -562,7 +576,11 @@ def _create_definition_table(schema: dict, defs: dict, hide_empty_columns: bool)
         # Generate the item rows
 
         for item in table_items:
-            markdown += "| " + " | ".join(item.values()) + " |\n"
+            markdown += (
+                "| "
+                + " | ".join(_escape_table_cell(value) for value in item.values())
+                + " |\n"
+            )
 
     return f"{markdown}\n"
 
@@ -918,7 +936,8 @@ def _get_property_details(
 
     elif "pattern" in property_details:
         pattern = property_details["pattern"]
-        # escape any pipe characters in the pattern string to prevent markdown table formatting issues
+        # Escape every pipe here, not only bare ones as table cells do: inside a
+        # code span backslashes are literal, so a regex "\|" must become "\\|"
         md_table_safe = pattern.replace("|", r"\|")
         res_details = f"[`{md_table_safe}`](https://regex101.com/?regex={urllib.parse.quote_plus(pattern)})"
         return f"`{property_type}`", res_details
